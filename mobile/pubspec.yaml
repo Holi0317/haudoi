@@ -60,7 +60,7 @@ dependencies:
   event_bus: ^2.0.1
   share_handler: ^0.0.25
   intl: ^0.20.2
-  flutter_web_auth_2: ^4.1.0
+  flutter_web_auth_2: ^5.0.0
   package_info_plus: ^9.0.0
   slang: ^4.11.1
   slang_flutter: ^4.11.0
