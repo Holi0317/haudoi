@@ -23,10 +23,10 @@ Map<String, dynamic> _$EditOpInsertToJson(EditOpInsert instance) =>
     <String, dynamic>{
       'title': instance.title,
       'url': instance.url,
-      'archive': instance.archive,
-      'favorite': instance.favorite,
-      'note': instance.note,
-      'created_at': instance.createdAt,
+      'archive': ?instance.archive,
+      'favorite': ?instance.favorite,
+      'note': ?instance.note,
+      'created_at': ?instance.createdAt,
       'appliedAt': ?instance.appliedAt?.toIso8601String(),
       'op': instance.$type,
     };
