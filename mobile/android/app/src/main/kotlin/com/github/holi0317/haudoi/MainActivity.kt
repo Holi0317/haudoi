@@ -1,4 +1,4 @@
-package com.example.mobile
+package com.github.holi0317.haudoi
 
 import io.flutter.embedding.android.FlutterActivity
 

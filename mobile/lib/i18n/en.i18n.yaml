@@ -21,6 +21,9 @@ unread:
 search:
   search: search
   filterTooltip: Filter
+share:
+  title: Add Link
+  success: "Link added"
 settings:
   title: Settings
   preferences: Preferences

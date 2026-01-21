@@ -26,10 +26,10 @@ sealed class EditOp with _$EditOp {
   const factory EditOp.insert({
     String? title,
     required String url,
-    bool? archive,
-    bool? favorite,
-    String? note,
-    @JsonKey(name: 'created_at') int? createdAt,
+    @JsonKey(includeIfNull: false) bool? archive,
+    @JsonKey(includeIfNull: false) bool? favorite,
+    @JsonKey(includeIfNull: false) String? note,
+    @JsonKey(name: 'created_at', includeIfNull: false) int? createdAt,
     @JsonKey(includeIfNull: false) DateTime? appliedAt,
   }) = EditOpInsert;
 
