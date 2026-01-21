@@ -20,7 +20,7 @@
     "@primeuix/themes": "^2.0.2",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/vue-form": "^1.27.7",
-    "@tanstack/vue-query": "^5.92.1",
+    "@tanstack/vue-query": "^5.92.5",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "tailwindcss": "^4.1.18",
