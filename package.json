@@ -22,7 +22,7 @@
     "prettier": "^3.8.0",
     "typescript-eslint": "^8.53.0"
   },
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.28.1",
   "lint-staged": {
     "*.{js,mjs,ts,jsx,tsx,vue}": "eslint --fix",
     "*": "prettier --cache --ignore-unknown --write"
