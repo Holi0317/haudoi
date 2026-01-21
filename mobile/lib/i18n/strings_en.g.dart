@@ -45,6 +45,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsNavEn nav = TranslationsNavEn.internal(_root);
 	late final TranslationsUnreadEn unread = TranslationsUnreadEn.internal(_root);
 	late final TranslationsSearchEn search = TranslationsSearchEn.internal(_root);
+	late final TranslationsShareEn share = TranslationsShareEn.internal(_root);
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
@@ -147,6 +148,21 @@ class TranslationsSearchEn {
 
 	/// en: 'Filter'
 	String get filterTooltip => 'Filter';
+}
+
+// Path: share
+class TranslationsShareEn {
+	TranslationsShareEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Add Link'
+	String get title => 'Add Link';
+
+	/// en: 'Link added'
+	String get success => 'Link added';
 }
 
 // Path: settings
@@ -370,6 +386,8 @@ extension on Translations {
 			'unread.toggleSortingDesc' => 'Toggle sort order (currently newest first)',
 			'search.search' => 'search',
 			'search.filterTooltip' => 'Filter',
+			'share.title' => 'Add Link',
+			'share.success' => 'Link added',
 			'settings.title' => 'Settings',
 			'settings.preferences' => 'Preferences',
 			'settings.about' => 'About',

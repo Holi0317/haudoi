@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'pages/login.dart';
 import 'pages/search.dart';
 import 'pages/settings.dart';
+import 'pages/share_receive.dart';
 import 'pages/shell.dart';
 import 'pages/unread.dart';
 
@@ -14,6 +15,13 @@ final router = GoRouter(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
         return const LoginPage();
+      },
+    ),
+    GoRoute(
+      path: '/share',
+      builder: (BuildContext context, GoRouterState state) {
+        final url = state.uri.queryParameters['url'];
+        return ShareReceivePage(sharedUrl: url);
       },
     ),
     StatefulShellRoute.indexedStack(

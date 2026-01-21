@@ -4,10 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/edit_op.dart';
-import '../../utils.dart';
 import '../api/api.dart';
 import '../extensions.dart';
-import '../share_handler.dart';
 import 'queue.dart';
 
 part 'sync_worker.g.dart';
@@ -72,41 +70,4 @@ class SyncWorker extends _$SyncWorker {
       _editProcessing = false;
     }
   }
-}
-
-/// Bridge between [sharedMediaProvider] and [editQueueProvider].
-///
-/// FIXME(GH-11): Refactor share handling
-@riverpod
-int shareQueueBridge(Ref ref) {
-  final log = Logger('ShareQueueBridge');
-
-  ref.listen(sharedMediaProvider, (previous, next) {
-    final value = next.value;
-    if (value == null) {
-      return;
-    }
-
-    log.fine('Received and cleaning shared media: $value');
-
-    final content = value.content;
-    if (content == null || content.isEmpty) {
-      log.warning("Received shared media with empty content, ignoring. $value");
-      return;
-    }
-
-    final url = isWebUri(content);
-    if (url == null) {
-      log.warning("Received shared media with invalid URL, ignoring. $value");
-      return;
-    }
-
-    log.info("Inserting shared URL into insert queue: $url");
-
-    ref
-        .read(editQueueProvider.notifier)
-        .add(EditOp.insert(url: url.toString()));
-  });
-
-  return 1;
 }
