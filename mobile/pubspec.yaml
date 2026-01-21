@@ -60,10 +60,10 @@ dependencies:
   event_bus: ^2.0.1
   share_handler: ^0.0.25
   intl: ^0.20.2
-  flutter_web_auth_2: ^4.1.0
+  flutter_web_auth_2: ^5.0.0
   package_info_plus: ^9.0.0
-  slang: ^4.11.1
-  slang_flutter: ^4.11.0
+  slang: ^4.12.0
+  slang_flutter: ^4.12.0
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -72,13 +72,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  build_runner: ^2.10.4
+  build_runner: ^2.10.5
   freezed: ^3.2.3
   json_serializable: ^6.11.2
   riverpod_generator: ^4.0.0+1
   custom_lint: ^0.8.1
   riverpod_lint: ^3.1.0
-  slang_build_runner: ^4.11.0
+  slang_build_runner: ^4.12.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
