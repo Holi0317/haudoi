@@ -74,6 +74,10 @@ class _ShareReceivePageState extends ConsumerState<ShareReceivePage> {
       return '';
     });
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       _value = next;
     });
