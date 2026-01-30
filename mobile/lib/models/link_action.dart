@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../i18n/strings.g.dart';
 
@@ -30,21 +29,6 @@ enum LinkAction {
     return PopupMenuItem<LinkAction>(
       value: this,
       child: ListTile(leading: Icon(icon), title: Text(label)),
-    );
-  }
-
-  /// Create a [SlidableAction] for this action for use in flutter_slidable.
-  ///
-  /// [onPressed] will get called when the action is pressed.
-  SlidableAction slideable(void Function(BuildContext) onPressed) {
-    return SlidableAction(
-      onPressed: onPressed,
-      backgroundColor: color,
-      foregroundColor: color.computeLuminance() > 0.5
-          ? Colors.black87
-          : Colors.white,
-      icon: icon,
-      label: label,
     );
   }
 }

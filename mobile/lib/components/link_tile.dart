@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/edit_op.dart';
 import '../models/link.dart';
 import '../models/link_action.dart';
-import '../providers/sync/queue.dart';
+import '../models/link_action_handle.dart';
 import '../utils.dart';
 import 'link_favicon.dart';
 import 'link_image_preview.dart';
@@ -97,13 +95,9 @@ class _LinkTileState extends ConsumerState<LinkTile>
 
         children: [
           if (widget.item.favorite)
-            LinkAction.unfavorite.slideable(
-              (context) => _edit(EditOpBoolField.favorite, false),
-            )
+            LinkAction.unfavorite.slideable(ref, widget.item)
           else
-            LinkAction.favorite.slideable(
-              (context) => _edit(EditOpBoolField.favorite, true),
-            ),
+            LinkAction.favorite.slideable(ref, widget.item),
         ],
       ),
 
@@ -111,24 +105,20 @@ class _LinkTileState extends ConsumerState<LinkTile>
         motion: const ScrollMotion(),
         extentRatio: 0.4,
 
-        // FIXME(GH-18): Seems we need 2 ticks to remove item after dismiss, and slidable isn't happy about that.
         dismissible: widget.dismissible && !widget.item.archive
             ? DismissiblePane(
-                onDismissed: () => _edit(EditOpBoolField.archive, true),
+                onDismissed: () =>
+                    LinkAction.archive.handleOne(context, ref, widget.item),
               )
             : null,
 
         children: [
           // FIXME: Icon animation....?
-          LinkAction.share.slideable((context) => _share()),
+          LinkAction.share.slideable(ref, widget.item),
           if (widget.item.archive)
-            LinkAction.unarchive.slideable(
-              (context) => _edit(EditOpBoolField.archive, false),
-            )
+            LinkAction.unarchive.slideable(ref, widget.item)
           else
-            LinkAction.archive.slideable(
-              (context) => _edit(EditOpBoolField.archive, true),
-            ),
+            LinkAction.archive.slideable(ref, widget.item),
         ],
       ),
 
@@ -213,14 +203,5 @@ class _LinkTileState extends ConsumerState<LinkTile>
     }
 
     await controller.openEndActionPane();
-  }
-
-  Future<void> _edit(EditOpBoolField field, bool value) async {
-    final queue = ref.read(editQueueProvider.notifier);
-    queue.add(EditOp.setBool(field: field, id: widget.item.id, value: value));
-  }
-
-  Future<void> _share() async {
-    await SharePlus.instance.share(ShareParams(uri: uri));
   }
 }
