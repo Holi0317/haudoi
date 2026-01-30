@@ -77,11 +77,12 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 
   Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) async {
+    final selectedLinks = controller.value;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(t.editBar.deletePrompt(count: controller.value.length)),
+          title: Text(t.editBar.deletePrompt(count: selectedLinks.length)),
           content: SingleChildScrollView(
             child: ListBody(children: <Widget>[Text(t.editBar.deleteWarning)]),
           ),
@@ -104,16 +105,17 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
     }
 
     final queue = ref.read(editQueueProvider.notifier);
-    queue.addAll(controller.value.map((id) => EditOp.delete(id: id)));
+    queue.addAll(selectedLinks.map((link) => EditOp.delete(id: link.id)));
 
     controller.clear();
   }
 
   void _edit(WidgetRef ref, EditOpBoolField field, bool value) {
+    final selectedLinks = controller.value;
     final queue = ref.read(editQueueProvider.notifier);
     queue.addAll(
-      controller.value.map(
-        (id) => EditOp.setBool(id: id, field: field, value: value),
+      selectedLinks.map(
+        (link) => EditOp.setBool(id: link.id, field: field, value: value),
       ),
     );
 

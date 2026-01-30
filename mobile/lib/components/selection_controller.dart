@@ -1,10 +1,17 @@
 import 'package:flutter/foundation.dart';
 
+import '../models/link.dart';
+
 /// A controller for managing selection state of link items.
 ///
 /// This controller is similar to [TextEditingController] in that it holds
 /// state and notifies listeners when the state changes. It should be created
 /// in the parent widget's state and disposed when no longer needed.
+///
+/// The controller holds full [Link] instances and deduplicates based on link ID.
+///
+/// This doesn't handle updates on [Link] changes. It is assumed that selected links properties remain
+/// unchanged for the duration of their selection.
 ///
 /// Example usage:
 /// ```dart
@@ -29,10 +36,10 @@ import 'package:flutter/foundation.dart';
 class SelectionController extends ChangeNotifier {
   SelectionController();
 
-  Set<int> _selection = const {};
+  List<Link> _selection = const [];
 
-  /// The current selection as an unmodifiable set of IDs.
-  Set<int> get value => _selection;
+  /// The current selection as a list of [Link] objects.
+  List<Link> get value => List.unmodifiable(_selection);
 
   /// Whether any items are currently selected.
   bool get isSelecting => _selection.isNotEmpty;
@@ -40,47 +47,36 @@ class SelectionController extends ChangeNotifier {
   /// The number of selected items.
   int get length => _selection.length;
 
-  /// Returns true if the given [id] is selected.
-  bool contains(int id) => _selection.contains(id);
+  /// Returns true if a link with the given [id] is selected.
+  bool contains(int id) => _selection.any((link) => link.id == id);
 
-  /// Selects a single item by ID.
-  void select(int id) {
-    if (_selection.contains(id)) return;
-    _selection = {..._selection, id};
+  /// Selects a link. Does nothing if a link with the same ID is already selected.
+  void select(Link link) {
+    if (contains(link.id)) return;
+    _selection = [..._selection, link];
     notifyListeners();
   }
 
-  /// Deselects a single item by ID.
-  void deselect(int id) {
-    if (!_selection.contains(id)) return;
-    final next = _selection.toSet();
-    next.remove(id);
-    _selection = Set.unmodifiable(next);
+  /// Deselects a link by ID.
+  void deselect(Link link) {
+    if (!contains(link.id)) return;
+    _selection = _selection.where((that) => that.id != link.id).toList();
     notifyListeners();
   }
 
-  /// Toggles the selection state of an item.
-  void toggle(int id) {
-    if (_selection.contains(id)) {
-      deselect(id);
+  /// Toggles the selection state of a link.
+  void toggle(Link link) {
+    if (contains(link.id)) {
+      deselect(link);
     } else {
-      select(id);
-    }
-  }
-
-  /// Sets the selection state of an item.
-  void setSelected(int id, bool selected) {
-    if (selected) {
-      select(id);
-    } else {
-      deselect(id);
+      select(link);
     }
   }
 
   /// Clears all selections.
   void clear() {
     if (_selection.isEmpty) return;
-    _selection = const {};
+    _selection = const [];
     notifyListeners();
   }
 }
