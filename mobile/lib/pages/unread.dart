@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/edit_app_bar.dart';
 import '../components/link_list.dart';
 import '../components/reselect.dart';
+import '../components/selection_controller.dart';
 import '../i18n/strings.g.dart';
 import '../models/link_action.dart';
 import '../models/search_query.dart';
@@ -18,8 +19,24 @@ class UnreadPage extends ConsumerStatefulWidget {
 }
 
 class _UnreadPageState extends ConsumerState<UnreadPage> {
-  Set<int> _selection = {};
+  final _controller = SelectionController();
   SearchOrder _order = SearchOrder.createdAtDesc;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onSelectionChanged);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onSelectionChanged() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +46,7 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
       searchAppliedProvider(unreadSearchQuery).selectData((data) => data.count),
     );
 
-    final PreferredSizeWidget appBar = _selection.isEmpty
+    final PreferredSizeWidget appBar = !_controller.isSelecting
         ? AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: switch (count) {
@@ -42,8 +59,7 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
             actions: [_sortAction(context)],
           )
         : EditAppBar(
-            selection: _selection,
-            onSelectionChanged: _onSelectionChanged,
+            controller: _controller,
             actions: [LinkAction.delete, LinkAction.archive],
           );
 
@@ -62,8 +78,7 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
         body: LinkList(
           query: unreadSearchQuery,
           dismissible: true,
-          selection: _selection,
-          onSelectionChanged: _onSelectionChanged,
+          controller: _controller,
         ),
       ),
     );
@@ -87,11 +102,5 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
         });
       },
     );
-  }
-
-  void _onSelectionChanged(Set<int> next) {
-    setState(() {
-      _selection = next;
-    });
   }
 }

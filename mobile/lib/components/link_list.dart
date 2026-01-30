@@ -8,23 +8,24 @@ import '../providers/api/api.dart';
 import '../providers/api/search.dart';
 import 'link_tile.dart';
 import 'link_tile_shimmer.dart';
+import 'selection_controller.dart';
 
 class LinkList extends ConsumerStatefulWidget {
   const LinkList({
     super.key,
     required this.query,
-    required this.selection,
+    required this.controller,
     this.dismissible = false,
-    required this.onSelectionChanged,
   });
 
   /// SearchQuery for the first page
   final SearchQuery query;
-  final Set<int> selection;
+
+  /// Controller for managing selection state.
+  final SelectionController controller;
 
   /// See [LinkTile.dismissible].
   final bool dismissible;
-  final void Function(Set<int>) onSelectionChanged;
 
   @override
   ConsumerState<LinkList> createState() => _LinkListState();
@@ -33,15 +34,29 @@ class LinkList extends ConsumerStatefulWidget {
 class _LinkListState extends ConsumerState<LinkList> {
   List<String> _cursors = const [];
 
-  void _setSelection(int id, bool selected) {
-    final next = widget.selection.toSet();
-    if (selected) {
-      next.add(id);
-    } else {
-      next.remove(id);
-    }
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onSelectionChanged);
+  }
 
-    widget.onSelectionChanged(next);
+  @override
+  void didUpdateWidget(covariant LinkList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onSelectionChanged);
+      widget.controller.addListener(_onSelectionChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onSelectionChanged);
+    super.dispose();
+  }
+
+  void _onSelectionChanged() {
+    setState(() {});
   }
 
   void _fetchNextPage(PagingState<String, Link> state) {
@@ -94,10 +109,10 @@ class _LinkListState extends ConsumerState<LinkList> {
     final state = ref.watch(searchPaginatedProvider(widget.query, _cursors));
 
     return PopScope(
-      canPop: widget.selection.isEmpty,
+      canPop: !widget.controller.isSelecting,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) {
-          widget.onSelectionChanged(const {});
+          widget.controller.clear();
         }
       },
       child: RefreshIndicator(
@@ -114,9 +129,11 @@ class _LinkListState extends ConsumerState<LinkList> {
               key: ValueKey(item.id),
               item: item,
               dismissible: widget.dismissible,
-              selecting: widget.selection.isNotEmpty,
-              selected: widget.selection.contains(item.id),
-              onSelect: (selected) => _setSelection(item.id, selected),
+              selecting: widget.controller.isSelecting,
+              selected: widget.controller.contains(item.id),
+              onSelect: (selected) => (int id, bool selected) {
+                widget.controller.setSelected(id, selected);
+              }(item.id, selected),
             ),
             animateTransitions: true,
             firstPageProgressIndicatorBuilder: _buildFirstPageLoadingIndicator,

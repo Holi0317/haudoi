@@ -5,6 +5,7 @@ import '../components/edit_app_bar.dart';
 import '../components/filter_overlay.dart';
 import '../components/link_list.dart';
 import '../components/reselect.dart';
+import '../components/selection_controller.dart';
 import '../i18n/strings.g.dart';
 import '../models/link_action.dart';
 import '../models/search_query.dart';
@@ -17,19 +18,30 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
-  Set<int> _selection = {};
+  final _controller = SelectionController();
   var query = const SearchQuery();
   final _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onSelectionChanged);
+  }
+
+  @override
   void dispose() {
+    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
+  void _onSelectionChanged() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    final PreferredSizeWidget appBar = _selection.isEmpty
+    final PreferredSizeWidget appBar = !_controller.isSelecting
         ? AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: SizedBox(
@@ -63,8 +75,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           )
         : EditAppBar(
-            selection: _selection,
-            onSelectionChanged: _onSelectionChanged,
+            controller: _controller,
             actions: [LinkAction.archive, LinkAction.favorite],
             menuActions: [
               LinkAction.unarchive,
@@ -79,11 +90,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       },
       child: Scaffold(
         appBar: appBar,
-        body: LinkList(
-          query: query,
-          selection: _selection,
-          onSelectionChanged: _onSelectionChanged,
-        ),
+        body: LinkList(query: query, controller: _controller),
       ),
     );
   }
@@ -98,11 +105,5 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         });
       },
     );
-  }
-
-  void _onSelectionChanged(Set<int> next) {
-    setState(() {
-      _selection = next;
-    });
   }
 }

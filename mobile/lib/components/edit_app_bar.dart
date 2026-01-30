@@ -5,6 +5,7 @@ import '../i18n/strings.g.dart';
 import '../models/edit_op.dart';
 import '../models/link_action.dart';
 import '../providers/sync/queue.dart';
+import 'selection_controller.dart';
 
 /// [AppBar] used in selection mode
 class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -12,8 +13,7 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
     super.key,
     this.actions = const [],
     this.menuActions = const [],
-    required this.selection,
-    required this.onSelectionChanged,
+    required this.controller,
   });
 
   /// List of actions to show on app bar
@@ -22,18 +22,18 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
   /// List of actions to show in overflow menu
   final List<LinkAction> menuActions;
 
-  final Set<int> selection;
-  final void Function(Set<int>) onSelectionChanged;
+  /// Controller for managing selection state.
+  final SelectionController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: Text(t.editBar.title(count: selection.length)),
+      title: Text(t.editBar.title(count: controller.length)),
       leading: IconButton(
         icon: const Icon(Icons.close),
         tooltip: t.editBar.cancel,
-        onPressed: _endSelection,
+        onPressed: controller.clear,
       ),
       actions: [
         for (final action in actions)
@@ -53,10 +53,6 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
       ],
     );
-  }
-
-  void _endSelection() {
-    onSelectionChanged(const {});
   }
 
   // Absolute no idea what this is. But required to satisfy Scaffold's appBar property.
@@ -85,7 +81,7 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(t.editBar.deletePrompt(count: selection.length)),
+          title: Text(t.editBar.deletePrompt(count: controller.value.length)),
           content: SingleChildScrollView(
             child: ListBody(children: <Widget>[Text(t.editBar.deleteWarning)]),
           ),
@@ -108,17 +104,19 @@ class EditAppBar extends ConsumerWidget implements PreferredSizeWidget {
     }
 
     final queue = ref.read(editQueueProvider.notifier);
-    queue.addAll(selection.map((id) => EditOp.delete(id: id)));
+    queue.addAll(controller.value.map((id) => EditOp.delete(id: id)));
 
-    _endSelection();
+    controller.clear();
   }
 
   void _edit(WidgetRef ref, EditOpBoolField field, bool value) {
     final queue = ref.read(editQueueProvider.notifier);
     queue.addAll(
-      selection.map((id) => EditOp.setBool(id: id, field: field, value: value)),
+      controller.value.map(
+        (id) => EditOp.setBool(id: id, field: field, value: value),
+      ),
     );
 
-    _endSelection();
+    controller.clear();
   }
 }
