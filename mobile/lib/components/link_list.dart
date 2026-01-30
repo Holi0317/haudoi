@@ -129,15 +129,7 @@ class _LinkListState extends ConsumerState<LinkList> {
               key: ValueKey(item.id),
               item: item,
               dismissible: widget.dismissible,
-              selecting: widget.controller.isSelecting,
-              selected: widget.controller.contains(item.id),
-              onSelect: (selected) {
-                if (selected) {
-                  widget.controller.select(item);
-                } else {
-                  widget.controller.deselect(item);
-                }
-              },
+              controller: widget.controller,
             ),
             animateTransitions: true,
             firstPageProgressIndicatorBuilder: _buildFirstPageLoadingIndicator,

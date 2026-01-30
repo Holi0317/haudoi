@@ -11,6 +11,7 @@ import '../providers/sync/queue.dart';
 import '../utils.dart';
 import 'link_favicon.dart';
 import 'link_image_preview.dart';
+import 'selection_controller.dart';
 
 /// A tile widget that displays a [Link] with actions.
 ///
@@ -20,15 +21,12 @@ class LinkTile extends ConsumerStatefulWidget {
   const LinkTile({
     super.key,
     required this.item,
-    this.selecting = false,
-    this.selected = false,
+    required this.controller,
     this.dismissible = false,
-    this.onSelect,
   });
 
   final Link item;
-  final bool selecting;
-  final bool selected;
+  final SelectionController controller;
 
   /// If true, the tile can be dismissed and archived by swiping.
   ///
@@ -36,8 +34,6 @@ class LinkTile extends ConsumerStatefulWidget {
   /// Parent widget must make sure they have `archive: true` in `SearchQuery` to prevent the item from re-appearing.
   /// Failing to do so will cause error in runtime.
   final bool dismissible;
-
-  final void Function(bool selected)? onSelect;
 
   @override
   ConsumerState<LinkTile> createState() => _LinkTileState();
@@ -50,21 +46,42 @@ class _LinkTileState extends ConsumerState<LinkTile>
   // FIXME: Handle url parsing error
   late final uri = Uri.parse(widget.item.url);
 
+  bool get isSelecting => widget.controller.isSelecting;
+
+  bool get isSelected => widget.controller.contains(widget.item.id);
+
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onSelectionChanged);
   }
 
   @override
   void didUpdateWidget(LinkTile oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onSelectionChanged);
+      widget.controller.addListener(_onSelectionChanged);
+    }
 
     // Close slidable when entering selection mode
     // Seems that disabling the slidable doesn't close it automatically
-    if (widget.selecting && !oldWidget.selecting && controller.ratio != 0) {
+    if (widget.controller.isSelecting &&
+        !oldWidget.controller.isSelecting &&
+        controller.ratio != 0) {
       controller.close(duration: const Duration());
     }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onSelectionChanged);
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _onSelectionChanged() {
+    setState(() {});
   }
 
   @override
@@ -72,7 +89,7 @@ class _LinkTileState extends ConsumerState<LinkTile>
     return Slidable(
       key: ValueKey(widget.item.id),
       controller: controller,
-      enabled: !widget.selecting,
+      enabled: !isSelecting,
 
       startActionPane: ActionPane(
         motion: const ScrollMotion(),
@@ -151,27 +168,31 @@ class _LinkTileState extends ConsumerState<LinkTile>
               ),
           ],
         ),
-        selected: widget.selected,
+        selected: isSelected,
         selectedColor: Theme.of(context).colorScheme.onSurface,
         selectedTileColor: Theme.of(
           context,
         ).colorScheme.primary.withValues(alpha: 0.2),
         leading: LinkImagePreview(item: widget.item),
-        trailing: widget.selecting
-            ? Checkbox(value: widget.selected, onChanged: null)
+        trailing: isSelecting
+            ? Checkbox(value: isSelected, onChanged: null)
             : null,
         onTap: () {
-          if (widget.selecting) {
-            widget.onSelect?.call(!widget.selected);
+          if (isSelecting) {
+            if (isSelected) {
+              widget.controller.deselect(widget.item);
+            } else {
+              widget.controller.select(widget.item);
+            }
             return;
           }
 
           _open();
         },
-        onLongPress: widget.selecting
+        onLongPress: isSelecting
             ? null
             : () {
-                widget.onSelect?.call(true);
+                widget.controller.select(widget.item);
               },
       ),
     );
