@@ -1,6 +1,14 @@
 packages:
-  - "packages/worker"
-  - "packages/extension"
+  - packages/worker
+  - packages/extension
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - spawn-sync
+  - unrs-resolver
+  - vue-demi
+  - workerd
 
 patchedDependencies:
   "@truto/sqlite-builder@1.0.4": patches/@truto__sqlite-builder@1.0.4.patch
