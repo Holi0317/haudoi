@@ -11,6 +11,8 @@ import {
   IDStringSchema,
   SearchQuerySchema,
   ImageQuerySchema,
+  TagInputSchema,
+  TagUpdateSchema,
 } from "../schemas";
 import { fetchImage, parseAcceptImageFormat } from "../composable/image";
 import { useCache } from "../composable/cache";
@@ -228,7 +230,92 @@ const app = new Hono<Env>({ strict: false })
 
       return c.json({ status }, 201);
     },
-  );
+  )
+
+  // ==================== Tag API Endpoints ====================
+
+  /**
+   * List all tags for the current user
+   */
+  .get("/tags", async (c) => {
+    const stub = await getStorageStub(c);
+    const tags = await stub.listTags();
+    return c.json({ tags });
+  })
+
+  /**
+   * Create a new tag
+   */
+  .post("/tags", zv("json", TagInputSchema), async (c) => {
+    const stub = await getStorageStub(c);
+    const input = c.req.valid("json");
+
+    const tag = await stub.createTag(input);
+
+    if (tag == null) {
+      return c.json({ message: "A tag with this name already exists" }, 409);
+    }
+
+    return c.json({ tag }, 201);
+  })
+
+  /**
+   * Get a single tag by ID
+   */
+  .get("/tags/:id", zv("param", IDStringSchema), async (c) => {
+    const stub = await getStorageStub(c);
+    const { id } = c.req.valid("param");
+
+    const tag = await stub.getTag(id);
+
+    if (tag == null) {
+      return c.json({ message: "Tag not found" }, 404);
+    }
+
+    return c.json({ tag });
+  })
+
+  /**
+   * Update a tag
+   */
+  .patch(
+    "/tags/:id",
+    zv("param", IDStringSchema),
+    zv("json", TagUpdateSchema),
+    async (c) => {
+      const stub = await getStorageStub(c);
+      const { id } = c.req.valid("param");
+      const input = c.req.valid("json");
+
+      const result = await stub.updateTag(id, input);
+
+      if (result.error === "not_found") {
+        return c.json({ message: "Tag not found" }, 404);
+      }
+
+      if (result.error === "duplicate") {
+        return c.json({ message: "A tag with this name already exists" }, 409);
+      }
+
+      return c.json({ tag: result.tag });
+    },
+  )
+
+  /**
+   * Delete a tag
+   */
+  .delete("/tags/:id", zv("param", IDStringSchema), async (c) => {
+    const stub = await getStorageStub(c);
+    const { id } = c.req.valid("param");
+
+    const deleted = await stub.deleteTag(id);
+
+    if (!deleted) {
+      return c.json({ message: "Tag not found" }, 404);
+    }
+
+    return c.json({ message: "Tag deleted" });
+  });
 
 export default app;
 

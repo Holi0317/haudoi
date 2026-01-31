@@ -44,6 +44,12 @@ export const SearchQuerySchema = z.object({
     description: `Favorite filter.
       Undefined means disable filter. Boolean means the item must be favorited or not favorited.`,
   }),
+  tag: z.coerce.number().optional().meta({
+    description: `Tag filter. If provided, only return links with this tag ID.`,
+  }),
+  includeTags: zu.queryBool().meta({
+    description: `If true, include tag IDs array for each link in the response.`,
+  }),
   limit: z.coerce.number().min(1).max(300).default(30).meta({
     description: `Limit items to return.`,
   }),
@@ -109,6 +115,17 @@ export const EditOpSchema = z.discriminatedUnion("op", [
     value: z.string(),
   }),
   z.object({ op: z.literal("delete"), id: z.number() }),
+  // Tag operations on links
+  z.object({
+    op: z.literal("add_tag"),
+    id: z.number(), // link id
+    tagId: z.number(),
+  }),
+  z.object({
+    op: z.literal("remove_tag"),
+    id: z.number(), // link id
+    tagId: z.number(),
+  }),
 ]);
 
 /**
@@ -153,6 +170,48 @@ export const LinkItemSchema = z.strictObject({
  * Type for link item stored in database.
  */
 export type LinkItem = z.output<typeof LinkItemSchema>;
+
+/**
+ * Schema for tag item stored in database.
+ * Tags are case-insensitive unique per user and have a color for UI display.
+ */
+export const TagItemSchema = z.strictObject({
+  id: z.number(),
+  name: z.string(),
+  color: z.string(),
+});
+
+/**
+ * Type for tag item stored in database.
+ */
+export type TagItem = z.output<typeof TagItemSchema>;
+
+/**
+ * Schema for creating/updating a tag.
+ */
+export const TagInputSchema = z.object({
+  name: z.string().min(1).max(64),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, {
+    message: "Color must be a valid hex color (e.g., #FF5733)",
+  }),
+});
+
+/**
+ * Schema for updating a tag (partial).
+ */
+export const TagUpdateSchema = TagInputSchema.partial();
+
+/**
+ * Schema for link item with tags included.
+ */
+export const LinkItemWithTagsSchema = LinkItemSchema.extend({
+  tags: z.array(z.number()),
+});
+
+/**
+ * Type for link item with tags.
+ */
+export type LinkItemWithTags = z.output<typeof LinkItemWithTagsSchema>;
 
 /**
  * Info/statistics about completed import
