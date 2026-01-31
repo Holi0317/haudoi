@@ -484,9 +484,10 @@ LIMIT ${param.limit + 1}`,
       return new Map();
     }
 
+    const linkIdPlaceholders = sql.join(linkIds.map((id) => sql`${id}`));
     const result = this.conn.any(
       z.strictObject({ link_id: z.number(), tag_id: z.number() }),
-      sql`SELECT link_id, tag_id FROM link_tag WHERE link_id IN (${sql.join(linkIds.map((id) => sql`${id}`))})`,
+      sql`SELECT link_id, tag_id FROM link_tag WHERE link_id IN (${linkIdPlaceholders})`,
     );
 
     const map = new Map<number, number[]>();
