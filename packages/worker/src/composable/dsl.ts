@@ -362,9 +362,19 @@ export function matchersToSql(matchers: Matcher[]): SqlQuery | null {
       );
     } else if (matcher.type === "loose") {
       // Loose string matches url, title, or note
-      conditions.push(
-        sql`(instr(lower(title), lower(${matcher.value})) != 0 OR instr(lower(url), lower(${matcher.value})) != 0 OR instr(lower(note), lower(${matcher.value})) != 0)`,
+      // Build OR conditions for each searchable column
+      const looseColumns = ["title", "url", "note"];
+      const looseConditions = looseColumns.map(
+        (col) =>
+          sql`instr(lower(${sql.ident(col)}), lower(${matcher.value})) != 0`,
       );
+
+      // Join with OR
+      let looseResult = looseConditions[0];
+      for (let i = 1; i < looseConditions.length; i++) {
+        looseResult = sql`${looseResult} OR ${looseConditions[i]}`;
+      }
+      conditions.push(sql`(${looseResult})`);
     }
   }
 
