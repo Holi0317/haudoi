@@ -36,6 +36,7 @@ extension LinkActionHandle on LinkAction {
   bool get supportsBulk {
     return switch (this) {
       LinkAction.share => false,
+      LinkAction.select => false,
       _ => true,
     };
   }
@@ -51,6 +52,9 @@ extension LinkActionHandle on LinkAction {
     switch (this) {
       case LinkAction.share:
         await _shareLink(link);
+        return;
+      case LinkAction.select:
+        controller.select(link);
         return;
       default:
         // Common actions that work on lists
@@ -119,7 +123,7 @@ extension LinkActionHandle on LinkAction {
         false,
       ),
       // These are handled separately and should never reach here
-      LinkAction.share => throw StateError(
+      LinkAction.share || LinkAction.select => throw StateError(
         'Action $this should not be handled by _handleLinks',
       ),
     };

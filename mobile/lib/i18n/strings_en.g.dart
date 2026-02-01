@@ -55,6 +55,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'unarchive': 'Unarchive',
 		'favorite': 'Favorite',
 		'unfavorite': 'Unfavorite',
+		'select': 'Select',
 		'share': 'Share',
 		'delete': 'Delete',
 	};
@@ -143,8 +144,8 @@ class TranslationsSearchEn {
 
 	// Translations
 
-	/// en: 'search'
-	String get search => 'search';
+	/// en: 'Search'
+	String get search => 'Search';
 
 	/// en: 'Filter'
 	String get filterTooltip => 'Filter';
@@ -384,7 +385,7 @@ extension on Translations {
 			'unread.title' => ({required num count}) => 'Unread (${NumberFormat.compact(locale: 'en').format(count)})',
 			'unread.toggleSortingAsc' => 'Toggle sort order (currently oldest first)',
 			'unread.toggleSortingDesc' => 'Toggle sort order (currently newest first)',
-			'search.search' => 'search',
+			'search.search' => 'Search',
 			'search.filterTooltip' => 'Filter',
 			'share.title' => 'Add Link',
 			'share.success' => 'Link added',
@@ -429,6 +430,7 @@ extension on Translations {
 			'linkAction.unarchive' => 'Unarchive',
 			'linkAction.favorite' => 'Favorite',
 			'linkAction.unfavorite' => 'Unfavorite',
+			'linkAction.select' => 'Select',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
 			_ => null,

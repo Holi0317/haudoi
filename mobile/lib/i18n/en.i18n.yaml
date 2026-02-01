@@ -19,7 +19,7 @@ unread:
   toggleSortingAsc: Toggle sort order (currently oldest first)
   toggleSortingDesc: Toggle sort order (currently newest first)
 search:
-  search: search
+  search: Search
   filterTooltip: Filter
 share:
   title: Add Link
@@ -80,5 +80,6 @@ filter:
   unarchive: Unarchive
   favorite: Favorite
   unfavorite: Unfavorite
+  select: Select
   share: Share
   delete: Delete

@@ -9,6 +9,7 @@ import '../models/link_action_handle.dart';
 import '../utils.dart';
 import 'link_favicon.dart';
 import 'link_image_preview.dart';
+import 'long_press_menu.dart';
 import 'selection_controller.dart';
 
 /// A tile widget that displays a [Link] with actions.
@@ -128,68 +129,63 @@ class _LinkTileState extends ConsumerState<LinkTile>
         ],
       ),
 
-      child: ListTile(
-        title: Text(
-          widget.item.title.isEmpty ? uri.toString() : widget.item.title,
-        ),
-        subtitle: Row(
-          children: [
-            LinkFavicon(item: widget.item),
-            Flexible(
-              child: Text(
-                uri.host,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Text(' • ${formatRelativeDate(widget.item.createdAt)}'),
-            if (widget.item.favorite)
-              Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Icon(
-                  Icons.favorite,
-                  color: Colors.pink,
-                  size: theme.textTheme.bodyMedium!.fontSize,
+      child: LongPressMenu(
+        onLongPress: isSelecting ? null : _showActionMenu,
+        child: ListTile(
+          title: Text(
+            widget.item.title.isEmpty ? uri.toString() : widget.item.title,
+          ),
+          subtitle: Row(
+            children: [
+              LinkFavicon(item: widget.item),
+              Flexible(
+                child: Text(
+                  uri.host,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-
-            if (widget.item.archive)
-              Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Icon(
-                  Icons.archive,
-                  color: theme.colorScheme.onSurfaceVariant,
-                  size: theme.textTheme.bodyMedium!.fontSize,
+              Text(' • ${formatRelativeDate(widget.item.createdAt)}'),
+              if (widget.item.favorite)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Icon(
+                    Icons.favorite,
+                    color: Colors.pink,
+                    size: theme.textTheme.bodyMedium!.fontSize,
+                  ),
                 ),
-              ),
-          ],
-        ),
-        selected: isSelected,
-        selectedColor: theme.colorScheme.onSurface,
-        selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
-        leading: LinkImagePreview(item: widget.item),
-        trailing: isSelecting
-            ? Checkbox(value: isSelected, onChanged: null)
-            : null,
-        onTap: () {
-          if (isSelecting) {
-            if (isSelected) {
-              widget.controller.deselect(widget.item);
-            } else {
-              widget.controller.select(widget.item);
-            }
-            return;
-          }
 
-          _open();
-        },
-        onLongPress: isSelecting
-            ? null
-            : () {
-                widget.controller.select(widget.item);
-              },
+              if (widget.item.archive)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Icon(
+                    Icons.archive,
+                    color: theme.colorScheme.onSurfaceVariant,
+                    size: theme.textTheme.bodyMedium!.fontSize,
+                  ),
+                ),
+            ],
+          ),
+          selected: isSelected,
+          selectedColor: theme.colorScheme.onSurface,
+          selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+          leading: LinkImagePreview(item: widget.item),
+          trailing: isSelecting
+              ? Checkbox(value: isSelected, onChanged: null)
+              : null,
+          onTap: _onTap,
+        ),
       ),
     );
+  }
+
+  void _onTap() {
+    if (isSelecting) {
+      widget.controller.toggle(widget.item);
+    } else {
+      _open();
+    }
   }
 
   Future<void> _open() async {
@@ -207,5 +203,32 @@ class _LinkTileState extends ConsumerState<LinkTile>
     }
 
     await controller.openEndActionPane();
+  }
+
+  Future<void> _showActionMenu(RelativeRect position) async {
+    final action = await showMenu<LinkAction>(
+      context: context,
+      position: position,
+      items: [
+        if (widget.item.favorite)
+          LinkAction.unfavorite
+        else
+          LinkAction.favorite,
+        LinkAction.share,
+        if (widget.item.archive) LinkAction.unarchive else LinkAction.archive,
+        LinkAction.delete,
+        LinkAction.select,
+      ].map((item) => item.popup()).toList(),
+    );
+
+    if (action == null) {
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    await action.handleOne(context, ref, widget.controller, widget.item);
   }
 }
