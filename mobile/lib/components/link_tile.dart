@@ -95,9 +95,9 @@ class _LinkTileState extends ConsumerState<LinkTile>
 
         children: [
           if (widget.item.favorite)
-            LinkAction.unfavorite.slideable(ref, widget.item)
+            LinkAction.unfavorite.slideable(ref, widget.controller, widget.item)
           else
-            LinkAction.favorite.slideable(ref, widget.item),
+            LinkAction.favorite.slideable(ref, widget.controller, widget.item),
         ],
       ),
 
@@ -107,18 +107,22 @@ class _LinkTileState extends ConsumerState<LinkTile>
 
         dismissible: widget.dismissible && !widget.item.archive
             ? DismissiblePane(
-                onDismissed: () =>
-                    LinkAction.archive.handleOne(context, ref, widget.item),
+                onDismissed: () => LinkAction.archive.handleOne(
+                  context,
+                  ref,
+                  widget.controller,
+                  widget.item,
+                ),
               )
             : null,
 
         children: [
           // FIXME: Icon animation....?
-          LinkAction.share.slideable(ref, widget.item),
+          LinkAction.share.slideable(ref, widget.controller, widget.item),
           if (widget.item.archive)
-            LinkAction.unarchive.slideable(ref, widget.item)
+            LinkAction.unarchive.slideable(ref, widget.controller, widget.item)
           else
-            LinkAction.archive.slideable(ref, widget.item),
+            LinkAction.archive.slideable(ref, widget.controller, widget.item),
         ],
       ),
 

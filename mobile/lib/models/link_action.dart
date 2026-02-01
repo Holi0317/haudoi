@@ -5,7 +5,7 @@ import '../i18n/strings.g.dart';
 /// Enum of actions that can be performed on a link.
 enum LinkAction {
   // FIXME: Fix the colors. They are super ugly right now
-  // FIXME: Do translations on labels
+
   archive(Icons.archive, Colors.lime),
   unarchive(Icons.unarchive, Colors.lime),
   favorite(Icons.favorite, Colors.lightBlue),
