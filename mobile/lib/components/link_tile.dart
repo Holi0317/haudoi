@@ -84,6 +84,8 @@ class _LinkTileState extends ConsumerState<LinkTile>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Slidable(
       key: ValueKey(widget.item.id),
       controller: controller,
@@ -147,7 +149,7 @@ class _LinkTileState extends ConsumerState<LinkTile>
                 child: Icon(
                   Icons.favorite,
                   color: Colors.pink,
-                  size: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  size: theme.textTheme.bodyMedium!.fontSize,
                 ),
               ),
 
@@ -156,17 +158,15 @@ class _LinkTileState extends ConsumerState<LinkTile>
                 padding: const EdgeInsets.only(left: 4.0),
                 child: Icon(
                   Icons.archive,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  size: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  color: theme.colorScheme.onSurfaceVariant,
+                  size: theme.textTheme.bodyMedium!.fontSize,
                 ),
               ),
           ],
         ),
         selected: isSelected,
-        selectedColor: Theme.of(context).colorScheme.onSurface,
-        selectedTileColor: Theme.of(
-          context,
-        ).colorScheme.primary.withValues(alpha: 0.2),
+        selectedColor: theme.colorScheme.onSurface,
+        selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
         leading: LinkImagePreview(item: widget.item),
         trailing: isSelecting
             ? Checkbox(value: isSelected, onChanged: null)
