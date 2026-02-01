@@ -81,5 +81,6 @@ filter:
   favorite: Favorite
   unfavorite: Unfavorite
   select: Select
+  edit: Edit
   share: Share
   delete: Delete

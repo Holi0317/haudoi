@@ -11,6 +11,7 @@ enum LinkAction {
   favorite(Icons.favorite, Colors.lightBlue),
   unfavorite(Icons.favorite_border, Colors.lightBlue),
   select(Icons.select_all, Colors.teal),
+  edit(Icons.edit, Colors.teal),
   share(Icons.share, Colors.amber),
   delete(Icons.delete, Colors.red);
 

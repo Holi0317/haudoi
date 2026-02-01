@@ -56,6 +56,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'favorite': 'Favorite',
 		'unfavorite': 'Unfavorite',
 		'select': 'Select',
+		'edit': 'Edit',
 		'share': 'Share',
 		'delete': 'Delete',
 	};
@@ -431,6 +432,7 @@ extension on Translations {
 			'linkAction.favorite' => 'Favorite',
 			'linkAction.unfavorite' => 'Unfavorite',
 			'linkAction.select' => 'Select',
+			'linkAction.edit' => 'Edit',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
 			_ => null,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../components/selection_controller.dart';
@@ -36,6 +37,7 @@ extension LinkActionHandle on LinkAction {
   bool get supportsBulk {
     return switch (this) {
       LinkAction.share => false,
+      LinkAction.edit => false,
       LinkAction.select => false,
       _ => true,
     };
@@ -52,6 +54,9 @@ extension LinkActionHandle on LinkAction {
     switch (this) {
       case LinkAction.share:
         await _shareLink(link);
+        return;
+      case LinkAction.edit:
+        await _editPage(context, link);
         return;
       case LinkAction.select:
         controller.select(link);
@@ -123,9 +128,8 @@ extension LinkActionHandle on LinkAction {
         false,
       ),
       // These are handled separately and should never reach here
-      LinkAction.share || LinkAction.select => throw StateError(
-        'Action $this should not be handled by _handleLinks',
-      ),
+      LinkAction.share || LinkAction.edit || LinkAction.select =>
+        throw StateError('Action $this should not be handled by _handleLinks'),
     };
   }
 }
@@ -181,6 +185,12 @@ Future<bool> _setBoolField(
   );
 
   return true;
+}
+
+Future<void> _editPage(BuildContext context, Link link) async {
+  context.push(
+    Uri(path: '/edit', queryParameters: {'id': link.id.toString()}).toString(),
+  );
 }
 
 Future<void> _shareLink(Link link) async {
