@@ -92,8 +92,8 @@ describe("Link edit", () => {
 
     const search1 = await client.api.search.$get({
       query: {
+        query: "archive:true",
         order: "created_at_asc",
-        archive: "true",
       },
     });
 
@@ -111,8 +111,8 @@ describe("Link edit", () => {
 
     const search2 = await client.api.search.$get({
       query: {
+        query: "archive:false",
         order: "created_at_asc",
-        archive: "false",
       },
     });
 

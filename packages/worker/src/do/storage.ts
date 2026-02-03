@@ -4,13 +4,10 @@ import type { DBMigration } from "../composable/db_migration";
 import { useDBMigration } from "../composable/db_migration";
 import { sql, useSql } from "../composable/sql";
 import { decodeCursor } from "../composable/cursor";
-import type {
-  EditOpSchema,
-  LinkInsertItem,
-  SearchQuerySchema,
-} from "../schemas";
+import type { EditOpSchema, LinkInsertItem, SearchQueryType } from "../schemas";
 import { LinkItemSchema } from "../schemas";
 import { stringify } from "@std/csv";
+import { matchersToSql, type Matcher } from "@haudoi/dsl";
 
 const migrations: DBMigration[] = [
   {
@@ -227,28 +224,12 @@ ORDER BY id ASC;
     );
   }
 
-  public search(param: z.output<typeof SearchQuerySchema>) {
-    const query = param.query || "";
-
+  public search(param: Omit<SearchQueryType, "query">, matchers: Matcher[]) {
     const cursor = decodeCursor(param.cursor);
 
-    // For text search (param.query):
-    // Was using LIKE but got "LIKE or GLOB pattern too complex" error on large search string.
-    // Tried fts5 but that isn't what we want. We actually want substring search here, not token
-    // search. Like, I wanna see "github" for all links stored in github.
-    // Currently settling on instr + lower method for case-insensitive substring search.
-    // The lower function isn't foolproof for all languages but should be fine for most cases.
-    const frag = sql`
-  FROM link
-  WHERE 1=1
-    AND (${query} = ''
-      OR instr(lower(title), lower(${query})) != 0
-      OR instr(lower(url), lower(${query})) != 0
-      OR instr(lower(note), lower(${query})) != 0
-    )
-    AND (${param.archive ?? null} IS NULL OR ${Number(param.archive)} = link.archive)
-    AND (${param.favorite ?? null} IS NULL OR ${Number(param.favorite)} = link.favorite)
-`;
+    const matchersSql = matchersToSql(matchers, ["title", "url", "note"]);
+
+    const frag = sql`FROM link WHERE ${matchersSql}`;
 
     const dir =
       param.order === "created_at_asc" ? sql.raw("asc") : sql.raw("desc");
@@ -266,8 +247,7 @@ ORDER BY id ASC;
 
     const itemsPlus = this.conn.any(
       LinkItemSchema,
-      sql`SELECT *
-  ${frag}
+      sql`SELECT * ${frag}
   AND (${cursorCond})
 ORDER BY created_at ${dir}, id ${dir}
 LIMIT ${param.limit + 1}`,

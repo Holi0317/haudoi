@@ -137,10 +137,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
     $get: {
       input: {
         query: {
-          query?: string | null | undefined;
+          query?: string | undefined;
           cursor?: string | null | undefined;
-          archive?: string | undefined;
-          favorite?: string | undefined;
           limit?: string | string[] | undefined;
           order?: "created_at_asc" | "created_at_desc" | undefined;
         };
@@ -261,10 +259,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
     $get: {
       input: {
         query: {
-          query?: string | null | undefined;
+          query?: string | undefined;
           cursor?: string | null | undefined;
-          archive?: string | undefined;
-          favorite?: string | undefined;
           limit?: string | string[] | undefined;
           order?: "created_at_asc" | "created_at_desc" | undefined;
         };
@@ -676,10 +672,8 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       $get: {
         input: {
           query: {
-            query?: string | null | undefined;
+            query?: string | undefined;
             cursor?: string | null | undefined;
-            archive?: string | undefined;
-            favorite?: string | undefined;
             limit?: string | string[] | undefined;
             order?: "created_at_asc" | "created_at_desc" | undefined;
           };
@@ -808,10 +802,8 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
     $get: {
       input: {
         query: {
-          query?: string | null | undefined;
+          query?: string | undefined;
           cursor?: string | null | undefined;
-          archive?: string | undefined;
-          favorite?: string | undefined;
           limit?: string | string[] | undefined;
           order?: "created_at_asc" | "created_at_desc" | undefined;
         };

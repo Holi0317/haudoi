@@ -19,6 +19,7 @@
     }
   },
   "dependencies": {
+    "@haudoi/dsl": "workspace:*",
     "@hono/zod-validator": "^0.7.6",
     "@std/csv": "jsr:^1.0.6",
     "@std/html": "jsr:^1.0.4",

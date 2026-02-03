@@ -2,17 +2,6 @@ import { tokenize } from "./tokenizer";
 import type { FieldConfig, Matcher, ParseResult } from "./types";
 
 /**
- * Known fields and their configurations.
- */
-// const KNOWN_FIELDS: Record<string, FieldConfig> = {
-//   archive: { name: "archive", type: "boolean", column: "archive" },
-//   favorite: { name: "favorite", type: "boolean", column: "favorite" },
-//   url: { name: "url", type: "string", column: "url" },
-//   title: { name: "title", type: "string", column: "title" },
-//   note: { name: "note", type: "string", column: "note" },
-// };
-
-/**
  * Parse a boolean value from a string.
  *
  * @param value The string to parse

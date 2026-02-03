@@ -1,49 +1,29 @@
-import type * as z from "zod";
-import { SearchQuerySchema } from "../schemas";
+import type { SearchQueryType } from "../schemas";
 
 export interface SearchToolbarProps {
-  query: z.output<typeof SearchQuerySchema>;
+  query: SearchQueryType;
 }
 
 export function SearchToolbar(props: SearchToolbarProps) {
   const { query } = props;
-  const shape = SearchQuerySchema.shape;
-
-  const archive = shape.archive.encode(query.archive) || "";
-  const favorite = shape.favorite.encode(query.favorite) || "";
 
   return (
     <form>
       <input
-        type="input"
+        type="text"
         name="query"
-        value={query.query || ""}
-        placeholder="Search"
+        value={query.query}
+        placeholder="Search DSL"
       />
 
-      <select name="archive">
-        <option value="" selected={archive === ""}>
-          Any
-        </option>
-        <option value="true" selected={archive === "true"}>
-          Archived
-        </option>
-        <option value="false" selected={archive === "false"}>
-          Saved
-        </option>
-      </select>
-
-      <select name="favorite">
-        <option value="" selected={favorite === ""}>
-          Any
-        </option>
-        <option value="true" selected={favorite === "true"}>
-          Favorite
-        </option>
-        <option value="false" selected={favorite === "false"}>
-          Non-favorite
-        </option>
-      </select>
+      <a
+        href="https://github.com/Holi0317/haudoi?tab=readme-ov-file#query-dsl"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ margin: "0 8px" }}
+      >
+        Search DSL docs
+      </a>
 
       <select name="order">
         <option
