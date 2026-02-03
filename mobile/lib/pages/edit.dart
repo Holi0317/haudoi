@@ -18,7 +18,6 @@ class EditPage extends ConsumerStatefulWidget {
 }
 
 class _EditPageState extends ConsumerState<EditPage> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _noteController;
   bool _isFavorite = false;
   bool _isArchive = false;
@@ -149,56 +148,53 @@ class _EditPageState extends ConsumerState<EditPage> {
       _initializeFormFromLink(link);
     });
 
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            SizedBox(height: 200, child: LinkImagePreview(item: link)),
-            const SizedBox(height: 16),
-            ListTile(
-              title: Text(t.edit.fields.title),
-              subtitle: Text(link.title),
-              contentPadding: EdgeInsets.zero,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          SizedBox(height: 200, child: LinkImagePreview(item: link)),
+          const SizedBox(height: 16),
+          ListTile(
+            title: Text(t.edit.fields.title),
+            subtitle: Text(link.title),
+            contentPadding: EdgeInsets.zero,
+          ),
+          ListTile(
+            title: Text(t.edit.fields.url),
+            subtitle: Text(link.url),
+            contentPadding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _noteController,
+            decoration: InputDecoration(
+              labelText: t.edit.fields.note,
+              border: const OutlineInputBorder(),
+              alignLabelWithHint: true,
             ),
-            ListTile(
-              title: Text(t.edit.fields.url),
-              subtitle: Text(link.url),
-              contentPadding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _noteController,
-              decoration: InputDecoration(
-                labelText: t.edit.fields.note,
-                border: const OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-              maxLines: 8,
-              minLines: 4,
-              maxLength: 4096,
-            ),
-            SwitchListTile(
-              title: Text(t.edit.fields.favorite),
-              value: _isFavorite,
-              onChanged: (value) {
-                setState(() {
-                  _isFavorite = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: Text(t.edit.fields.archive),
-              value: _isArchive,
-              onChanged: (value) {
-                setState(() {
-                  _isArchive = value;
-                });
-              },
-            ),
-          ],
-        ),
+            maxLines: 8,
+            minLines: 4,
+            maxLength: 4096,
+          ),
+          SwitchListTile(
+            title: Text(t.edit.fields.favorite),
+            value: _isFavorite,
+            onChanged: (value) {
+              setState(() {
+                _isFavorite = value;
+              });
+            },
+          ),
+          SwitchListTile(
+            title: Text(t.edit.fields.archive),
+            value: _isArchive,
+            onChanged: (value) {
+              setState(() {
+                _isArchive = value;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
