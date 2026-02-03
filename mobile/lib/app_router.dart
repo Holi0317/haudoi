@@ -26,7 +26,12 @@ final router = GoRouter(
           throw Exception('Missing id parameter for /edit route');
         }
 
-        return EditPage(id: int.parse(id));
+        final parsedId = int.tryParse(id);
+        if (parsedId == null) {
+          throw Exception('Invalid id parameter for /edit route: $id');
+        }
+
+        return EditPage(id: parsedId);
       },
     ),
     GoRoute(
