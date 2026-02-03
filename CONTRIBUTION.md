@@ -23,4 +23,6 @@ guideline for SQL (both DDL and DML).
 - Boolean: `1` or `0`, remember add `CHECK`
   - SQLite driver will transform `true` and `false` (boolean js) into string in
     SQL layer. Use `Number(value)` to fix the value in SQL.
-- Pagination: Use cursor-based pagination with `id` and base64 encoding.
+- Pagination: Use keyset pagination. Encode the cursor as base64.
+  - Keys used is case-by-case. The only usecase currently is by create timestamp
+    and id.
