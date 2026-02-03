@@ -1,5 +1,6 @@
 packages:
   - packages/worker
+  - packages/dsl
   - packages/extension
 
 onlyBuiltDependencies:
