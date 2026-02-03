@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/edit_op.dart';
 import '../api/api.dart';
+import '../api/item.dart';
 import '../extensions.dart';
 import 'queue.dart';
 
@@ -61,6 +62,7 @@ class SyncWorker extends _$SyncWorker {
       await api.edit(ops, abortTrigger: ref.abortTrigger());
 
       ref.invalidate(searchProvider);
+      ref.invalidate(linkItemProvider);
       queue.markApplied(ops);
 
       log.info('Processed ${ops.length} EditOp successfully.');

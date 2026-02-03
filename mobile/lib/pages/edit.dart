@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../components/link_image_preview.dart';
+import '../models/edit_op.dart';
 import '../models/link.dart';
 import '../providers/api/item.dart';
+import '../providers/sync/queue.dart';
 
 class EditPage extends ConsumerStatefulWidget {
   const EditPage({super.key, required this.id});
@@ -14,39 +17,83 @@ class EditPage extends ConsumerStatefulWidget {
 }
 
 class _EditPageState extends ConsumerState<EditPage> {
-  late TextEditingController _titleController;
-  late TextEditingController _urlController;
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController _noteController;
   bool _isFavorite = false;
   bool _isArchive = false;
-  bool _isLoading = false;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
-    _urlController = TextEditingController();
     _noteController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _urlController.dispose();
     _noteController.dispose();
     super.dispose();
   }
 
   void _initializeFormFromLink(Link link) {
-    _titleController.text = link.title;
-    _urlController.text = link.url;
-    _noteController.text = link.note;
-    _isFavorite = link.favorite;
-    _isArchive = link.archive;
+    if (_initialized) return;
+
+    setState(() {
+      _noteController.text = link.note;
+      _isFavorite = link.favorite;
+      _isArchive = link.archive;
+
+      _initialized = true;
+    });
+  }
+
+  List<EditOp> _buildEditOps(Link link) {
+    final ops = <EditOp>[];
+
+    if (_noteController.text != link.note) {
+      ops.add(
+        EditOp.setString(
+          id: widget.id,
+          field: EditOpStringField.note,
+          value: _noteController.text,
+        ),
+      );
+    }
+
+    if (_isArchive != link.archive) {
+      ops.add(
+        EditOp.setBool(
+          id: widget.id,
+          field: EditOpBoolField.archive,
+          value: _isArchive,
+        ),
+      );
+    }
+
+    if (_isFavorite != link.favorite) {
+      ops.add(
+        EditOp.setBool(
+          id: widget.id,
+          field: EditOpBoolField.favorite,
+          value: _isFavorite,
+        ),
+      );
+    }
+
+    return ops;
   }
 
   void _handleSave() {
-    // TODO: Implement save functionality with API call
+    final linkAsync = ref.read(linkItemProvider(widget.id));
+    final link = linkAsync.value;
+    if (link == null) return;
+
+    final ops = _buildEditOps(link);
+
+    if (ops.isNotEmpty) {
+      ref.read(editQueueProvider.notifier).addAll(ops);
+    }
+
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Changes saved')));
@@ -61,23 +108,14 @@ class _EditPageState extends ConsumerState<EditPage> {
       appBar: AppBar(
         title: const Text('Edit Link'),
         actions: [
-          if (!_isLoading)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton.icon(
-                onPressed: _handleSave,
-                icon: const Icon(Icons.check),
-                label: const Text('Save'),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              onPressed: linkAsync.hasValue ? _handleSave : null,
+              icon: const Icon(Icons.check),
+              label: const Text('Save'),
             ),
-          if (_isLoading)
-            const Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
+          ),
         ],
       ),
       body: switch (linkAsync) {
@@ -107,47 +145,59 @@ class _EditPageState extends ConsumerState<EditPage> {
   Widget _buildForm(BuildContext context, Link link) {
     // Initialize form data on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_titleController.text.isEmpty) {
-        _initializeFormFromLink(link);
-      }
+      _initializeFormFromLink(link);
     });
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView(
-        children: [
-          TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(labelText: 'Title'),
-          ),
-          TextField(
-            controller: _urlController,
-            decoration: const InputDecoration(labelText: 'URL'),
-          ),
-          TextField(
-            controller: _noteController,
-            decoration: const InputDecoration(labelText: 'Note'),
-            maxLines: null,
-          ),
-          SwitchListTile(
-            title: const Text('Favorite'),
-            value: _isFavorite,
-            onChanged: (value) {
-              setState(() {
-                _isFavorite = value;
-              });
-            },
-          ),
-          SwitchListTile(
-            title: const Text('Archive'),
-            value: _isArchive,
-            onChanged: (value) {
-              setState(() {
-                _isArchive = value;
-              });
-            },
-          ),
-        ],
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            SizedBox(height: 200, child: LinkImagePreview(item: link)),
+            const SizedBox(height: 16),
+            ListTile(
+              title: const Text('Title'),
+              subtitle: Text(link.title),
+              contentPadding: EdgeInsets.zero,
+            ),
+            ListTile(
+              title: const Text('URL'),
+              subtitle: Text(link.url),
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _noteController,
+              decoration: const InputDecoration(
+                labelText: 'Note',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              maxLines: 8,
+              minLines: 4,
+              maxLength: 4096,
+            ),
+            SwitchListTile(
+              title: const Text('Favorite'),
+              value: _isFavorite,
+              onChanged: (value) {
+                setState(() {
+                  _isFavorite = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: const Text('Archive'),
+              value: _isArchive,
+              onChanged: (value) {
+                setState(() {
+                  _isArchive = value;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
