@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../components/link_image_preview.dart';
+import '../i18n/strings.g.dart';
 import '../models/edit_op.dart';
 import '../models/link.dart';
 import '../providers/api/item.dart';
@@ -96,7 +97,7 @@ class _EditPageState extends ConsumerState<EditPage> {
 
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Changes saved')));
+    ).showSnackBar(SnackBar(content: Text(t.edit.toast)));
     Navigator.of(context).pop();
   }
 
@@ -106,14 +107,14 @@ class _EditPageState extends ConsumerState<EditPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Link'),
+        title: Text(t.edit.title),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
               onPressed: linkAsync.hasValue ? _handleSave : null,
               icon: const Icon(Icons.check),
-              label: const Text('Save'),
+              label: Text(t.edit.save),
             ),
           ),
         ],
@@ -132,7 +133,7 @@ class _EditPageState extends ConsumerState<EditPage> {
                 onPressed: () {
                   ref.invalidate(linkItemProvider(widget.id));
                 },
-                child: const Text('Retry'),
+                child: Text(t.edit.retry),
               ),
             ],
           ),
@@ -157,21 +158,21 @@ class _EditPageState extends ConsumerState<EditPage> {
             SizedBox(height: 200, child: LinkImagePreview(item: link)),
             const SizedBox(height: 16),
             ListTile(
-              title: const Text('Title'),
+              title: Text(t.edit.fields.title),
               subtitle: Text(link.title),
               contentPadding: EdgeInsets.zero,
             ),
             ListTile(
-              title: const Text('URL'),
+              title: Text(t.edit.fields.url),
               subtitle: Text(link.url),
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _noteController,
-              decoration: const InputDecoration(
-                labelText: 'Note',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: t.edit.fields.note,
+                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
               maxLines: 8,
@@ -179,7 +180,7 @@ class _EditPageState extends ConsumerState<EditPage> {
               maxLength: 4096,
             ),
             SwitchListTile(
-              title: const Text('Favorite'),
+              title: Text(t.edit.fields.favorite),
               value: _isFavorite,
               onChanged: (value) {
                 setState(() {
@@ -188,7 +189,7 @@ class _EditPageState extends ConsumerState<EditPage> {
               },
             ),
             SwitchListTile(
-              title: const Text('Archive'),
+              title: Text(t.edit.fields.archive),
               value: _isArchive,
               onChanged: (value) {
                 setState(() {
