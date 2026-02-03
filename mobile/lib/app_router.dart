@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'pages/edit.dart';
 import 'pages/login.dart';
 import 'pages/search.dart';
 import 'pages/settings.dart';
@@ -15,6 +16,22 @@ final router = GoRouter(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
         return const LoginPage();
+      },
+    ),
+    GoRoute(
+      path: '/edit',
+      builder: (BuildContext context, GoRouterState state) {
+        final id = state.uri.queryParameters['id'];
+        if (id == null) {
+          throw Exception('Missing id parameter for /edit route');
+        }
+
+        final parsedId = int.tryParse(id);
+        if (parsedId == null) {
+          throw Exception('Invalid id parameter for /edit route: $id');
+        }
+
+        return EditPage(id: parsedId);
       },
     ),
     GoRoute(

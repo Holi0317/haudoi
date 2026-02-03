@@ -48,6 +48,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsShareEn share = TranslationsShareEn.internal(_root);
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
+	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
 	Map<String, String> get linkAction => {
@@ -56,6 +57,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'favorite': 'Favorite',
 		'unfavorite': 'Unfavorite',
 		'select': 'Select',
+		'edit': 'Edit',
 		'share': 'Share',
 		'delete': 'Delete',
 	};
@@ -226,6 +228,29 @@ class TranslationsLoginEn {
 	String authFailedMessage({required Object error}) => 'Authentication failed: ${error}';
 }
 
+// Path: edit
+class TranslationsEditEn {
+	TranslationsEditEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Changes saved'
+	String get toast => 'Changes saved';
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	/// en: 'Edit Link'
+	String get title => 'Edit Link';
+
+	late final TranslationsEditFieldsEn fields = TranslationsEditFieldsEn.internal(_root);
+}
+
 // Path: editBar
 class TranslationsEditBarEn {
 	TranslationsEditBarEn.internal(this._root);
@@ -302,6 +327,30 @@ class TranslationsSettingsLogoutEn {
 
 	/// en: 'Are you sure you want to logout?'
 	String get confirmText => 'Are you sure you want to logout?';
+}
+
+// Path: edit.fields
+class TranslationsEditFieldsEn {
+	TranslationsEditFieldsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Title'
+	String get title => 'Title';
+
+	/// en: 'URL'
+	String get url => 'URL';
+
+	/// en: 'Note'
+	String get note => 'Note';
+
+	/// en: 'Favorite'
+	String get favorite => 'Favorite';
+
+	/// en: 'Archive'
+	String get archive => 'Archive';
 }
 
 // Path: filter.archive
@@ -410,6 +459,15 @@ extension on Translations {
 			'login.loginButton' => 'Login',
 			'login.authFailedNoToken' => 'Authentication failed: No token received',
 			'login.authFailedMessage' => ({required Object error}) => 'Authentication failed: ${error}',
+			'edit.save' => 'Save',
+			'edit.toast' => 'Changes saved',
+			'edit.retry' => 'Retry',
+			'edit.title' => 'Edit Link',
+			'edit.fields.title' => 'Title',
+			'edit.fields.url' => 'URL',
+			'edit.fields.note' => 'Note',
+			'edit.fields.favorite' => 'Favorite',
+			'edit.fields.archive' => 'Archive',
 			'editBar.title' => ({required Object count}) => '${count} items',
 			'editBar.cancel' => 'Cancel selection',
 			'editBar.more' => 'More actions',
@@ -431,6 +489,7 @@ extension on Translations {
 			'linkAction.favorite' => 'Favorite',
 			'linkAction.unfavorite' => 'Unfavorite',
 			'linkAction.select' => 'Select',
+			'linkAction.edit' => 'Edit',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
 			_ => null,

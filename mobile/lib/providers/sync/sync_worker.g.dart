@@ -49,7 +49,7 @@ final class SyncWorkerProvider extends $NotifierProvider<SyncWorker, int> {
   }
 }
 
-String _$syncWorkerHash() => r'd165088adcb08eb0cf3890e49abbdcabeae0b7b8';
+String _$syncWorkerHash() => r'7a383661c9079b65f58b8ceaa947aa3c43771d62';
 
 /// Background worker that listens to [EditQueue] and processes the queue when there are pending operations.
 ///

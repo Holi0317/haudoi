@@ -216,6 +216,7 @@ class _LinkTileState extends ConsumerState<LinkTile>
           LinkAction.favorite,
         LinkAction.share,
         if (widget.item.archive) LinkAction.unarchive else LinkAction.archive,
+        LinkAction.edit,
         LinkAction.delete,
         LinkAction.select,
       ].map((item) => item.popup()).toList(),

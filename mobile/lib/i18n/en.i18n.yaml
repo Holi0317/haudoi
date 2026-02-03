@@ -49,6 +49,17 @@ login:
   loginButton: Login
   authFailedNoToken: "Authentication failed: No token received"
   authFailedMessage: "Authentication failed: $error"
+edit:
+  save: Save
+  toast: Changes saved
+  retry: Retry
+  title: Edit Link
+  fields:
+    title: Title
+    url: URL
+    note: Note
+    favorite: Favorite
+    archive: Archive
 
 # ==== Widgets / components ====
 editBar:
@@ -81,5 +92,6 @@ filter:
   favorite: Favorite
   unfavorite: Unfavorite
   select: Select
+  edit: Edit
   share: Share
   delete: Delete
