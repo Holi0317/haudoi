@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../components/link_image_preview.dart';
 import '../i18n/strings.g.dart';
@@ -163,6 +164,10 @@ class _EditPageState extends ConsumerState<EditPage> {
             title: Text(t.edit.fields.url),
             subtitle: Text(link.url),
             contentPadding: EdgeInsets.zero,
+            trailing: IconButton(
+              icon: const Icon(Icons.open_in_new),
+              onPressed: () => launchUrl(Uri.parse(link.url)),
+            ),
           ),
           const SizedBox(height: 16),
           TextField(
