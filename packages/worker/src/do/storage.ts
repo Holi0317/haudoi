@@ -8,8 +8,9 @@ import type {
   EditOpSchema,
   LinkInsertItem,
   SearchQuerySchema,
+  TagItem,
 } from "../schemas";
-import { LinkItemSchema } from "../schemas";
+import { LinkItemSchema, TagItemSchema, TagInputSchema } from "../schemas";
 import { stringify } from "@std/csv";
 
 const migrations: DBMigration[] = [
@@ -55,6 +56,32 @@ ALTER TABLE link ADD COLUMN note text NOT NULL DEFAULT '' CHECK (length(note) <=
     name: "20251218-idx-created-at",
     script: sql`
 CREATE INDEX idx_link_created_at_sort ON link(created_at DESC, id DESC);
+`,
+  },
+  {
+    name: "20260131-create-tag",
+    script: sql`
+-- Tag table: stores user's tags with case-insensitive unique names
+CREATE TABLE tag (
+  id integer PRIMARY KEY AUTOINCREMENT,
+  -- Tag name, stored in original case but unique when compared case-insensitively
+  name text NOT NULL CHECK (length(name) > 0 AND length(name) <= 64),
+  -- Tag color as hex string (e.g., #FF5733). Validation done at application layer.
+  color text NOT NULL CHECK (length(color) = 7 AND color GLOB '#*')
+);
+
+-- Case-insensitive unique index on tag name
+CREATE UNIQUE INDEX idx_tag_name_lower ON tag(lower(name));
+
+-- Junction table: links tags to links by numeric id
+CREATE TABLE link_tag (
+  link_id integer NOT NULL REFERENCES link(id) ON DELETE CASCADE,
+  tag_id integer NOT NULL REFERENCES tag(id) ON DELETE CASCADE,
+  PRIMARY KEY (link_id, tag_id)
+);
+
+-- Index for efficient lookup of links by tag
+CREATE INDEX idx_link_tag_tag_id ON link_tag(tag_id);
 `,
   },
 ];
@@ -216,6 +243,17 @@ ORDER BY id ASC;
         case "delete":
           this.conn.void_(sql`DELETE FROM link WHERE id = ${op.id}`);
           break;
+        case "add_tag":
+          // Use INSERT OR IGNORE to silently handle duplicate link-tag pairs
+          this.conn.void_(
+            sql`INSERT OR IGNORE INTO link_tag (link_id, tag_id) VALUES (${op.id}, ${op.tagId})`,
+          );
+          break;
+        case "remove_tag":
+          this.conn.void_(
+            sql`DELETE FROM link_tag WHERE link_id = ${op.id} AND tag_id = ${op.tagId}`,
+          );
+          break;
       }
     }
   }
@@ -238,8 +276,16 @@ ORDER BY id ASC;
     // search. Like, I wanna see "github" for all links stored in github.
     // Currently settling on instr + lower method for case-insensitive substring search.
     // The lower function isn't foolproof for all languages but should be fine for most cases.
+
+    // Tag filter join - only join link_tag if filtering by tag
+    const tagJoin =
+      param.tag != null
+        ? sql`INNER JOIN link_tag ON link.id = link_tag.link_id AND link_tag.tag_id = ${param.tag}`
+        : sql``;
+
     const frag = sql`
   FROM link
+  ${tagJoin}
   WHERE 1=1
     AND (${query} = ''
       OR instr(lower(title), lower(${query})) != 0
@@ -266,7 +312,7 @@ ORDER BY id ASC;
 
     const itemsPlus = this.conn.any(
       LinkItemSchema,
-      sql`SELECT *
+      sql`SELECT link.*
   ${frag}
   AND (${cursorCond})
 ORDER BY created_at ${dir}, id ${dir}
@@ -275,6 +321,19 @@ LIMIT ${param.limit + 1}`,
 
     const items = itemsPlus.slice(0, param.limit);
     const hasMore = itemsPlus.length > param.limit;
+
+    // If includeTags is true, fetch tags for returned items
+    let itemsWithTags: Array<
+      z.output<typeof LinkItemSchema> & { tags?: number[] }
+    > = items;
+    if (param.includeTags && items.length > 0) {
+      const linkIds = items.map((item) => item.id);
+      const tagsMap = this.getTagsForLinks(linkIds);
+      itemsWithTags = items.map((item) => ({
+        ...item,
+        tags: tagsMap.get(item.id) ?? [],
+      }));
+    }
 
     return {
       /**
@@ -285,7 +344,7 @@ LIMIT ${param.limit + 1}`,
        * Paginated items matching the filter. Length of this array will be <=
        * limit parameter.
        */
-      items,
+      items: itemsWithTags,
       /**
        * If true, this query can continue paginate.
        */
@@ -307,5 +366,138 @@ LIMIT ${param.limit + 1}`,
     const columns = LinkItemSchema.keyof().options;
 
     return stringify(items, { columns });
+  }
+
+  // ==================== Tag CRUD Operations ====================
+
+  /**
+   * Create a new tag. Returns the created tag.
+   * Tag names are case-insensitive unique.
+   * Returns null if a tag with the same name (case-insensitive) already exists.
+   */
+  public createTag(input: z.input<typeof TagInputSchema>): TagItem | null {
+    const parsed = TagInputSchema.parse(input);
+
+    try {
+      const result = this.conn.one(
+        TagItemSchema,
+        sql`INSERT INTO tag (name, color) VALUES (${parsed.name}, ${parsed.color}) RETURNING *`,
+      );
+
+      return result;
+    } catch (error) {
+      // Check for unique constraint violation (case-insensitive duplicate name)
+      if (
+        error instanceof Error &&
+        error.message.includes("UNIQUE constraint failed")
+      ) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * List all tags.
+   */
+  public listTags(): TagItem[] {
+    return this.conn.any(TagItemSchema, sql`SELECT * FROM tag ORDER BY id ASC`);
+  }
+
+  /**
+   * Get a single tag by ID.
+   */
+  public getTag(id: number): TagItem | null {
+    return this.conn.maybeOne(
+      TagItemSchema,
+      sql`SELECT * FROM tag WHERE id = ${id}`,
+    );
+  }
+
+  /**
+   * Update a tag. Returns an object with:
+   * - tag: the updated tag if successful, null if not found or duplicate name
+   * - error: 'not_found' if tag doesn't exist, 'duplicate' if name conflicts, undefined if successful
+   */
+  public updateTag(
+    id: number,
+    input: { name?: string; color?: string },
+  ): { tag: TagItem | null; error?: "not_found" | "duplicate" } {
+    const existing = this.getTag(id);
+    if (existing == null) {
+      return { tag: null, error: "not_found" };
+    }
+
+    const name = input.name ?? existing.name;
+    const color = input.color ?? existing.color;
+
+    try {
+      this.conn.void_(
+        sql`UPDATE tag SET name = ${name}, color = ${color} WHERE id = ${id}`,
+      );
+
+      return { tag: this.getTag(id) };
+    } catch (error) {
+      // Check for unique constraint violation (case-insensitive duplicate name)
+      if (
+        error instanceof Error &&
+        error.message.includes("UNIQUE constraint failed")
+      ) {
+        return { tag: null, error: "duplicate" };
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a tag by ID. Returns true if deleted, false if not found.
+   * When a tag is deleted, all link-tag associations are automatically removed (CASCADE).
+   */
+  public deleteTag(id: number): boolean {
+    const existing = this.getTag(id);
+    if (existing == null) {
+      return false;
+    }
+
+    this.conn.void_(sql`DELETE FROM tag WHERE id = ${id}`);
+    return true;
+  }
+
+  /**
+   * Get tag IDs for a specific link.
+   */
+  public getTagsForLink(linkId: number): number[] {
+    const result = this.conn.any(
+      z.strictObject({ tag_id: z.number() }),
+      sql`SELECT tag_id FROM link_tag WHERE link_id = ${linkId}`,
+    );
+
+    return result.map((r) => r.tag_id);
+  }
+
+  /**
+   * Get tags for multiple links at once.
+   * Returns a map of link ID to array of tag IDs.
+   */
+  public getTagsForLinks(linkIds: number[]): Map<number, number[]> {
+    if (linkIds.length === 0) {
+      return new Map();
+    }
+
+    const linkIdPlaceholders = sql.join(linkIds.map((id) => sql`${id}`));
+    const result = this.conn.any(
+      z.strictObject({ link_id: z.number(), tag_id: z.number() }),
+      sql`SELECT link_id, tag_id FROM link_tag WHERE link_id IN (${linkIdPlaceholders})`,
+    );
+
+    const map = new Map<number, number[]>();
+    for (const linkId of linkIds) {
+      map.set(linkId, []);
+    }
+    for (const r of result) {
+      map.get(r.link_id)?.push(r.tag_id);
+    }
+
+    return map;
   }
 }
