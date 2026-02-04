@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../i18n/strings.g.dart';
 import '../models/search_query.dart';
+import 'common_query_chip.dart';
 
 class FilterForm extends StatelessWidget {
   const FilterForm({
     super.key,
-    required this.archive,
-    required this.favorite,
+    required this.query,
     required this.order,
-    required this.onArchiveChanged,
-    required this.onFavoriteChanged,
+    required this.onQueryChanged,
     required this.onOrderChanged,
   });
 
-  final bool? archive;
-  final bool? favorite;
+  final String? query;
   final SearchOrder order;
-  final ValueChanged<bool?> onArchiveChanged;
-  final ValueChanged<bool?> onFavoriteChanged;
+  final ValueChanged<String?> onQueryChanged;
   final ValueChanged<SearchOrder> onOrderChanged;
 
   @override
@@ -28,72 +26,93 @@ class FilterForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        spacing: 16.0,
         children: [
-          Text(t.filter.archive.title),
+          // Query input field with documentation link
           SizedBox(
             width: double.infinity,
-            child: SegmentedButton<bool?>(
-              segments: [
-                ButtonSegment<bool?>(
-                  value: null,
-                  label: Text(t.filter.archive.all),
-                ),
-                ButtonSegment<bool?>(
-                  value: true,
-                  label: Text(t.filter.archive.oui),
-                ),
-                ButtonSegment<bool?>(
-                  value: false,
-                  label: Text(t.filter.archive.non),
-                ),
-              ],
-              selected: {archive},
-              onSelectionChanged: _handleSelection(onArchiveChanged),
+            child: FilledButton.icon(
+              onPressed: () {
+                launchUrl(
+                  Uri.parse(
+                    'https://github.com/Holi0317/haudoi?tab=readme-ov-file#query-dsl',
+                  ),
+                  mode: LaunchMode.inAppBrowserView,
+                );
+              },
+              icon: const Icon(Icons.description_outlined),
+              label: const Text('Search Query (DSL) documentation'),
             ),
           ),
 
-          const SizedBox(height: 16),
-          Text(t.filter.favorite.title),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<bool?>(
-              segments: [
-                ButtonSegment<bool?>(
-                  value: null,
-                  label: Text(t.filter.favorite.all),
-                ),
-                ButtonSegment<bool?>(
-                  value: true,
-                  label: Text(t.filter.favorite.oui),
-                ),
-                ButtonSegment<bool?>(
-                  value: false,
-                  label: Text(t.filter.favorite.non),
-                ),
-              ],
-              selected: {favorite},
-              onSelectionChanged: _handleSelection(onFavoriteChanged),
-            ),
+          // Common queries
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8.0,
+            children: [
+              Text(
+                'Common Queries',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              Wrap(
+                spacing: 8,
+                children: [
+                  CommonQueryChip(
+                    label: 'All links',
+                    query: '',
+                    onQueryChanged: onQueryChanged,
+                  ),
+                  CommonQueryChip(
+                    label: 'Archived',
+                    query: 'archive:true',
+                    onQueryChanged: onQueryChanged,
+                  ),
+                  CommonQueryChip(
+                    label: 'Not Archived',
+                    query: 'archive:false',
+                    onQueryChanged: onQueryChanged,
+                  ),
+                  CommonQueryChip(
+                    label: 'Favorited',
+                    query: 'favorite:true',
+                    onQueryChanged: onQueryChanged,
+                  ),
+                  CommonQueryChip(
+                    label: 'Not Favorited',
+                    query: 'favorite:false',
+                    onQueryChanged: onQueryChanged,
+                  ),
+                ],
+              ),
+            ],
           ),
 
-          const SizedBox(height: 16),
-          Text(t.filter.order.title),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<SearchOrder>(
-              segments: [
-                ButtonSegment<SearchOrder>(
-                  value: SearchOrder.createdAtDesc,
-                  label: Text(t.filter.order.newestFirst),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8.0,
+            children: [
+              Text(
+                t.filter.order.title,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<SearchOrder>(
+                  segments: [
+                    ButtonSegment<SearchOrder>(
+                      value: SearchOrder.createdAtDesc,
+                      label: Text(t.filter.order.newestFirst),
+                    ),
+                    ButtonSegment<SearchOrder>(
+                      value: SearchOrder.createdAtAsc,
+                      label: Text(t.filter.order.oldestFirst),
+                    ),
+                  ],
+                  selected: {order},
+                  onSelectionChanged: _handleSelection(onOrderChanged),
                 ),
-                ButtonSegment<SearchOrder>(
-                  value: SearchOrder.createdAtAsc,
-                  label: Text(t.filter.order.oldestFirst),
-                ),
-              ],
-              selected: {order},
-              onSelectionChanged: _handleSelection(onOrderChanged),
-            ),
+              ),
+            ],
           ),
         ],
       ),

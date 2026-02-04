@@ -18,19 +18,22 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
-  final _controller = SelectionController();
+  final _selectionCtl = SelectionController();
+  final _textCtl = TextEditingController();
   var query = const SearchQuery();
   final _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onSelectionChanged);
+    _selectionCtl.addListener(_onSelectionChanged);
+    _textCtl.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _selectionCtl.dispose();
+    _textCtl.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -39,9 +42,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     setState(() {});
   }
 
+  void _onTextChanged() {
+    setState(() {
+      query = query.copyWith(query: _textCtl.text);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final PreferredSizeWidget appBar = !_controller.isSelecting
+    final PreferredSizeWidget appBar = !_selectionCtl.isSelecting
         ? AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: SizedBox(
@@ -49,6 +58,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: TextField(
                 autofocus: true,
                 focusNode: _focusNode,
+                controller: _textCtl,
                 onChanged: (value) =>
                     setState(() => query = query.copyWith(query: value)),
                 decoration: InputDecoration(
@@ -75,7 +85,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           )
         : EditAppBar(
-            controller: _controller,
+            controller: _selectionCtl,
             actions: [LinkAction.archive, LinkAction.favorite],
             menuActions: [
               LinkAction.unarchive,
@@ -90,7 +100,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       },
       child: Scaffold(
         appBar: appBar,
-        body: LinkList(query: query, controller: _controller),
+        body: LinkList(query: query, controller: _selectionCtl),
       ),
     );
   }
@@ -102,6 +112,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       onQueryChanged: (newQuery) {
         setState(() {
           query = newQuery;
+          _textCtl.text = newQuery.query ?? '';
         });
       },
     );

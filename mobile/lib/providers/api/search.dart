@@ -88,11 +88,13 @@ extension on Link {
   ///
   /// Note: This only checks favorite and archive fields, which are the only editable fields by [EditOp].
   bool matchesQuery(SearchQuery query) {
-    if (query.favorite != null && favorite != query.favorite) {
+    final favoriteQ = query.parseBool('favorite');
+    if (favoriteQ != null && favorite != favoriteQ) {
       return false;
     }
 
-    if (query.archive != null && archive != query.archive) {
+    final archiveQ = query.parseBool('archive');
+    if (archiveQ != null && archive != archiveQ) {
       return false;
     }
 
