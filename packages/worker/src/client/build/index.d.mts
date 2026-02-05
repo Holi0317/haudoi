@@ -276,6 +276,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {
         form: {
           url: string;
+          qs?: string | undefined;
         };
       };
       output: undefined;
@@ -285,6 +286,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {
         form: {
           url: string;
+          qs?: string | undefined;
         };
       };
       output: {
@@ -302,6 +304,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {
         form: {
           id: hono_types1.ParsedFormValue | hono_types1.ParsedFormValue[];
+          qs?: string | undefined;
         };
       };
       output: undefined;
@@ -862,6 +865,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {
           form: {
             url: string;
+            qs?: string | undefined;
           };
         };
         output: undefined;
@@ -871,6 +875,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {
           form: {
             url: string;
+            qs?: string | undefined;
           };
         };
         output: {
@@ -890,6 +895,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {
           form: {
             id: hono_types1.ParsedFormValue | hono_types1.ParsedFormValue[];
+            qs?: string | undefined;
           };
         };
         output: undefined;
