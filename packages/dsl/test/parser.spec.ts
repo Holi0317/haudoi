@@ -97,14 +97,6 @@ describe("parseDSL", () => {
       expect(result.errors).toEqual([]);
     });
 
-    it("should be case insensitive for field names", () => {
-      const result = parseDSL("ARCHIVE:true", config);
-      expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
-      ]);
-      expect(result.errors).toEqual([]);
-    });
-
     it("should error on invalid boolean value", () => {
       const result = parseDSL("archive:yes", config);
       expect(result.matchers).toEqual([]);
@@ -165,14 +157,6 @@ describe("parseDSL", () => {
       ]);
       expect(result.errors).toEqual([]);
     });
-
-    it("should be case insensitive for string field names", () => {
-      const result = parseDSL("TITLE:test", config);
-      expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "test" },
-      ]);
-      expect(result.errors).toEqual([]);
-    });
   });
 
   describe("unknown field handling", () => {
@@ -180,6 +164,15 @@ describe("parseDSL", () => {
       const result = parseDSL("unknown:value", []);
       expect(result.matchers).toEqual([]);
       expect(result.errors).toEqual(["Unknown field: unknown"]);
+    });
+
+    it("should match fields case sensitively for known fields", () => {
+      const result = parseDSL("Title:test", [
+        { name: "title", type: "string", column: "title" },
+      ]);
+
+      expect(result.matchers).toEqual([]);
+      expect(result.errors).toEqual(["Unknown field: Title"]);
     });
 
     it("should continue parsing after unknown field", () => {

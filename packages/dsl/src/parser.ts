@@ -45,8 +45,7 @@ export function parseDSL(query: string, config: FieldConfig[]): ParseResult {
       });
     } else {
       // Field:value pair
-      const fieldLower = token.field.toLowerCase();
-      const config = fieldsMap.get(fieldLower);
+      const config = fieldsMap.get(token.field);
 
       if (!config) {
         errors.push(`Unknown field: ${token.field}`);

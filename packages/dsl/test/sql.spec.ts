@@ -53,6 +53,12 @@ describe("matchersToSql", () => {
     );
   });
 
+  it("should raise error for loose matcher with no columns", () => {
+    expect(() =>
+      matchersToSql([{ type: "loose", value: "test" }], []),
+    ).toThrowError("No searchable columns configured for loose matcher");
+  });
+
   it("should combine multiple matchers with AND", () => {
     const result = matchersToSql(
       [

@@ -40,6 +40,10 @@ export function matchersToSql(
           sql`instr(lower(${sql.ident(col)}), lower(${matcher.value})) != 0`,
       );
 
+      if (looseConditions.length === 0) {
+        throw new Error("No searchable columns configured for loose matcher");
+      }
+
       conditions.push(sql`(${sql.join(looseConditions, " OR ")})`);
     }
   }
