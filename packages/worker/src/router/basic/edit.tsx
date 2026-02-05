@@ -7,9 +7,8 @@ import { Layout } from "../../component/layout";
 import { LinkItemForm } from "../../component/LinkItemForm";
 
 const ItemEditSchema = z.object({
-  // FIXME: <input type="checkbox"> won't send anything if unchecked.
-  archive: zu.queryBool(),
-  favorite: zu.queryBool(),
+  archive: zu.checkboxBool(),
+  favorite: zu.checkboxBool(),
   note: z.string().max(4096).optional(),
 });
 

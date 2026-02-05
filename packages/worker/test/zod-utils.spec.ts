@@ -33,6 +33,22 @@ describe("queryBool", () => {
   });
 });
 
+describe("checkboxBool", () => {
+  const schema = zu.checkboxBool();
+
+  it('should treat "on" as true', () => {
+    expect(schema.parse("on")).toEqual(true);
+  });
+
+  it("should treat undefined as false", () => {
+    expect(schema.parse(undefined)).toEqual(false);
+  });
+
+  it("should treat other string values as false", () => {
+    expect(schema.parse("whatever")).toEqual(false);
+  });
+});
+
 describe("httpUrl", () => {
   const schema = zu.httpUrl();
 
