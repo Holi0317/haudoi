@@ -16,6 +16,16 @@ import { isAdmin } from "../composable/user/admin";
 import { ImportStatus } from "../component/ImportStatus";
 import { ImportForm } from "../component/ImportForm";
 
+const ArchiveFormSchema = z.object({
+  id: z.coerce.number(),
+  qs: z.string().default("?"),
+});
+
+const InsertFormSchema = z.object({
+  url: z.string(),
+  qs: z.string().default("?"),
+});
+
 const ItemEditSchema = z.object({
   // FIXME: <input type="checkbox"> won't send anything if unchecked.
   archive: zu.queryBool(),
@@ -35,6 +45,7 @@ const app = factory
     const user = await getUser(c);
 
     const queryRaw = c.req.queries();
+    const qs = new URL(c.req.url).search;
     const query = c.req.valid("query");
 
     // Assume empty query means someone opens this page for the first time.
@@ -80,12 +91,12 @@ const app = factory
           <a href="/basic/bulk">Import / Export</a>
         </div>
 
-        <InsertForm />
+        <InsertForm qs={qs} />
 
         <SearchToolbar query={query} />
 
         <p>Total count = {jason.count}</p>
-        <LinkList items={jason.items} />
+        <LinkList items={jason.items} qs={qs} />
 
         <hr />
 
@@ -93,8 +104,8 @@ const app = factory
       </Layout>,
     );
   })
-  .post("/insert", zv("form", z.object({ url: z.string() })), async (c) => {
-    const { url } = c.req.valid("form");
+  .post("/insert", zv("form", InsertFormSchema), async (c) => {
+    const { url, qs } = c.req.valid("form");
 
     const resp = await c.get("client").edit.$post({
       json: {
@@ -106,11 +117,11 @@ const app = factory
       return c.json(await resp.json(), resp.status);
     }
 
-    return c.redirect("/basic?archive=false");
+    return c.redirect(`/basic${qs}`);
   })
 
-  .post("/archive", zv("form", IDStringSchema), async (c) => {
-    const { id } = c.req.valid("form");
+  .post("/archive", zv("form", ArchiveFormSchema), async (c) => {
+    const { id, qs } = c.req.valid("form");
 
     await c.get("client").edit.$post({
       json: {
@@ -118,7 +129,7 @@ const app = factory
       },
     });
 
-    return c.redirect("/basic?archive=false");
+    return c.redirect(`/basic${qs}`);
   })
 
   .get("/edit/:id", zv("param", IDStringSchema), async (c) => {
