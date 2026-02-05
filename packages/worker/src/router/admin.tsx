@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import * as z from "zod";
 import { requireSession } from "../composable/session/middleware";
 import { Layout } from "../component/layout";
@@ -32,7 +32,8 @@ function formatBytes(bytes: number): string {
   );
 }
 
-const app = new Hono<Env>({ strict: false })
+const app = factory
+  .createApp()
   .use(requireSession({ action: "throw" }))
   .use(requireAdmin())
   .get("/", async (c) => {

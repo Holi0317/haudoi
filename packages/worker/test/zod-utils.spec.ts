@@ -33,6 +33,46 @@ describe("queryBool", () => {
   });
 });
 
+describe("queryString", () => {
+  const schema = zu.queryString();
+
+  it("should default to '?'", () => {
+    expect(schema.parse(undefined)).toEqual("");
+  });
+
+  it("should default empty string to '?'", () => {
+    expect(schema.parse("")).toEqual("");
+  });
+
+  it("should accept valid query string", () => {
+    expect(schema.parse("?foo=bar")).toEqual("?foo=bar");
+  });
+
+  it("should reject query string that does not start with '?'", () => {
+    expect(schema.safeParse("aaaa").success).toEqual(false);
+  });
+
+  it("should reject query string that is too long", () => {
+    expect(schema.safeParse("a".repeat(2001)).success).toEqual(false);
+  });
+});
+
+describe("checkboxBool", () => {
+  const schema = zu.checkboxBool();
+
+  it('should treat "on" as true', () => {
+    expect(schema.parse("on")).toEqual(true);
+  });
+
+  it("should treat undefined as false", () => {
+    expect(schema.parse(undefined)).toEqual(false);
+  });
+
+  it("should treat other string values as false", () => {
+    expect(schema.parse("whatever")).toEqual(false);
+  });
+});
+
 describe("httpUrl", () => {
   const schema = zu.httpUrl();
 

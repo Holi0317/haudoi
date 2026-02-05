@@ -1,25 +1,22 @@
-import { Hono } from "hono";
-import dayjs from "dayjs";
 import * as z from "zod";
-import { zv } from "../composable/validator";
-import { exchangeToken } from "../gh/oauth_token";
-import { useKy } from "../composable/http";
-import { getAuthorizeUrl } from "../gh/authorize";
-import { deleteSession, setSession } from "../composable/session/cookie";
+import dayjs from "dayjs";
+import { zv } from "../../composable/validator";
+import { factory } from "../factory";
 import {
-  useOauthState,
   RedirectDestinationSchema,
-} from "../composable/oauth_state";
-import { makeSessionContent } from "../composable/session/content";
-import { useUserRegistry } from "../composable/user/registry";
+  useOauthState,
+} from "../../composable/oauth_state";
+import { getAuthorizeUrl } from "../../gh/authorize";
+import { useUserRegistry } from "../../composable/user/registry";
+import { useKy } from "../../composable/http";
+import { exchangeToken } from "../../gh/oauth_token";
+import { setSession } from "../../composable/session/cookie";
+import { makeSessionContent } from "../../composable/session/content";
 
-const app = new Hono<Env>({ strict: false })
-  .get("/logout", async (c) => {
-    await deleteSession(c);
-    return c.text("You have been successfully logged out!");
-  })
+export default factory
+  .createApp()
   .get(
-    "/github/login",
+    "/login",
     zv(
       "query",
       z.object({
@@ -41,7 +38,7 @@ const app = new Hono<Env>({ strict: false })
     },
   )
   .get(
-    "/github/callback",
+    "/callback",
     zv("query", z.object({ code: z.string(), state: z.string() })),
     async (c) => {
       const { code, state } = c.req.valid("query");
@@ -73,5 +70,3 @@ const app = new Hono<Env>({ strict: false })
       return c.redirect(redirect);
     },
   );
-
-export default app;

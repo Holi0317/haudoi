@@ -3,6 +3,13 @@ import { LinkItem as LinkItemComp } from "./LinkItem";
 
 export interface LinkListProps {
   items: LinkItem[];
+
+  /**
+   * Query string for the route/page, with leading `?`
+   *
+   * For restoring query after edit.
+   */
+  qs: string;
 }
 
 /**
@@ -13,7 +20,7 @@ export interface LinkListProps {
  * Basically a wrapper on {@link LinkItemComp} component.
  */
 export function LinkList(props: LinkListProps) {
-  const { items } = props;
+  const { items, qs } = props;
 
   if (items.length === 0) {
     return <p>No item stored or nothing match query</p>;
@@ -22,7 +29,7 @@ export function LinkList(props: LinkListProps) {
   return (
     <ul style={{ lineHeight: "2.5rem" }}>
       {items.map((item) => (
-        <LinkItemComp item={item} />
+        <LinkItemComp item={item} qs={qs} />
       ))}
     </ul>
   );
