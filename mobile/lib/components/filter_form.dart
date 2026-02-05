@@ -28,7 +28,6 @@ class FilterForm extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 16.0,
         children: [
-          // Query input field with documentation link
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
@@ -41,7 +40,7 @@ class FilterForm extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.description_outlined),
-              label: const Text('Search Query (DSL) documentation'),
+              label: Text(t.filter.dsl_doc),
             ),
           ),
 
@@ -51,34 +50,34 @@ class FilterForm extends StatelessWidget {
             spacing: 8.0,
             children: [
               Text(
-                'Common Queries',
+                t.filter.common_query,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               Wrap(
                 spacing: 8,
                 children: [
                   CommonQueryChip(
-                    label: 'All links',
+                    label: t.filter.queries.all,
                     query: '',
                     onQueryChanged: onQueryChanged,
                   ),
                   CommonQueryChip(
-                    label: 'Archived',
+                    label: t.filter.queries.archived,
                     query: 'archive:true',
                     onQueryChanged: onQueryChanged,
                   ),
                   CommonQueryChip(
-                    label: 'Not Archived',
+                    label: t.filter.queries.unarchived,
                     query: 'archive:false',
                     onQueryChanged: onQueryChanged,
                   ),
                   CommonQueryChip(
-                    label: 'Favorited',
+                    label: t.filter.queries.favorite,
                     query: 'favorite:true',
                     onQueryChanged: onQueryChanged,
                   ),
                   CommonQueryChip(
-                    label: 'Not Favorited',
+                    label: t.filter.queries.unfavorite,
                     query: 'favorite:false',
                     onQueryChanged: onQueryChanged,
                   ),

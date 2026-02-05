@@ -70,16 +70,14 @@ editBar:
   deleteWarning: This is permanent and cannot be undone.
 
 filter:
-  archive:
-    title: Archive
-    all: All
-    oui: Archived
-    non: Not Archived
-  favorite:
-    title: Favorite
-    all: All
-    oui: Favorited
-    non: Not Favorited
+  dsl_doc: "Search Query (DSL) documentation"
+  common_query: "Common Queries"
+  queries:
+    all: All Links
+    archived: Archived
+    unarchived: Not Archived
+    favorite: Favorite
+    unfavorite: Not Favorite
   order:
     title: Order
     newestFirst: Newest First
