@@ -1,10 +1,11 @@
 import * as z from "zod";
+import * as zu from "../../zod-utils";
 import { zv } from "../../composable/validator";
 import { factory } from "../factory";
 
 const InsertFormSchema = z.object({
   url: z.string(),
-  qs: z.string().default("?"),
+  qs: zu.queryString(),
 });
 
 export default factory
