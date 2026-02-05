@@ -22,13 +22,9 @@ export const IDStringSchema = z.object({
  * Query on searching API
  */
 export const SearchQuerySchema = z.object({
-  query: z
-    .string()
-    .nullish()
-    .meta({
-      description: `Search query. This will search both title and url.
-      null / undefined / empty string will all be treated as disable search filter.`,
-    }),
+  query: z.string().default("").meta({
+    description: `DSL search query string. Empty string means no filters applied. See repository README.md for documentation.`,
+  }),
   cursor: z
     .string()
     .nullish()
@@ -37,13 +33,6 @@ export const SearchQuerySchema = z.object({
       null / undefined / empty string will be treated as noop.
       Note the client must keep other search parameters the same when paginating.`,
     }),
-  archive: zu.queryBool().meta({
-    description: `Archive filter. Undefined means disable filter. Boolean means the item must be archived or not archived.`,
-  }),
-  favorite: zu.queryBool().meta({
-    description: `Favorite filter.
-      Undefined means disable filter. Boolean means the item must be favorited or not favorited.`,
-  }),
   limit: z.coerce.number().min(1).max(300).default(30).meta({
     description: `Limit items to return.`,
   }),
@@ -54,6 +43,8 @@ export const SearchQuerySchema = z.object({
       description: "Order in result. Can only sort by created_at",
     }),
 });
+
+export type SearchQueryType = z.output<typeof SearchQuerySchema>;
 
 /**
  * Schema for insert object from client.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'filter_form.dart';
+
 import '../models/search_query.dart';
+import 'filter_form.dart';
 
 /// A stateful overlay that displays a filter form below the app bar.
 ///
@@ -136,14 +137,10 @@ class _FilterOverlayState extends State<FilterOverlay>
                     elevation: 8,
                     color: Theme.of(context).cardColor,
                     child: FilterForm(
-                      archive: _currentQuery.archive,
-                      favorite: _currentQuery.favorite,
+                      query: _currentQuery.query,
                       order: _currentQuery.order,
-                      onArchiveChanged: (value) {
-                        _updateQuery(_currentQuery.copyWith(archive: value));
-                      },
-                      onFavoriteChanged: (value) {
-                        _updateQuery(_currentQuery.copyWith(favorite: value));
+                      onQueryChanged: (value) {
+                        _updateQuery(_currentQuery.copyWith(query: value));
                       },
                       onOrderChanged: (value) {
                         _updateQuery(_currentQuery.copyWith(order: value));

@@ -39,13 +39,31 @@ const app = new Hono<Env>({ strict: false })
     // Assume empty query means someone opens this page for the first time.
     // We wanna show unarchived items if that's the case.
     if (Object.keys(queryRaw).length === 0) {
-      return c.redirect("?archive=false");
+      return c.redirect("?query=archive:false");
     }
 
     const resp = await c.get("client").search.$get({
       query: queryRaw,
     });
+
     const jason = await resp.json();
+
+    // Handle DSL parsing errors
+    if (resp.status === 400) {
+      const errorBody = jason as unknown as { message: string };
+      return c.render(
+        <Layout title="Search Error">
+          <p>Authenticated via GitHub, {user.name}</p>
+          <div
+            style={{ color: "red", padding: "10px", border: "1px solid red" }}
+          >
+            <strong>Search Error:</strong> {errorBody.message}
+          </div>
+          <SearchToolbar query={query} />
+          <a href="/basic">Back to all items</a>
+        </Layout>,
+      );
+    }
 
     return c.render(
       <Layout title="List">

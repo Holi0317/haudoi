@@ -14,16 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchQuery implements DiagnosticableTreeMixin {
 
-/// Search query. This will search both title and url.
-/// null / empty string will all be treated as disable search filter.
+/// DSL search query string. Empty string means no filters applied. See repository README.md for documentation.
  String? get query;/// Cursor for pagination.
 /// null / empty string will be treated as noop.
 /// Note the client must keep other search parameters the same when paginating.
- String? get cursor;/// Archive filter. Null means disable filter.
-/// Boolean means the item must be archived or not archived.
- bool? get archive;/// Favorite filter.
-/// Null means disable filter. Boolean means the item must be favorited or not favorited.
- bool? get favorite;/// Limit items to return.
+ String? get cursor;/// Limit items to return.
  int get limit;/// Order in result. Can only sort by created_at.
  SearchOrder get order;
 /// Create a copy of SearchQuery
@@ -37,21 +32,21 @@ $SearchQueryCopyWith<SearchQuery> get copyWith => _$SearchQueryCopyWithImpl<Sear
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SearchQuery'))
-    ..add(DiagnosticsProperty('query', query))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('archive', archive))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('limit', limit))..add(DiagnosticsProperty('order', order));
+    ..add(DiagnosticsProperty('query', query))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('limit', limit))..add(DiagnosticsProperty('order', order));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchQuery&&(identical(other.query, query) || other.query == query)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&(identical(other.archive, archive) || other.archive == archive)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchQuery&&(identical(other.query, query) || other.query == query)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.order, order) || other.order == order));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,cursor,archive,favorite,limit,order);
+int get hashCode => Object.hash(runtimeType,query,cursor,limit,order);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchQuery(query: $query, cursor: $cursor, archive: $archive, favorite: $favorite, limit: $limit, order: $order)';
+  return 'SearchQuery(query: $query, cursor: $cursor, limit: $limit, order: $order)';
 }
 
 
@@ -62,7 +57,7 @@ abstract mixin class $SearchQueryCopyWith<$Res>  {
   factory $SearchQueryCopyWith(SearchQuery value, $Res Function(SearchQuery) _then) = _$SearchQueryCopyWithImpl;
 @useResult
 $Res call({
- String? query, String? cursor, bool? archive, bool? favorite, int limit, SearchOrder order
+ String? query, String? cursor, int limit, SearchOrder order
 });
 
 
@@ -79,13 +74,11 @@ class _$SearchQueryCopyWithImpl<$Res>
 
 /// Create a copy of SearchQuery
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? query = freezed,Object? cursor = freezed,Object? archive = freezed,Object? favorite = freezed,Object? limit = null,Object? order = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = freezed,Object? cursor = freezed,Object? limit = null,Object? order = null,}) {
   return _then(_self.copyWith(
 query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String?,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
-as String?,archive: freezed == archive ? _self.archive : archive // ignore: cast_nullable_to_non_nullable
-as bool?,favorite: freezed == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as bool?,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as String?,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as SearchOrder,
   ));
@@ -172,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? query,  String? cursor,  bool? archive,  bool? favorite,  int limit,  SearchOrder order)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? query,  String? cursor,  int limit,  SearchOrder order)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchQuery() when $default != null:
-return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limit,_that.order);case _:
+return $default(_that.query,_that.cursor,_that.limit,_that.order);case _:
   return orElse();
 
 }
@@ -193,10 +186,10 @@ return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? query,  String? cursor,  bool? archive,  bool? favorite,  int limit,  SearchOrder order)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? query,  String? cursor,  int limit,  SearchOrder order)  $default,) {final _that = this;
 switch (_that) {
 case _SearchQuery():
-return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limit,_that.order);case _:
+return $default(_that.query,_that.cursor,_that.limit,_that.order);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +206,10 @@ return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? query,  String? cursor,  bool? archive,  bool? favorite,  int limit,  SearchOrder order)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? query,  String? cursor,  int limit,  SearchOrder order)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchQuery() when $default != null:
-return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limit,_that.order);case _:
+return $default(_that.query,_that.cursor,_that.limit,_that.order);case _:
   return null;
 
 }
@@ -228,22 +221,15 @@ return $default(_that.query,_that.cursor,_that.archive,_that.favorite,_that.limi
 
 
 class _SearchQuery extends SearchQuery with DiagnosticableTreeMixin {
-  const _SearchQuery({this.query, this.cursor, this.archive, this.favorite, this.limit = 30, this.order = SearchOrder.createdAtDesc}): assert(limit >= 1 && limit <= 300, 'Limit must be between 1 and 300'),super._();
+  const _SearchQuery({this.query, this.cursor, this.limit = 30, this.order = SearchOrder.createdAtDesc}): assert(limit >= 1 && limit <= 300, 'Limit must be between 1 and 300'),super._();
   
 
-/// Search query. This will search both title and url.
-/// null / empty string will all be treated as disable search filter.
+/// DSL search query string. Empty string means no filters applied. See repository README.md for documentation.
 @override final  String? query;
 /// Cursor for pagination.
 /// null / empty string will be treated as noop.
 /// Note the client must keep other search parameters the same when paginating.
 @override final  String? cursor;
-/// Archive filter. Null means disable filter.
-/// Boolean means the item must be archived or not archived.
-@override final  bool? archive;
-/// Favorite filter.
-/// Null means disable filter. Boolean means the item must be favorited or not favorited.
-@override final  bool? favorite;
 /// Limit items to return.
 @override@JsonKey() final  int limit;
 /// Order in result. Can only sort by created_at.
@@ -260,21 +246,21 @@ _$SearchQueryCopyWith<_SearchQuery> get copyWith => __$SearchQueryCopyWithImpl<_
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SearchQuery'))
-    ..add(DiagnosticsProperty('query', query))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('archive', archive))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('limit', limit))..add(DiagnosticsProperty('order', order));
+    ..add(DiagnosticsProperty('query', query))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('limit', limit))..add(DiagnosticsProperty('order', order));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchQuery&&(identical(other.query, query) || other.query == query)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&(identical(other.archive, archive) || other.archive == archive)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchQuery&&(identical(other.query, query) || other.query == query)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.order, order) || other.order == order));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,cursor,archive,favorite,limit,order);
+int get hashCode => Object.hash(runtimeType,query,cursor,limit,order);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchQuery(query: $query, cursor: $cursor, archive: $archive, favorite: $favorite, limit: $limit, order: $order)';
+  return 'SearchQuery(query: $query, cursor: $cursor, limit: $limit, order: $order)';
 }
 
 
@@ -285,7 +271,7 @@ abstract mixin class _$SearchQueryCopyWith<$Res> implements $SearchQueryCopyWith
   factory _$SearchQueryCopyWith(_SearchQuery value, $Res Function(_SearchQuery) _then) = __$SearchQueryCopyWithImpl;
 @override @useResult
 $Res call({
- String? query, String? cursor, bool? archive, bool? favorite, int limit, SearchOrder order
+ String? query, String? cursor, int limit, SearchOrder order
 });
 
 
@@ -302,13 +288,11 @@ class __$SearchQueryCopyWithImpl<$Res>
 
 /// Create a copy of SearchQuery
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? query = freezed,Object? cursor = freezed,Object? archive = freezed,Object? favorite = freezed,Object? limit = null,Object? order = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = freezed,Object? cursor = freezed,Object? limit = null,Object? order = null,}) {
   return _then(_SearchQuery(
 query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String?,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
-as String?,archive: freezed == archive ? _self.archive : archive // ignore: cast_nullable_to_non_nullable
-as bool?,favorite: freezed == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as bool?,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as String?,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as SearchOrder,
   ));

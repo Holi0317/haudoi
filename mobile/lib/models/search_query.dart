@@ -10,22 +10,13 @@ abstract class SearchQuery with _$SearchQuery {
 
   @Assert('limit >= 1 && limit <= 300', 'Limit must be between 1 and 300')
   const factory SearchQuery({
-    /// Search query. This will search both title and url.
-    /// null / empty string will all be treated as disable search filter.
+    /// DSL search query string. Empty string means no filters applied. See repository README.md for documentation.
     String? query,
 
     /// Cursor for pagination.
     /// null / empty string will be treated as noop.
     /// Note the client must keep other search parameters the same when paginating.
     String? cursor,
-
-    /// Archive filter. Null means disable filter.
-    /// Boolean means the item must be archived or not archived.
-    bool? archive,
-
-    /// Favorite filter.
-    /// Null means disable filter. Boolean means the item must be favorited or not favorited.
-    bool? favorite,
 
     /// Limit items to return.
     @Default(30) int limit,
@@ -45,18 +36,38 @@ abstract class SearchQuery with _$SearchQuery {
       map['cursor'] = cursor!;
     }
 
-    if (archive != null) {
-      map['archive'] = archive.toString();
-    }
-
-    if (favorite != null) {
-      map['favorite'] = favorite.toString();
-    }
-
     map['limit'] = limit.toString();
     map['order'] = order.value;
 
     return map;
+  }
+
+  /// Parse a boolean field from the DSL query string.
+  ///
+  /// Returns `true`/`false` if the field is explicitly set in the query,
+  /// `null` if the field is not mentioned (no filtering on this field).
+  ///
+  /// This parsing is quite naive and only checks for exact matches of
+  /// `field:true` or `field:false` in the query string. Might give false positives
+  /// if the field name is a substring of another field.
+  bool? parseBool(String field) {
+    final q = query;
+
+    // `null` for not filtering on the field
+    if (q == null) {
+      return null;
+    }
+
+    if (q.contains("$field:true")) {
+      return true;
+    }
+
+    if (q.contains("$field:false")) {
+      return false;
+    }
+
+    // Field not mentioned in query.
+    return null;
   }
 }
 

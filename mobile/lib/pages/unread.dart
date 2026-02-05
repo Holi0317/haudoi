@@ -40,7 +40,10 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
 
   @override
   Widget build(BuildContext context) {
-    final unreadSearchQuery = SearchQuery(archive: false, order: _order);
+    final unreadSearchQuery = SearchQuery(
+      query: "archive:false",
+      order: _order,
+    );
 
     final count = ref.watch(
       searchAppliedProvider(unreadSearchQuery).selectData((data) => data.count),

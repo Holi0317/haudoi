@@ -1,0 +1,20 @@
+{
+  "name": "@haudoi/dsl",
+  "scripts": {
+    "typecheck": "tsc -noEmit",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@truto/sqlite-builder": "^1.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "~3.2.4"
+  }
+}

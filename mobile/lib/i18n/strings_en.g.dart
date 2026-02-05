@@ -282,8 +282,14 @@ class TranslationsFilterEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	late final TranslationsFilterArchiveEn archive = TranslationsFilterArchiveEn.internal(_root);
-	late final TranslationsFilterFavoriteEn favorite = TranslationsFilterFavoriteEn.internal(_root);
+
+	/// en: 'Search Query (DSL) documentation'
+	String get dsl_doc => 'Search Query (DSL) documentation';
+
+	/// en: 'Common Queries'
+	String get common_query => 'Common Queries';
+
+	late final TranslationsFilterQueriesEn queries = TranslationsFilterQueriesEn.internal(_root);
 	late final TranslationsFilterOrderEn order = TranslationsFilterOrderEn.internal(_root);
 }
 
@@ -353,46 +359,28 @@ class TranslationsEditFieldsEn {
 	String get archive => 'Archive';
 }
 
-// Path: filter.archive
-class TranslationsFilterArchiveEn {
-	TranslationsFilterArchiveEn.internal(this._root);
+// Path: filter.queries
+class TranslationsFilterQueriesEn {
+	TranslationsFilterQueriesEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Archive'
-	String get title => 'Archive';
-
-	/// en: 'All'
-	String get all => 'All';
+	/// en: 'All Links'
+	String get all => 'All Links';
 
 	/// en: 'Archived'
-	String get oui => 'Archived';
+	String get archived => 'Archived';
 
 	/// en: 'Not Archived'
-	String get non => 'Not Archived';
-}
-
-// Path: filter.favorite
-class TranslationsFilterFavoriteEn {
-	TranslationsFilterFavoriteEn.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
+	String get unarchived => 'Not Archived';
 
 	/// en: 'Favorite'
-	String get title => 'Favorite';
+	String get favorite => 'Favorite';
 
-	/// en: 'All'
-	String get all => 'All';
-
-	/// en: 'Favorited'
-	String get oui => 'Favorited';
-
-	/// en: 'Not Favorited'
-	String get non => 'Not Favorited';
+	/// en: 'Not Favorite'
+	String get unfavorite => 'Not Favorite';
 }
 
 // Path: filter.order
@@ -473,14 +461,13 @@ extension on Translations {
 			'editBar.more' => 'More actions',
 			'editBar.deletePrompt' => ({required Object count}) => 'Delete ${count} links permanently?',
 			'editBar.deleteWarning' => 'This is permanent and cannot be undone.',
-			'filter.archive.title' => 'Archive',
-			'filter.archive.all' => 'All',
-			'filter.archive.oui' => 'Archived',
-			'filter.archive.non' => 'Not Archived',
-			'filter.favorite.title' => 'Favorite',
-			'filter.favorite.all' => 'All',
-			'filter.favorite.oui' => 'Favorited',
-			'filter.favorite.non' => 'Not Favorited',
+			'filter.dsl_doc' => 'Search Query (DSL) documentation',
+			'filter.common_query' => 'Common Queries',
+			'filter.queries.all' => 'All Links',
+			'filter.queries.archived' => 'Archived',
+			'filter.queries.unarchived' => 'Not Archived',
+			'filter.queries.favorite' => 'Favorite',
+			'filter.queries.unfavorite' => 'Not Favorite',
 			'filter.order.title' => 'Order',
 			'filter.order.newestFirst' => 'Newest First',
 			'filter.order.oldestFirst' => 'Oldest First',
