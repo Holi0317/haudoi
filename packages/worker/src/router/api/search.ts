@@ -1,9 +1,10 @@
-import { parseDSL, type FieldConfig } from "@haudoi/dsl";
+import { parseDSL } from "@haudoi/dsl";
+import type { ParseResult, FieldConfig } from "@haudoi/dsl";
 import { getStorageStub } from "../../composable/do";
 import { zv } from "../../composable/validator";
 import { SearchQuerySchema } from "../../schemas";
 import { factory } from "../factory";
-import { HTTPException } from "hono/http-exception";
+import { InvalidSearchQueryError } from "../../error/search";
 import { encodeCursor } from "../../composable/cursor";
 
 /**
@@ -25,29 +26,28 @@ export default factory
     const q = c.req.valid("query");
 
     // Parse DSL query string
-    let matchers;
+    let parseResult: ParseResult;
     try {
-      const parseResult = parseDSL(q.query, SEARCH_FIELDS);
-
-      // Check for parsing errors (e.g., unknown field)
-      if (parseResult.errors.length > 0) {
-        throw new HTTPException(400, {
-          message: `Invalid search query: ${parseResult.errors.join("; ")}`,
-        });
-      }
-
-      matchers = parseResult.matchers;
+      parseResult = parseDSL(q.query, SEARCH_FIELDS);
     } catch (error) {
-      throw new HTTPException(400, {
-        message:
-          error instanceof Error ? error.message : "Invalid search query",
-        cause: error,
-      });
+      throw new InvalidSearchQueryError(
+        error instanceof Error ? error.message : "Invalid search query",
+        undefined,
+        error,
+      );
+    }
+
+    // Check for parsing errors (e.g., unknown field)
+    if (parseResult.errors.length > 0) {
+      throw new InvalidSearchQueryError(
+        `Invalid search query: ${parseResult.errors.join("; ")}`,
+        parseResult.errors,
+      );
     }
 
     const search = await stub.search(
       { limit: q.limit, order: q.order, cursor: q.cursor },
-      matchers,
+      parseResult.matchers,
     );
 
     const lastItem = search.items.at(-1);

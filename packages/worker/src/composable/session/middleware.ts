@@ -1,5 +1,9 @@
 import { createMiddleware } from "hono/factory";
-import { HTTPException } from "hono/http-exception";
+import {
+  InternalServerError,
+  UnauthenticatedError,
+  UserBannedError,
+} from "../../error/auth";
 import { every } from "hono/combine";
 import type { RedirectDestination } from "../oauth_state";
 import { isAdmin } from "../user/admin";
@@ -34,7 +38,7 @@ function _requireSession(option: RequireSessionOption) {
     }
 
     if (option.action === "throw") {
-      throw new HTTPException(401, { message: "Unauthenticated" });
+      throw new UnauthenticatedError();
     }
 
     return c.redirect(`/auth/github/login?redirect=${option.destination}`);
@@ -54,7 +58,7 @@ function _requireUser() {
       "User not found in requireUser middleware despite having a valid session",
     );
 
-    throw new HTTPException(500, { message: "Internal server error" });
+    throw new InternalServerError();
   });
 }
 
@@ -91,9 +95,7 @@ function _requireUnbanned() {
       return;
     }
 
-    throw new HTTPException(403, {
-      message: "Your account has been banned",
-    });
+    throw new UserBannedError(user.bannedAt);
   });
 }
 

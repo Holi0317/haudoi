@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
-import { HTTPException } from "hono/http-exception";
+import { AdminForbiddenError } from "../../error/auth";
 import { getUser } from "./getter";
 
 /**
@@ -42,7 +42,7 @@ export function requireAdmin() {
     const pass = await isAdmin(c);
 
     if (!pass) {
-      throw new HTTPException(403, { message: "Forbidden" });
+      throw new AdminForbiddenError();
     }
 
     await next();

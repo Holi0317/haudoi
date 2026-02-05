@@ -1,4 +1,4 @@
-import { HTTPException } from "hono/http-exception";
+import { GitHubTokenExchangeError } from "../error/github";
 import type { KyInstance, Options } from "ky";
 import * as z from "zod";
 
@@ -50,8 +50,8 @@ const AccessTokenSchemaWithError = z.union([
  * For refresh, this calls the following API:
  * https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/refreshing-user-access-tokens
  *
- * @throws {HTTPException} access token exchange failed. Could be the code got
- * reused.
+ * @throws {GitHubTokenExchangeError} access token exchange failed. Could be the
+ * code got reused.
  */
 export async function exchangeToken(
   env: CloudflareBindings,
@@ -87,9 +87,7 @@ export async function exchangeToken(
   const parsed = AccessTokenSchemaWithError.parse(accessTokenResp);
 
   if ("error" in parsed) {
-    throw new HTTPException(400, {
-      message: `Failed to exchange github token from code.\n${parsed.error}: ${parsed.error_description}`,
-    });
+    throw new GitHubTokenExchangeError(parsed.error, parsed.error_description);
   }
 
   return parsed;

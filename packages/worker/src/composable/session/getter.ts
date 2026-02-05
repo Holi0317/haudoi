@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { HTTPException } from "hono/http-exception";
+import { UnauthenticatedError } from "../../error/auth";
 import { useReqCache } from "../cache";
 import { deleteSession } from "./cookie";
 import { getSessHash } from "./id";
@@ -63,7 +63,7 @@ export async function getSession(c: Context<Env>, must: boolean = true) {
       "Got null session when must=true. Did the route forget `requireSession` middleware?",
     );
 
-    throw new HTTPException(401, { message: "Unauthenticated" });
+    throw new UnauthenticatedError();
   }
 
   return session;
