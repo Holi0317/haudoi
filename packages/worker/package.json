@@ -26,11 +26,11 @@
     "@truto/sqlite-builder": "^1.0.4",
     "dayjs": "^1.11.19",
     "es-toolkit": "^1.44.0",
-    "hono": "^4.11.3",
+    "hono": "^4.11.7",
     "ky": "^1.14.2",
     "p-limit": "^7.2.0",
     "uint8array-extras": "^1.5.0",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.12.5",
