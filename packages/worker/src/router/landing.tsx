@@ -1,7 +1,7 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import { getSession } from "../composable/session/getter";
 
-const app = new Hono<Env>({ strict: false }).get("/", async (c) => {
+const app = factory.createApp().get("/", async (c) => {
   const sess = await getSession(c, false);
 
   const url = new URL("/", c.req.url);

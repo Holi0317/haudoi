@@ -1,4 +1,4 @@
-import { createMiddleware } from "hono/factory";
+import { factory } from "../router/factory";
 import { hc } from "hono/client";
 import type { APIAppType } from "../router/api";
 
@@ -11,7 +11,7 @@ import type { APIAppType } from "../router/api";
  * Note that we are injecting API client, not the client for whole app.
  */
 export function clientInject(app: APIAppType) {
-  return createMiddleware<Env>(async (c, next) => {
+  return factory.createMiddleware(async (c, next) => {
     c.set(
       "client",
       hc<APIAppType>("https://example.com", {

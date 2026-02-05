@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import dayjs from "dayjs";
 import * as z from "zod";
 import { zv } from "../composable/validator";
@@ -13,7 +13,8 @@ import {
 import { makeSessionContent } from "../composable/session/content";
 import { useUserRegistry } from "../composable/user/registry";
 
-const app = new Hono<Env>({ strict: false })
+const app = factory
+  .createApp()
   .get("/logout", async (c) => {
     await deleteSession(c);
     return c.text("You have been successfully logged out!");

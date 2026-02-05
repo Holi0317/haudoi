@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import * as z from "zod";
 import { zv } from "../composable/validator";
 import { getImportStub, getStorageStub } from "../composable/do";
@@ -31,7 +31,8 @@ const SEARCH_FIELDS: FieldConfig[] = [
   { name: "note", type: "string", column: "note" },
 ];
 
-const app = new Hono<Env>({ strict: false })
+const app = factory
+  .createApp()
   /**
    * Version check / user info endpoint
    */

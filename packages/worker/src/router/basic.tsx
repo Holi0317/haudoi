@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import * as z from "zod";
 import { requireSession } from "../composable/session/middleware";
 import type { EditOpSchema } from "../schemas";
@@ -26,7 +26,8 @@ const ItemEditSchema = z.object({
 /**
  * Basic views for the app
  */
-const app = new Hono<Env>({ strict: false })
+const app = factory
+  .createApp()
   .use(requireSession({ action: "redirect", destination: "/basic" }))
 
   .get("/", zv("query", SearchQuerySchema), async (c) => {

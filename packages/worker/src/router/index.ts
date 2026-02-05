@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { factory } from "./factory";
 import { bodyLimit } from "hono/body-limit";
 import { clientInject } from "../middleware/client";
 import { renderer } from "../middleware/renderer";
@@ -10,7 +10,8 @@ import landingRouter from "./landing";
 import adminRouter from "./admin";
 import { MAX_BODY_SIZE } from "../constants";
 
-const app = new Hono<Env>({ strict: false })
+const app = factory
+  .createApp()
   .use(clientInject(apiRouter))
   .use(renderer())
   .use(blockRequestLoop())
