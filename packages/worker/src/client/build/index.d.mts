@@ -270,8 +270,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: hono_utils_http_status15.StatusCode;
     };
   };
-} & {
-  "/insert": {
+} | hono_types1.MergeSchemaPath<{
+  "/": {
     $post: {
       input: {
         form: {
@@ -298,8 +298,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: 201;
     };
   };
-} & {
-  "/archive": {
+}, "/insert"> | hono_types1.MergeSchemaPath<{
+  "/": {
     $post: {
       input: {
         form: {
@@ -312,8 +312,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: 302;
     };
   };
-} & {
-  "/edit/:id": {
+}, "/archive"> | hono_types1.MergeSchemaPath<{
+  "/:id": {
     $get: {
       input: {
         param: {
@@ -326,7 +326,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
     };
   };
 } & {
-  "/edit/:id": {
+  "/:id": {
     $post: {
       input: {
         param: {
@@ -345,7 +345,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
     };
   };
 } & {
-  "/edit/:id/delete": {
+  "/:id/delete": {
     $post: {
       input: {
         param: {
@@ -357,8 +357,8 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: 302;
     };
   };
-} & {
-  "/bulk": {
+}, "/edit"> | hono_types1.MergeSchemaPath<{
+  "/": {
     $get: {
       input: {};
       output: {};
@@ -367,7 +367,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
     };
   };
 } & {
-  "/bulk": {
+  "/": {
     $post: {
       input: {
         form: {
@@ -400,7 +400,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/basic"> | hono_types1.MergeSchemaPath<{
+}, "/bulk">, "/basic"> | hono_types1.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
@@ -492,7 +492,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         };
       } & {
         form: {
-          banned: "true" | "false";
+          banned: "false" | "true";
         };
       };
       output: undefined;
@@ -505,7 +505,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         };
       } & {
         form: {
-          banned: "true" | "false";
+          banned: "false" | "true";
         };
       };
       output: "User not found";
@@ -818,48 +818,6 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
   }>;
 } & {
   basic: {
-    bulk: hono_client0.ClientRequest<string, "/basic/bulk", {
-      $get: {
-        input: {};
-        output: {};
-        outputFormat: string;
-        status: hono_utils_http_status15.StatusCode;
-      };
-      $post: {
-        input: {
-          form: {
-            file: File;
-          };
-        };
-        output: undefined;
-        outputFormat: "redirect";
-        status: 302;
-      } | {
-        input: {
-          form: {
-            file: File;
-          };
-        };
-        output: {
-          status: {
-            rawId: string;
-            workflowId: string;
-            startedAt: number;
-            completed: {
-              completedAt: number;
-              processed: number;
-              inserted: number;
-              errors: string[];
-            } | null;
-          };
-        };
-        outputFormat: "json";
-        status: 201;
-      };
-    }>;
-  };
-} & {
-  basic: {
     insert: hono_client0.ClientRequest<string, "/basic/insert", {
       $post: {
         input: {
@@ -955,6 +913,48 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         }>;
       };
     };
+  };
+} & {
+  basic: {
+    bulk: hono_client0.ClientRequest<string, "/basic/bulk", {
+      $get: {
+        input: {};
+        output: {};
+        outputFormat: string;
+        status: hono_utils_http_status15.StatusCode;
+      };
+      $post: {
+        input: {
+          form: {
+            file: File;
+          };
+        };
+        output: undefined;
+        outputFormat: "redirect";
+        status: 302;
+      } | {
+        input: {
+          form: {
+            file: File;
+          };
+        };
+        output: {
+          status: {
+            rawId: string;
+            workflowId: string;
+            startedAt: number;
+            completed: {
+              completedAt: number;
+              processed: number;
+              inserted: number;
+              errors: string[];
+            } | null;
+          };
+        };
+        outputFormat: "json";
+        status: 201;
+      };
+    }>;
   };
 } & {
   admin: hono_client0.ClientRequest<string, "/admin", {
@@ -1061,7 +1061,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             };
           } & {
             form: {
-              banned: "true" | "false";
+              banned: "false" | "true";
             };
           };
           output: undefined;
@@ -1074,7 +1074,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             };
           } & {
             form: {
-              banned: "true" | "false";
+              banned: "false" | "true";
             };
           };
           output: "User not found";
