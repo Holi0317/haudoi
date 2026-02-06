@@ -1,6 +1,6 @@
 import * as hono_client0 from "hono/client";
 import { ClientRequestOptions } from "hono/client";
-import * as hono_utils_http_status15 from "hono/utils/http-status";
+import * as hono_utils_http_status17 from "hono/utils/http-status";
 import * as hono_types1 from "hono/types";
 import * as hono_hono_base0 from "hono/hono-base";
 
@@ -11,7 +11,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 }, "/"> | hono_types1.MergeSchemaPath<hono_types1.BlankSchema | hono_types1.MergeSchemaPath<{
@@ -20,7 +20,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: "You have been successfully logged out!";
       outputFormat: "text";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   };
 }, "/logout"> | hono_types1.MergeSchemaPath<{
@@ -80,7 +80,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   };
 } | hono_types1.MergeSchemaPath<{
@@ -97,7 +97,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 }, "/image"> | hono_types1.MergeSchemaPath<{
@@ -129,10 +129,188 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         note: string;
       };
       outputFormat: "json";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   };
 }, "/item"> | hono_types1.MergeSchemaPath<{
+  "/": {
+    $get: {
+      input: {};
+      output: {
+        items: {
+          [x: number]: {
+            id: number;
+            name: string;
+            color: string;
+            emoji: string;
+            created_at: number;
+          };
+          length: number;
+          toString: null;
+          toLocaleString: null;
+          pop: null;
+          push: never;
+          concat: never;
+          join: never;
+          reverse: null;
+          shift: null;
+          slice: never;
+          sort: never;
+          splice: never;
+          unshift: never;
+          indexOf: never;
+          lastIndexOf: never;
+          every: never;
+          some: never;
+          forEach: never;
+          map: never;
+          filter: never;
+          reduce: never;
+          reduceRight: never;
+          find: never;
+          findIndex: never;
+          fill: never;
+          copyWithin: never;
+          entries: null;
+          keys: null;
+          values: null;
+          includes: never;
+          flatMap: never;
+          flat: never;
+          at: never;
+          findLast: never;
+          findLastIndex: never;
+          toReversed: null;
+          toSorted: never;
+          toSpliced: never;
+          with: never;
+          [Symbol.iterator]: null;
+          readonly [Symbol.unscopables]: {
+            [x: number]: boolean | undefined;
+            length?: boolean | undefined;
+            toString?: boolean | undefined;
+            toLocaleString?: boolean | undefined;
+            pop?: boolean | undefined;
+            push?: boolean | undefined;
+            concat?: boolean | undefined;
+            join?: boolean | undefined;
+            reverse?: boolean | undefined;
+            shift?: boolean | undefined;
+            slice?: boolean | undefined;
+            sort?: boolean | undefined;
+            splice?: boolean | undefined;
+            unshift?: boolean | undefined;
+            indexOf?: boolean | undefined;
+            lastIndexOf?: boolean | undefined;
+            every?: boolean | undefined;
+            some?: boolean | undefined;
+            forEach?: boolean | undefined;
+            map?: boolean | undefined;
+            filter?: boolean | undefined;
+            reduce?: boolean | undefined;
+            reduceRight?: boolean | undefined;
+            find?: boolean | undefined;
+            findIndex?: boolean | undefined;
+            fill?: boolean | undefined;
+            copyWithin?: boolean | undefined;
+            entries?: boolean | undefined;
+            keys?: boolean | undefined;
+            values?: boolean | undefined;
+            includes?: boolean | undefined;
+            flatMap?: boolean | undefined;
+            flat?: boolean | undefined;
+            at?: boolean | undefined;
+            findLast?: boolean | undefined;
+            findLastIndex?: boolean | undefined;
+            toReversed?: boolean | undefined;
+            toSorted?: boolean | undefined;
+            toSpliced?: boolean | undefined;
+            with?: boolean | undefined;
+          };
+          [Symbol.dispose]: null;
+        };
+      };
+      outputFormat: "json";
+      status: hono_utils_http_status17.ContentfulStatusCode;
+    };
+  };
+} & {
+  "/": {
+    $post: {
+      input: {
+        json: {
+          name: string;
+          color: string;
+          emoji?: string | undefined;
+        };
+      };
+      output: {
+        id: number;
+        name: string;
+        color: string;
+        emoji: string;
+        created_at: number;
+      };
+      outputFormat: "json";
+      status: 201;
+    };
+  };
+} & {
+  "/:id": {
+    $patch: {
+      input: {
+        param: {
+          id: string;
+        };
+      } & {
+        json: {
+          name?: string | undefined;
+          color?: string | undefined;
+          emoji?: string | undefined;
+        };
+      };
+      output: {
+        message: string;
+      };
+      outputFormat: "json";
+      status: 404;
+    } | {
+      input: {
+        param: {
+          id: string;
+        };
+      } & {
+        json: {
+          name?: string | undefined;
+          color?: string | undefined;
+          emoji?: string | undefined;
+        };
+      };
+      output: {
+        id: number;
+        name: string;
+        color: string;
+        emoji: string;
+        created_at: number;
+      };
+      outputFormat: "json";
+      status: hono_utils_http_status17.ContentfulStatusCode;
+    };
+  };
+} & {
+  "/:id": {
+    $delete: {
+      input: {
+        param: {
+          id: string;
+        };
+      };
+      output: null;
+      outputFormat: "body";
+      status: 204;
+    };
+  };
+}, "/tag"> | hono_types1.MergeSchemaPath<{
   "/": {
     $get: {
       input: {
@@ -147,6 +325,12 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         cursor: string | null;
         count: number;
         items: {
+          tags: {
+            name: string;
+            emoji: string;
+            id: number;
+            color: string;
+          }[];
           id: number;
           title: string;
           url: string;
@@ -158,7 +342,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         hasMore: boolean;
       };
       outputFormat: "json";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   };
 }, "/search"> | hono_types1.MergeSchemaPath<{
@@ -205,7 +389,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -226,7 +410,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   };
 } & {
@@ -267,7 +451,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } | hono_types1.MergeSchemaPath<{
@@ -322,7 +506,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -363,7 +547,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -406,7 +590,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -419,7 +603,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -432,7 +616,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -467,7 +651,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -480,7 +664,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   };
 } & {
@@ -532,7 +716,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   }>;
 } & {
@@ -542,7 +726,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: "You have been successfully logged out!";
         outputFormat: "text";
-        status: hono_utils_http_status15.ContentfulStatusCode;
+        status: hono_utils_http_status17.ContentfulStatusCode;
       };
     }>;
   };
@@ -611,7 +795,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status15.ContentfulStatusCode;
+      status: hono_utils_http_status17.ContentfulStatusCode;
     };
   }>;
 } & {
@@ -629,7 +813,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status15.StatusCode;
+        status: hono_utils_http_status17.StatusCode;
       };
     }>;
   };
@@ -664,7 +848,185 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             note: string;
           };
           outputFormat: "json";
-          status: hono_utils_http_status15.ContentfulStatusCode;
+          status: hono_utils_http_status17.ContentfulStatusCode;
+        };
+      }>;
+    };
+  };
+} & {
+  api: {
+    tag: hono_client0.ClientRequest<string, "/api/tag", {
+      $get: {
+        input: {};
+        output: {
+          items: {
+            [x: number]: {
+              id: number;
+              name: string;
+              color: string;
+              emoji: string;
+              created_at: number;
+            };
+            length: number;
+            toString: null;
+            toLocaleString: null;
+            pop: null;
+            push: never;
+            concat: never;
+            join: never;
+            reverse: null;
+            shift: null;
+            slice: never;
+            sort: never;
+            splice: never;
+            unshift: never;
+            indexOf: never;
+            lastIndexOf: never;
+            every: never;
+            some: never;
+            forEach: never;
+            map: never;
+            filter: never;
+            reduce: never;
+            reduceRight: never;
+            find: never;
+            findIndex: never;
+            fill: never;
+            copyWithin: never;
+            entries: null;
+            keys: null;
+            values: null;
+            includes: never;
+            flatMap: never;
+            flat: never;
+            at: never;
+            findLast: never;
+            findLastIndex: never;
+            toReversed: null;
+            toSorted: never;
+            toSpliced: never;
+            with: never;
+            [Symbol.iterator]: null;
+            readonly [Symbol.unscopables]: {
+              [x: number]: boolean | undefined;
+              length?: boolean | undefined;
+              toString?: boolean | undefined;
+              toLocaleString?: boolean | undefined;
+              pop?: boolean | undefined;
+              push?: boolean | undefined;
+              concat?: boolean | undefined;
+              join?: boolean | undefined;
+              reverse?: boolean | undefined;
+              shift?: boolean | undefined;
+              slice?: boolean | undefined;
+              sort?: boolean | undefined;
+              splice?: boolean | undefined;
+              unshift?: boolean | undefined;
+              indexOf?: boolean | undefined;
+              lastIndexOf?: boolean | undefined;
+              every?: boolean | undefined;
+              some?: boolean | undefined;
+              forEach?: boolean | undefined;
+              map?: boolean | undefined;
+              filter?: boolean | undefined;
+              reduce?: boolean | undefined;
+              reduceRight?: boolean | undefined;
+              find?: boolean | undefined;
+              findIndex?: boolean | undefined;
+              fill?: boolean | undefined;
+              copyWithin?: boolean | undefined;
+              entries?: boolean | undefined;
+              keys?: boolean | undefined;
+              values?: boolean | undefined;
+              includes?: boolean | undefined;
+              flatMap?: boolean | undefined;
+              flat?: boolean | undefined;
+              at?: boolean | undefined;
+              findLast?: boolean | undefined;
+              findLastIndex?: boolean | undefined;
+              toReversed?: boolean | undefined;
+              toSorted?: boolean | undefined;
+              toSpliced?: boolean | undefined;
+              with?: boolean | undefined;
+            };
+            [Symbol.dispose]: null;
+          };
+        };
+        outputFormat: "json";
+        status: hono_utils_http_status17.ContentfulStatusCode;
+      };
+      $post: {
+        input: {
+          json: {
+            name: string;
+            color: string;
+            emoji?: string | undefined;
+          };
+        };
+        output: {
+          id: number;
+          name: string;
+          color: string;
+          emoji: string;
+          created_at: number;
+        };
+        outputFormat: "json";
+        status: 201;
+      };
+    }>;
+  };
+} & {
+  api: {
+    tag: {
+      ":id": hono_client0.ClientRequest<string, "/api/tag/:id", {
+        $patch: {
+          input: {
+            param: {
+              id: string;
+            };
+          } & {
+            json: {
+              name?: string | undefined;
+              color?: string | undefined;
+              emoji?: string | undefined;
+            };
+          };
+          output: {
+            message: string;
+          };
+          outputFormat: "json";
+          status: 404;
+        } | {
+          input: {
+            param: {
+              id: string;
+            };
+          } & {
+            json: {
+              name?: string | undefined;
+              color?: string | undefined;
+              emoji?: string | undefined;
+            };
+          };
+          output: {
+            id: number;
+            name: string;
+            color: string;
+            emoji: string;
+            created_at: number;
+          };
+          outputFormat: "json";
+          status: hono_utils_http_status17.ContentfulStatusCode;
+        };
+        $delete: {
+          input: {
+            param: {
+              id: string;
+            };
+          };
+          output: null;
+          outputFormat: "body";
+          status: 204;
         };
       }>;
     };
@@ -685,6 +1047,12 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           cursor: string | null;
           count: number;
           items: {
+            tags: {
+              name: string;
+              emoji: string;
+              id: number;
+              color: string;
+            }[];
             id: number;
             title: string;
             url: string;
@@ -696,7 +1064,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           hasMore: boolean;
         };
         outputFormat: "json";
-        status: hono_utils_http_status15.ContentfulStatusCode;
+        status: hono_utils_http_status17.ContentfulStatusCode;
       };
     }>;
   };
@@ -748,7 +1116,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           input: {};
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status15.StatusCode;
+          status: hono_utils_http_status17.StatusCode;
         };
       }>;
     };
@@ -773,7 +1141,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             } | null;
           };
           outputFormat: "json";
-          status: hono_utils_http_status15.ContentfulStatusCode;
+          status: hono_utils_http_status17.ContentfulStatusCode;
         };
         $post: {
           input: {
@@ -813,7 +1181,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   }>;
 } & {
@@ -874,7 +1242,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status15.StatusCode;
+          status: hono_utils_http_status17.StatusCode;
         };
         $post: {
           input: {
@@ -921,7 +1289,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status15.StatusCode;
+        status: hono_utils_http_status17.StatusCode;
       };
       $post: {
         input: {
@@ -962,7 +1330,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status15.StatusCode;
+      status: hono_utils_http_status17.StatusCode;
     };
   }>;
 } & {
@@ -976,7 +1344,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status15.StatusCode;
+        status: hono_utils_http_status17.StatusCode;
       };
     }>;
   };
@@ -992,7 +1360,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status15.StatusCode;
+          status: hono_utils_http_status17.StatusCode;
         };
       }>;
     };
@@ -1035,7 +1403,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status15.StatusCode;
+          status: hono_utils_http_status17.StatusCode;
         };
         $post: {
           input: {
@@ -1045,7 +1413,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status15.StatusCode;
+          status: hono_utils_http_status17.StatusCode;
         };
       }>;
     };

@@ -6,12 +6,14 @@ import type {
   EditOpSchema,
   LinkInsertItem,
   SearchQueryType,
+  TagCreateSchema,
 } from "../../schemas";
 import type { Matcher } from "@haudoi/dsl";
 import { migrations } from "./migrations";
 import { useMeta } from "./meta";
 import { useLink } from "./link";
 import { useBatch } from "./batch";
+import { useTag } from "./tags";
 
 export class StorageDO extends DurableObject<CloudflareBindings> {
   private readonly conn: ReturnType<typeof useSql>;
@@ -19,6 +21,8 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
   public constructor(ctx: DurableObjectState, env: CloudflareBindings) {
     super(ctx, env);
     this.conn = useSql(ctx);
+
+    this.conn.void_(sql`PRAGMA foreign_keys = ON;`);
 
     const { run } = useDBMigration(ctx);
     run(migrations);
@@ -50,6 +54,8 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
    * It's just better to keep the DO instance around.
    */
   public deallocate() {
+    this.conn.void_(sql`DELETE FROM link_tag;`);
+    this.conn.void_(sql`DELETE FROM tag;`);
     this.conn.void_(sql`DELETE FROM link;`);
   }
 
@@ -93,5 +99,25 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
   public async export_() {
     const { export_ } = useBatch(this.ctx);
     return export_();
+  }
+
+  public listTags() {
+    const { list } = useTag(this.ctx);
+    return list();
+  }
+
+  public createTag(input: z.output<typeof TagCreateSchema>) {
+    const { create } = useTag(this.ctx);
+    return create(input);
+  }
+
+  public updateTag(id: number, input: z.output<typeof TagCreateSchema>) {
+    const { update } = useTag(this.ctx);
+    return update(id, input);
+  }
+
+  public deleteTag(id: number) {
+    const { deleteTag } = useTag(this.ctx);
+    return deleteTag(id);
   }
 }
