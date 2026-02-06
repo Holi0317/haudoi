@@ -1,41 +1,46 @@
-/**
- * Field types for DSL matchers.
- */
-export type FieldType = "boolean" | "string";
+import type { SqlQuery } from "@truto/sqlite-builder";
 
 /**
  * Configuration for a known field.
  */
-export interface FieldConfig {
-  /**
-   * Field name in DSL.
-   */
-  name: string;
-  /**
-   * Type of the field.
-   */
-  type: FieldType;
-  /**
-   * Corresponding column name in SQL. Can be different from field name in `name`.
-   */
-  column: string;
-}
+export type FieldConfig =
+  | {
+      /**
+       * Field name in DSL.
+       */
+      name: string;
+      /**
+       * Type of the field in DSL.
+       */
+      type: "boolean";
+      /**
+       * Generate a SQL fragment for this field given the parsed boolean value.
+       */
+      toSql: (value: boolean) => SqlQuery;
+    }
+  | {
+      /**
+       * Field name in DSL.
+       */
+      name: string;
+      /**
+       * Type of the field in DSL.
+       */
+      type: "string";
+      /**
+       * Generate a SQL fragment for this field given the parsed string value.
+       */
+      toSql: (value: string) => SqlQuery;
+    };
 
 /**
  * Represents a parsed matcher from DSL.
  */
 export type Matcher =
   | {
-      type: "boolean";
+      type: "field";
       field: string;
-      column: string;
-      value: boolean;
-    }
-  | {
-      type: "string";
-      field: string;
-      column: string;
-      value: string;
+      sql: SqlQuery;
     }
   | {
       type: "loose";

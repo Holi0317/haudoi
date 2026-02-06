@@ -8,38 +8,13 @@ describe("matchersToSql", () => {
     expect(result.text).toBe("1=1");
   });
 
-  it("should generate SQL for boolean matcher (true)", () => {
+  it("should pass through SQL from field matcher", () => {
     const result = matchersToSql(
-      [{ type: "boolean", field: "archive", column: "archive", value: true }],
+      [{ type: "field", field: "archive", sql: sql`"archive" = ${1}` }],
       [],
     );
 
     expect(result).toEqual(sql`"archive" = ${1}`);
-  });
-
-  it("should generate SQL for boolean matcher (false)", () => {
-    const result = matchersToSql(
-      [
-        {
-          type: "boolean",
-          field: "favorite",
-          column: "favorite",
-          value: false,
-        },
-      ],
-      [],
-    );
-
-    expect(result).toEqual(sql`"favorite" = ${0}`);
-  });
-
-  it("should generate SQL for string matcher", () => {
-    const result = matchersToSql(
-      [{ type: "string", field: "title", column: "title", value: "github" }],
-      [],
-    );
-
-    expect(result).toEqual(sql`instr(lower("title"), lower(${"github"})) != 0`);
   });
 
   it("should generate SQL for loose matcher", () => {
@@ -62,8 +37,12 @@ describe("matchersToSql", () => {
   it("should combine multiple matchers with AND", () => {
     const result = matchersToSql(
       [
-        { type: "boolean", field: "archive", column: "archive", value: true },
-        { type: "string", field: "title", column: "title", value: "test" },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${"test"})) != 0`,
+        },
       ],
       [],
     );
@@ -73,15 +52,14 @@ describe("matchersToSql", () => {
     );
   });
 
-  it("should combine three matchers with AND", () => {
+  it("should combine field and loose matchers with AND", () => {
     const result = matchersToSql(
       [
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
         {
-          type: "boolean",
+          type: "field",
           field: "favorite",
-          column: "favorite",
-          value: false,
+          sql: sql`"favorite" = ${0}`,
         },
         { type: "loose", value: "github" },
       ],

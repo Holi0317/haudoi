@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseDSL } from "../src/parser";
 import type { FieldConfig } from "../src";
+import { sql } from "@truto/sqlite-builder";
 
 describe("parseDSL", () => {
   describe("empty and whitespace input", () => {
@@ -60,13 +61,21 @@ describe("parseDSL", () => {
 
   describe("boolean field matching", () => {
     const config: FieldConfig[] = [
-      { name: "archive", type: "boolean", column: "archive" },
+      {
+        name: "archive",
+        type: "boolean",
+        toSql: (value) => sql`"archive" = ${Number(value)}`,
+      },
     ];
 
     it("should parse archive:true", () => {
       const result = parseDSL("archive:true", config);
       expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        {
+          type: "field",
+          field: "archive",
+          sql: sql`"archive" = ${1}`,
+        },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -75,10 +84,9 @@ describe("parseDSL", () => {
       const result = parseDSL("archive:false", config);
       expect(result.matchers).toEqual([
         {
-          type: "boolean",
+          type: "field",
           field: "archive",
-          column: "archive",
-          value: false,
+          sql: sql`"archive" = ${0}`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -90,9 +98,9 @@ describe("parseDSL", () => {
         config,
       );
       expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
-        { type: "boolean", field: "archive", column: "archive", value: false },
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
+        { type: "field", field: "archive", sql: sql`"archive" = ${0}` },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -108,13 +116,21 @@ describe("parseDSL", () => {
 
   describe("string field matching", () => {
     const config: FieldConfig[] = [
-      { name: "title", type: "string", column: "title" },
+      {
+        name: "title",
+        type: "string",
+        toSql: (value) => sql`instr(lower("title"), lower(${value})) != 0`,
+      },
     ];
 
     it("should parse title:value", () => {
       const result = parseDSL("title:github", config);
       expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "github" },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${"github"})) != 0`,
+        },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -123,10 +139,9 @@ describe("parseDSL", () => {
       const result = parseDSL('title:"Hello World"', config);
       expect(result.matchers).toEqual([
         {
-          type: "string",
+          type: "field",
           field: "title",
-          column: "title",
-          value: "Hello World",
+          sql: sql`instr(lower("title"), lower(${"Hello World"})) != 0`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -136,10 +151,9 @@ describe("parseDSL", () => {
       const result = parseDSL("title:'Hello World'", config);
       expect(result.matchers).toEqual([
         {
-          type: "string",
+          type: "field",
           field: "title",
-          column: "title",
-          value: "Hello World",
+          sql: sql`instr(lower("title"), lower(${"Hello World"})) != 0`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -149,10 +163,32 @@ describe("parseDSL", () => {
       const result = parseDSL("title:`Hello World`", config);
       expect(result.matchers).toEqual([
         {
-          type: "string",
+          type: "field",
           field: "title",
-          column: "title",
-          value: "Hello World",
+          sql: sql`instr(lower("title"), lower(${"Hello World"})) != 0`,
+        },
+      ]);
+      expect(result.errors).toEqual([]);
+    });
+  });
+
+  describe("string field with custom SQL (e.g. tag)", () => {
+    const config: FieldConfig[] = [
+      {
+        name: "tag",
+        type: "string",
+        toSql: (value) =>
+          sql`EXISTS (SELECT 1 FROM "link_tag" WHERE lower("tag"."name") = lower(${value}))`,
+      },
+    ];
+
+    it("should parse tag:value", () => {
+      const result = parseDSL("tag:foo", config);
+      expect(result.matchers).toEqual([
+        {
+          type: "field",
+          field: "tag",
+          sql: sql`EXISTS (SELECT 1 FROM "link_tag" WHERE lower("tag"."name") = lower(${"foo"}))`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -168,7 +204,11 @@ describe("parseDSL", () => {
 
     it("should match fields case sensitively for known fields", () => {
       const result = parseDSL("Title:test", [
-        { name: "title", type: "string", column: "title" },
+        {
+          name: "title",
+          type: "string",
+          toSql: (value) => sql`instr(lower("title"), lower(${value})) != 0`,
+        },
       ]);
 
       expect(result.matchers).toEqual([]);
@@ -177,10 +217,18 @@ describe("parseDSL", () => {
 
     it("should continue parsing after unknown field", () => {
       const result = parseDSL("unknown:value title:test", [
-        { name: "title", type: "string", column: "title" },
+        {
+          name: "title",
+          type: "string",
+          toSql: (value) => sql`instr(lower("title"), lower(${value})) != 0`,
+        },
       ]);
       expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "test" },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${"test"})) != 0`,
+        },
       ]);
       expect(result.errors).toEqual(["Unknown field: unknown"]);
     });
@@ -188,20 +236,31 @@ describe("parseDSL", () => {
 
   describe("complex queries", () => {
     const config: FieldConfig[] = [
-      { name: "archive", type: "boolean", column: "archive" },
-      { name: "favorite", type: "boolean", column: "favorite" },
-      { name: "title", type: "string", column: "title" },
+      {
+        name: "archive",
+        type: "boolean",
+        toSql: (value) => sql`"archive" = ${Number(value)}`,
+      },
+      {
+        name: "favorite",
+        type: "boolean",
+        toSql: (value) => sql`"favorite" = ${Number(value)}`,
+      },
+      {
+        name: "title",
+        type: "string",
+        toSql: (value) => sql`instr(lower("title"), lower(${value})) != 0`,
+      },
     ];
 
     it("should parse multiple field:value pairs", () => {
       const result = parseDSL("archive:true favorite:false", config);
       expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
         {
-          type: "boolean",
+          type: "field",
           field: "favorite",
-          column: "favorite",
-          value: false,
+          sql: sql`"favorite" = ${0}`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -210,7 +269,7 @@ describe("parseDSL", () => {
     it("should parse mixed field:value and loose strings", () => {
       const result = parseDSL("archive:true github", config);
       expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
         { type: "loose", value: "github" },
       ]);
       expect(result.errors).toEqual([]);
@@ -220,7 +279,7 @@ describe("parseDSL", () => {
       const result = parseDSL("github archive:true", config);
       expect(result.matchers).toEqual([
         { type: "loose", value: "github" },
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -232,16 +291,14 @@ describe("parseDSL", () => {
       );
       expect(result.matchers).toEqual([
         {
-          type: "boolean",
+          type: "field",
           field: "archive",
-          column: "archive",
-          value: false,
+          sql: sql`"archive" = ${0}`,
         },
         {
-          type: "string",
+          type: "field",
           field: "title",
-          column: "title",
-          value: "Hello World",
+          sql: sql`instr(lower("title"), lower(${"Hello World"})) != 0`,
         },
         { type: "loose", value: "github" },
       ]);
@@ -254,13 +311,12 @@ describe("parseDSL", () => {
         config,
       );
       expect(result.matchers).toEqual([
-        { type: "boolean", field: "archive", column: "archive", value: true },
+        { type: "field", field: "archive", sql: sql`"archive" = ${1}` },
         { type: "loose", value: "github" },
         {
-          type: "boolean",
+          type: "field",
           field: "favorite",
-          column: "favorite",
-          value: false,
+          sql: sql`"favorite" = ${0}`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -285,14 +341,26 @@ describe("parseDSL", () => {
 
   describe("edge cases", () => {
     const config: FieldConfig[] = [
-      { name: "title", type: "string", column: "title" },
-      { name: "url", type: "string", column: "url" },
+      {
+        name: "title",
+        type: "string",
+        toSql: (value) => sql`instr(lower("title"), lower(${value})) != 0`,
+      },
+      {
+        name: "url",
+        type: "string",
+        toSql: (value) => sql`instr(lower("url"), lower(${value})) != 0`,
+      },
     ];
 
     it("should handle colons in quoted values", () => {
       const result = parseDSL('title:"foo:bar"', config);
       expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "foo:bar" },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${"foo:bar"})) != 0`,
+        },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -301,10 +369,9 @@ describe("parseDSL", () => {
       const result = parseDSL("url:http://example.com", config);
       expect(result.matchers).toEqual([
         {
-          type: "string",
+          type: "field",
           field: "url",
-          column: "url",
-          value: "http://example.com",
+          sql: sql`instr(lower("url"), lower(${"http://example.com"})) != 0`,
         },
       ]);
       expect(result.errors).toEqual([]);
@@ -313,7 +380,11 @@ describe("parseDSL", () => {
     it("should handle empty quoted value", () => {
       const result = parseDSL('title:""', config);
       expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "" },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${""})) != 0`,
+        },
       ]);
       expect(result.errors).toEqual([]);
     });
@@ -321,7 +392,11 @@ describe("parseDSL", () => {
     it("should handle unclosed quote at end", () => {
       const result = parseDSL('title:"hello', config);
       expect(result.matchers).toEqual([
-        { type: "string", field: "title", column: "title", value: "hello" },
+        {
+          type: "field",
+          field: "title",
+          sql: sql`instr(lower("title"), lower(${"hello"})) != 0`,
+        },
       ]);
       expect(result.errors).toEqual([]);
     });

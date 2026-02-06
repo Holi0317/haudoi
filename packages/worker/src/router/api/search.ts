@@ -1,4 +1,4 @@
-import { parseDSL } from "@haudoi/dsl";
+import { parseDSL, boolMatcher, stringMatcher } from "@haudoi/dsl";
 import type { ParseResult, FieldConfig } from "@haudoi/dsl";
 import { getStorageStub } from "../../composable/do";
 import { zv } from "../../composable/validator";
@@ -11,11 +11,31 @@ import { encodeCursor } from "../../composable/cursor";
  * Field configuration for DSL search
  */
 const SEARCH_FIELDS: FieldConfig[] = [
-  { name: "archive", type: "boolean", column: "archive" },
-  { name: "favorite", type: "boolean", column: "favorite" },
-  { name: "url", type: "string", column: "url" },
-  { name: "title", type: "string", column: "title" },
-  { name: "note", type: "string", column: "note" },
+  {
+    name: "archive",
+    type: "boolean",
+    toSql: boolMatcher("l.archive"),
+  },
+  {
+    name: "favorite",
+    type: "boolean",
+    toSql: boolMatcher("l.favorite"),
+  },
+  {
+    name: "url",
+    type: "string",
+    toSql: stringMatcher("l.url"),
+  },
+  {
+    name: "title",
+    type: "string",
+    toSql: stringMatcher("l.title"),
+  },
+  {
+    name: "note",
+    type: "string",
+    toSql: stringMatcher("l.note"),
+  },
 ];
 
 export default factory

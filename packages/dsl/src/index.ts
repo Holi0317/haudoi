@@ -17,6 +17,6 @@
  * @module
  */
 
-export { parseDSL } from "./parser";
-export { matchersToSql } from "./sql";
+export * from "./parser";
+export * from "./sql";
 export type * from "./types";

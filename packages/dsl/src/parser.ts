@@ -61,18 +61,16 @@ export function parseDSL(query: string, config: FieldConfig[]): ParseResult {
           continue;
         }
         matchers.push({
-          type: "boolean",
+          type: "field",
           field: config.name,
-          column: config.column,
-          value: boolValue,
+          sql: config.toSql(boolValue),
         });
       } else {
         // String field
         matchers.push({
-          type: "string",
+          type: "field",
           field: config.name,
-          column: config.column,
-          value: token.value,
+          sql: config.toSql(token.value),
         });
       }
     }
