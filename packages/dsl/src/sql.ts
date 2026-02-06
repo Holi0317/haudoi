@@ -2,13 +2,39 @@ import { sql, type SqlQuery } from "@truto/sqlite-builder";
 import type { Matcher } from "./types";
 
 /**
+ * Boolean matcher factory for a given column. Used in FieldConfig.
+ *
+ * @param column SQL column name (with optional table prefix) to compare against
+ */
+export function boolMatcher(column: string) {
+  return (value: boolean): SqlQuery => {
+    const col = sql.ident(column);
+    return sql`${col} = ${Number(value)}`;
+  };
+}
+
+/**
+ * String matcher factory for a given column. Used in FieldConfig.
+ *
+ * The string matching is done in case-insensitive way.
+ *
+ * @param column SQL column name (with optional table prefix) to compare against
+ */
+export function stringMatcher(column: string) {
+  return (value: string): SqlQuery => {
+    const col = sql.ident(column);
+    return sql`instr(lower(${col}), lower(${value})) != 0`;
+  };
+}
+
+/**
  * Convert matchers to SQL WHERE clause fragment.
  *
  * Returns a SQL fragment that can be used in a WHERE clause.
  * Multiple matchers are combined with AND.
  *
  * @param matchers Array of matchers from parseDSL
- * @param looseColumns Columns to search for loose string matchers
+ * @param looseColumns Columns (with optional relation prefix) to search for loose string matchers
  * @returns SQL fragment for WHERE clause
  */
 export function matchersToSql(
@@ -24,14 +50,8 @@ export function matchersToSql(
   const conditions: SqlQuery[] = [];
 
   for (const matcher of matchers) {
-    if (matcher.type === "boolean") {
-      const column = sql.ident(matcher.column);
-      conditions.push(sql`${column} = ${Number(matcher.value)}`);
-    } else if (matcher.type === "string") {
-      const column = sql.ident(matcher.column);
-      conditions.push(
-        sql`instr(lower(${column}), lower(${matcher.value})) != 0`,
-      );
+    if (matcher.type === "field") {
+      conditions.push(matcher.sql);
     } else if (matcher.type === "loose") {
       // Loose string matches base on configured columns
       // Build OR conditions for each searchable column

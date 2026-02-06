@@ -227,9 +227,9 @@ ORDER BY id ASC;
   public search(param: Omit<SearchQueryType, "query">, matchers: Matcher[]) {
     const cursor = decodeCursor(param.cursor);
 
-    const matchersSql = matchersToSql(matchers, ["title", "url", "note"]);
+    const matchersSql = matchersToSql(matchers, ["l.title", "l.url", "l.note"]);
 
-    const frag = sql`FROM link WHERE ${matchersSql}`;
+    const frag = sql`FROM link AS l WHERE ${matchersSql}`;
 
     const dir =
       param.order === "created_at_asc" ? sql.raw("asc") : sql.raw("desc");
