@@ -369,6 +369,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
             field: "note";
             value: string;
           } | {
+            op: "set_tags";
+            id: number;
+            tag_ids?: number[] | undefined;
+          } | {
             op: "delete";
             id: number;
           })[];
@@ -1092,6 +1096,10 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
               id: number;
               field: "note";
               value: string;
+            } | {
+              op: "set_tags";
+              id: number;
+              tag_ids?: number[] | undefined;
             } | {
               op: "delete";
               id: number;

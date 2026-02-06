@@ -40,6 +40,11 @@ export const EditOpSchema = z.discriminatedUnion("op", [
     field: z.literal(["note"]),
     value: z.string(),
   }),
+  z.object({
+    op: z.literal("set_tags"),
+    id: z.number(),
+    tag_ids: z.array(z.int().positive()).max(100).default([]),
+  }),
   z.object({ op: z.literal("delete"), id: z.number() }),
 ]);
 

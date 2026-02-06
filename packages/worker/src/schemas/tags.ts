@@ -70,10 +70,3 @@ export const TagUpdateSchema = z
       message: "At least one field is required",
     },
   );
-
-/**
- * Schema for setting tags on a link.
- */
-export const LinkTagSetSchema = z.object({
-  tag_ids: z.array(z.number().int().positive()).max(100).default([]),
-});

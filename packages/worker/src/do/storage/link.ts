@@ -105,6 +105,17 @@ ORDER BY id ASC;
           );
           break;
         }
+        case "set_tags": {
+          conn.void_(sql`DELETE FROM link_tag WHERE link_id = ${op.id};`);
+
+          for (const tagId of op.tag_ids) {
+            conn.void_(
+              sql`INSERT OR IGNORE INTO link_tag (link_id, tag_id)
+VALUES (${op.id}, ${tagId});`,
+            );
+          }
+          break;
+        }
         case "delete":
           conn.void_(sql`DELETE FROM link WHERE id = ${op.id}`);
           break;
