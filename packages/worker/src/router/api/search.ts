@@ -1,6 +1,5 @@
 import { parseDSL, boolMatcher, stringMatcher } from "@haudoi/dsl";
 import type { ParseResult, FieldConfig } from "@haudoi/dsl";
-import { sql } from "../../composable/sql";
 import { getStorageStub } from "../../composable/do";
 import { zv } from "../../composable/validator";
 import { SearchQuerySchema } from "../../schemas";
@@ -36,17 +35,6 @@ const SEARCH_FIELDS: FieldConfig[] = [
     name: "note",
     type: "string",
     toSql: stringMatcher("l.note"),
-  },
-  {
-    name: "tag",
-    type: "string",
-    toSql: (value) => sql`EXISTS (
-SELECT 1
-FROM link_tag
-JOIN tag ON tag.id = link_tag.tag_id
-WHERE link_tag.link_id = l.id
-  AND lower(tag.name) = lower(${value})
-)`,
   },
 ];
 
