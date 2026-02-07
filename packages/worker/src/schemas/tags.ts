@@ -2,9 +2,20 @@ import * as z from "zod";
 import * as zu from "../zod-utils";
 
 /**
- * Schema for tag name.
+ * Schema for validating tag names.
+ *
+ * Tag names must:
+ * - Be between 1 and 64 characters long
+ * - Contains unicode letters (upper, lower, and from any language), numbers, spaces, underscores, or hyphens
+ * - The tag should not contain `,` since it's used in the UI
+ * - Leading and trailing whitespace is trimmed
  */
-export const TagNameSchema = z.string().min(1).max(64).trim();
+export const TagNameSchema = z
+  .string()
+  .min(1)
+  .max(64)
+  .regex(/^[\p{L}\p{N} _-]+$/u)
+  .trim();
 
 /**
  * Schema for tag color. Stored as a string as hex (e.g. #RRGGBB).
