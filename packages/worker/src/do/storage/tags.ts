@@ -3,8 +3,9 @@ import { sql, useSql } from "../../composable/sql";
 import type {
   TagCreateSchema,
   TagUpdateSchema,
-  LinkItemSchema,
   TagItem,
+  LinkItem,
+  LinkItemWithTags,
 } from "../../schemas";
 import { TagItemSchema } from "../../schemas";
 
@@ -13,12 +14,10 @@ const LinkTagRowSchema = z.strictObject({
   tag_id: z.number(),
 });
 
-type TagInfo = Omit<TagItem, "created_at">;
-
 export function useTag(ctx: DurableObjectState) {
   const conn = useSql(ctx);
 
-  const attachTags = (items: Array<z.output<typeof LinkItemSchema>>) => {
+  const attachTags = (items: LinkItem[]): LinkItemWithTags[] => {
     if (items.length === 0) {
       return items.map((item) => ({ ...item, tags: [] }));
     }
@@ -43,14 +42,9 @@ WHERE link_id IN ${sql.in(linkIds)};`,
 WHERE id IN ${sql.in(tagIds)};`,
     );
 
-    const tagsById = new Map<number, TagInfo>(
-      tags.map((tag) => [
-        tag.id,
-        { id: tag.id, name: tag.name, emoji: tag.emoji, color: tag.color },
-      ]),
-    );
+    const tagsById = new Map<number, TagItem>(tags.map((tag) => [tag.id, tag]));
 
-    const tagsByLinkId = new Map<number, TagInfo[]>();
+    const tagsByLinkId = new Map<number, TagItem[]>();
 
     for (const row of linkTags) {
       const tag = tagsById.get(row.tag_id);

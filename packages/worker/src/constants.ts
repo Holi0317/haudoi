@@ -17,6 +17,20 @@
 export const MAX_EDIT_OPS = 30;
 
 /**
+ * Maximum number of tags allowed for a single link.
+ *
+ * No particular reason for this number, just want to have some reasonable limit to prevent abuse.
+ */
+export const MAX_TAG = 10;
+
+/**
+ * Maximum number of items to return in search results.
+ *
+ * This affects number of potentially expensive join operation in tag, so we want to have a reasonable limit here.
+ */
+export const MAX_SEARCH_ITEMS = 100;
+
+/**
  * Limit on simultaneous open connections.
  *
  * See https://developers.cloudflare.com/workers/platform/limits/

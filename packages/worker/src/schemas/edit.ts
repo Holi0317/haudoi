@@ -1,6 +1,6 @@
 import * as z from "zod";
 import * as zu from "../zod-utils";
-import { MAX_EDIT_OPS } from "../constants";
+import { MAX_EDIT_OPS, MAX_TAG } from "../constants";
 
 /**
  * Schema for insert object from client.
@@ -43,7 +43,7 @@ export const EditOpSchema = z.discriminatedUnion("op", [
   z.object({
     op: z.literal("set_tags"),
     id: z.number(),
-    tag_ids: z.array(z.int().positive()).max(100).default([]),
+    tag_ids: z.array(z.int().positive()).max(MAX_TAG).default([]),
   }),
   z.object({ op: z.literal("delete"), id: z.number() }),
 ]);
