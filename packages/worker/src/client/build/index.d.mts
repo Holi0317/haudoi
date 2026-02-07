@@ -177,7 +177,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
           } | {
             op: "set_bool";
             id: number;
-            field: "favorite" | "archive";
+            field: "archive" | "favorite";
             value: boolean;
           } | {
             op: "set_string";
@@ -717,7 +717,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             } | {
               op: "set_bool";
               id: number;
-              field: "favorite" | "archive";
+              field: "archive" | "favorite";
               value: boolean;
             } | {
               op: "set_string";
