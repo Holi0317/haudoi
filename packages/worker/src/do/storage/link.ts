@@ -28,7 +28,7 @@ export function useLink(ctx: DurableObjectState) {
    */
   const insert = (links: LinkInsertItem[]) => {
     // Collect min/max ID for return value. Assuming:
-    // 1. ID are always increasing (curtesy of AUTOINCREMENT)
+    // 1. ID are always increasing (courtesy of AUTOINCREMENT)
     // 2. There isn't any concurrent insert happening when we start inserting.
     //    This is guaranteed by DO concurrency model.
     //

@@ -11,7 +11,9 @@ import { MAX_EDIT_OPS } from "../constants";
  */
 export const InsertSchema = z.object({
   title: z.string().nullish(),
-  url: zu.httpUrl(),
+  url: zu.httpUrl().refine((url) => url.length <= 511, {
+    message: "URL must be at most 511 characters",
+  }),
   created_at: zu.unixEpochMs().optional(),
   archive: z.boolean().default(false),
   favorite: z.boolean().default(false),
@@ -62,7 +64,7 @@ export const EditBodySchema = z.object({
  * Use `processInsert` to convert from InsertSchema to this type.
  */
 export const InsertLinkItemSchema = InsertSchema.extend({
-  title: z.string().max(512),
+  title: z.string().max(511),
 });
 
 /**

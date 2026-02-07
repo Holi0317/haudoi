@@ -22,10 +22,6 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
 
     const { run } = useDBMigration(ctx);
     run(migrations);
-
-    const { edit } = useLink(this.ctx);
-
-    this.edit = edit;
   }
 
   /**
@@ -54,7 +50,7 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
    * It's just better to keep the DO instance around.
    */
   public deallocate() {
-    this.conn.void_(sql`TRUNCATE link;`);
+    this.conn.void_(sql`DELETE FROM link;`);
   }
 
   /**

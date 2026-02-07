@@ -11,6 +11,10 @@ export function useMeta(ctx: DurableObjectState) {
    */
   const getColo = async () => {
     const resp = await fetch("https://www.cloudflare.com/cdn-cgi/trace");
+    if (!resp.ok) {
+      return "unknown";
+    }
+
     const body = await resp.text();
 
     const match = body.match(/^colo=(.+)/m);
