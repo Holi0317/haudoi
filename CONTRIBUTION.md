@@ -1,3 +1,9 @@
+# Quick local run
+
+- **Install:** `pnpm install`
+- **Start development:** `pnpm run dev`
+- **Run tests:** `pnpm test`
+
 # SQL Guidelines
 
 Storage is Durable object, with SQLite database available per user. Some brief
