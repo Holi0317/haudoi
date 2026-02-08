@@ -7,6 +7,7 @@ import type {
   LinkInsertItem,
   SearchQueryType,
   TagCreateSchema,
+  TagUpdateSchema,
 } from "../../schemas";
 import type { Matcher } from "@haudoi/dsl";
 import { migrations } from "./migrations";
@@ -111,7 +112,7 @@ export class StorageDO extends DurableObject<CloudflareBindings> {
     return create(input);
   }
 
-  public updateTag(id: number, input: z.output<typeof TagCreateSchema>) {
+  public updateTag(id: number, input: z.output<typeof TagUpdateSchema>) {
     const { update } = useTag(this.ctx);
     return update(id, input);
   }
