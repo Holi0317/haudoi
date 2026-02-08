@@ -325,12 +325,6 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         cursor: string | null;
         count: number;
         items: {
-          tags: {
-            name: string;
-            emoji: string;
-            id: number;
-            color: string;
-          }[];
           id: number;
           title: string;
           url: string;
@@ -338,6 +332,13 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
           archive: boolean;
           created_at: number;
           note: string;
+          tags: {
+            id: number;
+            name: string;
+            color: string;
+            emoji: string;
+            created_at: number;
+          }[];
         }[];
         hasMore: boolean;
       };
@@ -1051,12 +1052,6 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           cursor: string | null;
           count: number;
           items: {
-            tags: {
-              name: string;
-              emoji: string;
-              id: number;
-              color: string;
-            }[];
             id: number;
             title: string;
             url: string;
@@ -1064,6 +1059,13 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             archive: boolean;
             created_at: number;
             note: string;
+            tags: {
+              id: number;
+              name: string;
+              color: string;
+              emoji: string;
+              created_at: number;
+            }[];
           }[];
           hasMore: boolean;
         };
