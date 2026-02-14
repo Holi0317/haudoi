@@ -1,9 +1,11 @@
 import { stringify } from "@std/csv";
 import { sql, useSql } from "../../composable/sql";
 import { LinkItemSchema } from "../../schemas";
+import { useTag } from "./tags";
 
 export function useBatch(ctx: DurableObjectState) {
   const conn = useSql(ctx);
+  const { attachTags } = useTag(ctx);
 
   /**
    * Export all stored links as csv
@@ -15,10 +17,15 @@ export function useBatch(ctx: DurableObjectState) {
       LinkItemSchema,
       sql`SELECT * FROM link ORDER BY id ASC`,
     );
+    const itemsWithTags = attachTags(items);
+    const exportItems = itemsWithTags.map(({ tags, ...item }) => ({
+      ...item,
+      tags: tags.map((tag) => tag.name).join(","),
+    }));
 
-    const columns = LinkItemSchema.keyof().options;
-
-    return stringify(items, { columns });
+    return stringify(exportItems, {
+      columns: [...LinkItemSchema.keyof().options, "tags"],
+    });
   };
 
   return { export_ };
