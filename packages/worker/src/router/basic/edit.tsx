@@ -3,13 +3,23 @@ import * as zu from "../../zod-utils";
 import { zv } from "../../composable/validator";
 import { factory } from "../factory";
 import { IDStringSchema, type EditOpSchema } from "../../schemas";
+import { MAX_TAG } from "../../constants";
 import { Layout } from "../../component/layout";
 import { LinkItemForm } from "../../component/LinkItemForm";
+
+const TagIdsSchema = z.preprocess((value) => {
+  if (value == null) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+}, z.array(z.coerce.number().int().positive()).max(MAX_TAG));
 
 const ItemEditSchema = z.object({
   archive: zu.checkboxBool(),
   favorite: zu.checkboxBool(),
   note: z.string().max(4096).optional(),
+  tags: TagIdsSchema,
 });
 
 export default factory
@@ -27,12 +37,19 @@ export default factory
       return c.text("not found", 404);
     }
 
+    const tagsResp = await c.get("client").tag.$get();
+
+    if (!tagsResp.ok) {
+      return c.json(await tagsResp.json(), tagsResp.status);
+    }
+
     const jason = await resp.json();
+    const { items: tags } = await tagsResp.json();
 
     return c.render(
       <Layout title="Edit">
         <a href="/basic">Back</a>
-        <LinkItemForm item={jason} />
+        <LinkItemForm item={jason} tags={tags} />
 
         <form method="post" action={`/basic/edit/${id}/delete`}>
           <input type="submit" value="Delete" />
@@ -76,6 +93,12 @@ export default factory
           value: form.note,
         });
       }
+
+      op.push({
+        op: "set_tags",
+        id,
+        tag_ids: form.tags,
+      });
 
       await c.get("client").edit.$post({
         json: {

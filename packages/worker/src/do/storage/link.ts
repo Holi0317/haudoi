@@ -19,10 +19,17 @@ export function useLink(ctx: DurableObjectState) {
    * Get link item by ID. Returns null if not found.
    */
   const get = (id: number) => {
-    return conn.maybeOne(
+    const item = conn.maybeOne(
       LinkItemSchema,
       sql`SELECT * FROM link WHERE id = ${id}`,
     );
+
+    if (!item) {
+      return null;
+    }
+
+    const itemsWithTags = attachTags([item]);
+    return itemsWithTags[0];
   };
 
   /**
