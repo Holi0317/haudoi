@@ -62,6 +62,10 @@ export default factory.createHandlers(
           <a href="/basic/bulk">Import / Export</a>
         </div>
 
+        <div>
+          <a href="/basic/tags">Manage tags</a>
+        </div>
+
         <InsertForm qs={qs} />
 
         <SearchToolbar query={query} />

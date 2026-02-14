@@ -14,7 +14,9 @@ export default factory
 
     const items = await stub.listTags();
 
-    return c.json({ items });
+    // Basically items. But we need to do this shallow clone to
+    // make generated client type work on typescript.
+    return c.json({ items: items.map((tag) => tag) });
   })
   .post("/", zv("json", TagCreateSchema), async (c) => {
     const stub = await getStorageStub(c);
