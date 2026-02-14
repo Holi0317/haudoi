@@ -109,8 +109,10 @@ const app = factory
           <dl>
             <dt>Database Size</dt>
             <dd title={stat.dbSize.toString()}>{formatBytes(stat.dbSize)}</dd>
-            <dt>Entry Count</dt>
-            <dd>{stat.count}</dd>
+            <dt>Link Count</dt>
+            <dd>{stat.linkCount}</dd>
+            <dt>Tag Count</dt>
+            <dd>{stat.tagCount}</dd>
             <dt>Max ID</dt>
             <dd>{stat.maxID}</dd>
             <dt>Colo</dt>
