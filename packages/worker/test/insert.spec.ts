@@ -2,13 +2,13 @@ import type * as z from "zod";
 import { fetchMock } from "cloudflare:test";
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
 import { createTestClient } from "./client";
-import type { InsertSchema, LinkItem } from "../src/schemas";
+import type { InsertSchema, LinkItemWithTags } from "../src/schemas";
 
 describe("Link insert", () => {
   interface TestCase {
     insert: Array<z.input<typeof InsertSchema>>;
 
-    insertResponse: LinkItem[];
+    insertResponse: LinkItemWithTags[];
   }
 
   async function testInsert(tc: TestCase) {
@@ -47,6 +47,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -72,6 +73,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -89,6 +91,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -106,6 +109,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -121,6 +125,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -142,6 +147,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -164,6 +170,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -186,6 +193,7 @@ describe("Link insert", () => {
           favorite: false,
           created_at: expect.any(Number),
           note: "",
+          tags: [],
         },
       ],
     });
@@ -211,6 +219,7 @@ describe("Link insert", () => {
           favorite: true,
           note: "This is a test note",
           created_at: expect.any(Number),
+          tags: [],
         },
       ],
     });
@@ -234,6 +243,7 @@ describe("Link insert", () => {
           favorite: false,
           note: "",
           created_at: 1620000000000,
+          tags: [],
         },
       ],
     });
@@ -280,6 +290,7 @@ describe("HTML title scraping", () => {
         favorite: false,
         note: "",
         archive: false,
+        tags: [],
       },
     ]);
   }

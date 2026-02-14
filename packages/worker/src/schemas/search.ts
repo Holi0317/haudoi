@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { MAX_SEARCH_ITEMS } from "../constants";
 
 /**
  * Query on searching API
@@ -15,7 +16,7 @@ export const SearchQuerySchema = z.object({
       null / undefined / empty string will be treated as noop.
       Note the client must keep other search parameters the same when paginating.`,
     }),
-  limit: z.coerce.number().min(1).max(300).default(30).meta({
+  limit: z.coerce.number().min(1).max(MAX_SEARCH_ITEMS).default(30).meta({
     description: `Limit items to return.`,
   }),
   order: z

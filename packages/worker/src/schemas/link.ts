@@ -1,5 +1,6 @@
 import * as z from "zod";
 import * as zu from "../zod-utils";
+import type { TagItem } from "./tags";
 
 /**
  * Schema for link item stored in database.
@@ -18,3 +19,10 @@ export const LinkItemSchema = z.strictObject({
  * Type for link item stored in database.
  */
 export type LinkItem = z.output<typeof LinkItemSchema>;
+
+/**
+ * Type for link item returned from API, including associated tags.
+ */
+export type LinkItemWithTags = LinkItem & {
+  tags: TagItem[];
+};

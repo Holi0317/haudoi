@@ -9,18 +9,27 @@ import type {
 import type { Matcher } from "@haudoi/dsl";
 import { matchersToSql } from "@haudoi/dsl";
 import { decodeCursor } from "../../composable/cursor";
+import { useTag } from "./tags";
 
 export function useLink(ctx: DurableObjectState) {
   const conn = useSql(ctx);
+  const { attachTags } = useTag(ctx);
 
   /**
    * Get link item by ID. Returns null if not found.
    */
   const get = (id: number) => {
-    return conn.maybeOne(
+    const item = conn.maybeOne(
       LinkItemSchema,
       sql`SELECT * FROM link WHERE id = ${id}`,
     );
+
+    if (!item) {
+      return null;
+    }
+
+    const itemsWithTags = attachTags([item]);
+    return itemsWithTags[0];
   };
 
   /**
@@ -103,6 +112,17 @@ ORDER BY id ASC;
           );
           break;
         }
+        case "set_tags": {
+          conn.void_(sql`DELETE FROM link_tag WHERE link_id = ${op.id};`);
+
+          for (const tagId of op.tag_ids) {
+            conn.void_(
+              sql`INSERT OR IGNORE INTO link_tag (link_id, tag_id)
+VALUES (${op.id}, ${tagId});`,
+            );
+          }
+          break;
+        }
         case "delete":
           conn.void_(sql`DELETE FROM link WHERE id = ${op.id}`);
           break;
@@ -121,8 +141,6 @@ ORDER BY id ASC;
 
     const matchersSql = matchersToSql(matchers, ["l.title", "l.url", "l.note"]);
 
-    const frag = sql`FROM link AS l WHERE ${matchersSql}`;
-
     const dir =
       param.order === "created_at_asc" ? sql.raw("asc") : sql.raw("desc");
     const comp = param.order === "created_at_asc" ? sql.raw(">") : sql.raw("<");
@@ -134,12 +152,15 @@ ORDER BY id ASC;
 
     const { count } = conn.one(
       CountSchema,
-      sql`SELECT COUNT(*) AS count ${frag}`,
+      sql`SELECT COUNT(*) AS count
+      FROM link AS l WHERE ${matchersSql}`,
     );
 
     const itemsPlus = conn.any(
       LinkItemSchema,
-      sql`SELECT * ${frag}
+      sql`SELECT *
+FROM link AS l
+WHERE ${matchersSql}
   AND (${cursorCond})
 ORDER BY created_at ${dir}, id ${dir}
 LIMIT ${param.limit + 1}`,
@@ -147,6 +168,8 @@ LIMIT ${param.limit + 1}`,
 
     const items = itemsPlus.slice(0, param.limit);
     const hasMore = itemsPlus.length > param.limit;
+
+    const itemsWithTags = attachTags(items);
 
     return {
       /**
@@ -157,7 +180,7 @@ LIMIT ${param.limit + 1}`,
        * Paginated items matching the filter. Length of this array will be <=
        * limit parameter.
        */
-      items,
+      items: itemsWithTags,
       /**
        * If true, this query can continue paginate.
        */

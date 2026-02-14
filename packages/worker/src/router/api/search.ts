@@ -6,6 +6,7 @@ import { SearchQuerySchema } from "../../schemas";
 import { factory } from "../factory";
 import { InvalidSearchQueryError } from "../../error/search";
 import { encodeCursor } from "../../composable/cursor";
+import { sql } from "../../composable/sql";
 
 /**
  * Field configuration for DSL search
@@ -35,6 +36,16 @@ const SEARCH_FIELDS: FieldConfig[] = [
     name: "note",
     type: "string",
     toSql: stringMatcher("l.note"),
+  },
+  {
+    name: "tag",
+    type: "string",
+    toSql: (value) => sql`EXISTS (
+SELECT 1 FROM link_tag
+  JOIN tag ON tag.id = link_tag.tag_id
+WHERE link_tag.link_id = l.id
+  AND lower(tag.name) = lower(${value})
+    )`,
   },
 ];
 

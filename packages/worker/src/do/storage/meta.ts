@@ -33,9 +33,14 @@ export function useMeta(ctx: DurableObjectState) {
 
     const dbSize = ctx.storage.sql.databaseSize;
 
-    const { count } = conn.one(
+    const { count: linkCount } = conn.one(
       CountSchema,
       sql`SELECT COUNT(*) AS count FROM link;`,
+    );
+
+    const { count: tagCount } = conn.one(
+      CountSchema,
+      sql`SELECT COUNT(*) AS count FROM tag;`,
     );
 
     const maxID = conn.one(
@@ -47,7 +52,8 @@ export function useMeta(ctx: DurableObjectState) {
       name: ctx.id.name,
       colo,
       dbSize,
-      count,
+      linkCount,
+      tagCount,
       maxID: maxID.count,
     };
   };

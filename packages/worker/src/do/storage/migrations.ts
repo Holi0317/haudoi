@@ -46,4 +46,32 @@ ALTER TABLE link ADD COLUMN note text NOT NULL DEFAULT '' CHECK (length(note) <=
 CREATE INDEX idx_link_created_at_sort ON link(created_at DESC, id DESC);
 `,
   },
+  {
+    name: "20260205-add-tags",
+    script: sql`
+CREATE TABLE tag (
+  id integer PRIMARY KEY AUTOINCREMENT,
+  -- Tag name, stored in original case but unique when compared case-insensitively
+  name text NOT NULL CHECK (length(name) > 0 AND length(name) <= 64),
+  -- Tag color as hex string (e.g., #FF5733). Validation done at application layer.
+  color text NOT NULL CHECK (length(color) = 7 AND color GLOB '#*'),
+  -- Optional emoji for the tag. Default to empty string if not provided.
+  emoji text NOT NULL CHECK (length(emoji) <= 8) DEFAULT '',
+  created_at integer NOT NULL DEFAULT (unixepoch('now', 'subsec') * 1000)
+);
+
+-- Case-insensitive unique index on tag name
+CREATE UNIQUE INDEX idx_tag_name_lower ON tag(lower(name));
+
+-- Junction table: links tags to links by numeric id
+CREATE TABLE link_tag (
+  link_id integer NOT NULL REFERENCES link(id) ON DELETE CASCADE,
+  tag_id integer NOT NULL REFERENCES tag(id) ON DELETE CASCADE,
+  PRIMARY KEY (link_id, tag_id)
+);
+
+-- Index for efficient lookup of links by tag
+CREATE INDEX idx_link_tag_tag_id ON link_tag(tag_id);
+`,
+  },
 ];

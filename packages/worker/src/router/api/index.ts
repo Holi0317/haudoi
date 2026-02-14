@@ -6,6 +6,7 @@ import itemApp from "./item";
 import searchApp from "./search";
 import editApp from "./edit";
 import bulkApp from "./bulk";
+import tagApp from "./tag";
 
 const app = factory
   .createApp()
@@ -13,6 +14,7 @@ const app = factory
   .use(requireSession({ action: "throw" }))
   .route("/image", imageApp)
   .route("/item", itemApp)
+  .route("/tag", tagApp)
   .route("/search", searchApp)
   .route("/edit", editApp)
   .route("/bulk", bulkApp);

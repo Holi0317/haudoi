@@ -12,3 +12,4 @@ export * from "./image";
 export * from "./link";
 export * from "./util";
 export * from "./search";
+export * from "./tags";

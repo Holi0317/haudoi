@@ -77,6 +77,7 @@ describe("Link edit", () => {
           title: "1",
           url: "http://1.com/",
           note: "Hello world",
+          tags: [],
         },
         {
           archive: false,
@@ -86,6 +87,7 @@ describe("Link edit", () => {
           title: "3",
           url: "http://3.com/",
           note: "",
+          tags: [],
         },
       ],
     });
@@ -106,6 +108,7 @@ describe("Link edit", () => {
         title: "1",
         url: "http://1.com/",
         note: "Hello world",
+        tags: [],
       },
     ]);
 
@@ -125,6 +128,7 @@ describe("Link edit", () => {
         title: "3",
         url: "http://3.com/",
         note: "",
+        tags: [],
       },
     ]);
   });
@@ -148,6 +152,7 @@ describe("Link edit", () => {
           title: "1",
           url: "http://1.com/",
           note: "",
+          tags: [],
         },
         {
           archive: false,
@@ -157,6 +162,7 @@ describe("Link edit", () => {
           title: "2",
           url: "http://2.com/",
           note: "",
+          tags: [],
         },
         {
           archive: false,
@@ -166,6 +172,7 @@ describe("Link edit", () => {
           title: "3",
           url: "http://3.com/",
           note: "",
+          tags: [],
         },
       ],
     });
@@ -186,6 +193,7 @@ describe("Link edit", () => {
           title: "1",
           url: "http://1.com/",
           note: "",
+          tags: [],
         },
         {
           archive: false,
@@ -195,6 +203,7 @@ describe("Link edit", () => {
           title: "2",
           url: "http://2.com/",
           note: "",
+          tags: [],
         },
         {
           archive: false,
@@ -204,6 +213,7 @@ describe("Link edit", () => {
           title: "3",
           url: "http://3.com/",
           note: "",
+          tags: [],
         },
       ],
     });

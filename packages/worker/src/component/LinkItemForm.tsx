@@ -1,12 +1,14 @@
-import type { LinkItem } from "../schemas";
+import type { LinkItemWithTags, TagItem } from "../schemas";
 import { DateDisplay } from "./DateDisplay";
 
 export interface LinkItemFormProps {
-  item: LinkItem;
+  item: LinkItemWithTags;
+  tags: TagItem[];
 }
 
 export function LinkItemForm(props: LinkItemFormProps) {
-  const { item } = props;
+  const { item, tags } = props;
+  const appliedTagIds = new Set(item.tags?.map((tag) => tag.id) ?? []);
 
   return (
     <form method="post">
@@ -51,6 +53,25 @@ export function LinkItemForm(props: LinkItemFormProps) {
           <textarea name="note" maxLength={4096}>
             {item.note}
           </textarea>
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Tags
+          <select name="tags" multiple={true}>
+            {tags.map((tag) => (
+              <option
+                key={tag.id}
+                value={tag.id}
+                selected={appliedTagIds.has(tag.id)}
+              >
+                {tag.emoji}
+
+                {tag.name}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 
