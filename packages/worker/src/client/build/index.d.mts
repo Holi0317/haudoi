@@ -1,6 +1,6 @@
 import * as hono_client0 from "hono/client";
 import { ClientRequestOptions } from "hono/client";
-import * as hono_utils_http_status17 from "hono/utils/http-status";
+import * as hono_utils_http_status20 from "hono/utils/http-status";
 import * as hono_types1 from "hono/types";
 import * as hono_hono_base0 from "hono/hono-base";
 
@@ -11,7 +11,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 }, "/"> | hono_types1.MergeSchemaPath<hono_types1.BlankSchema | hono_types1.MergeSchemaPath<{
@@ -20,7 +20,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: "You have been successfully logged out!";
       outputFormat: "text";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 }, "/logout"> | hono_types1.MergeSchemaPath<{
@@ -80,7 +80,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 } | hono_types1.MergeSchemaPath<{
@@ -97,7 +97,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 }, "/image"> | hono_types1.MergeSchemaPath<{
@@ -129,7 +129,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         note: string;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 }, "/item"> | hono_types1.MergeSchemaPath<{
@@ -138,100 +138,15 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {
         items: {
-          [x: number]: {
-            id: number;
-            name: string;
-            color: string;
-            emoji: string;
-            created_at: number;
-          };
-          length: number;
-          toString: null;
-          toLocaleString: null;
-          pop: null;
-          push: never;
-          concat: never;
-          join: never;
-          reverse: null;
-          shift: null;
-          slice: never;
-          sort: never;
-          splice: never;
-          unshift: never;
-          indexOf: never;
-          lastIndexOf: never;
-          every: never;
-          some: never;
-          forEach: never;
-          map: never;
-          filter: never;
-          reduce: never;
-          reduceRight: never;
-          find: never;
-          findIndex: never;
-          fill: never;
-          copyWithin: never;
-          entries: null;
-          keys: null;
-          values: null;
-          includes: never;
-          flatMap: never;
-          flat: never;
-          at: never;
-          findLast: never;
-          findLastIndex: never;
-          toReversed: null;
-          toSorted: never;
-          toSpliced: never;
-          with: never;
-          [Symbol.iterator]: null;
-          readonly [Symbol.unscopables]: {
-            [x: number]: boolean | undefined;
-            length?: boolean | undefined;
-            toString?: boolean | undefined;
-            toLocaleString?: boolean | undefined;
-            pop?: boolean | undefined;
-            push?: boolean | undefined;
-            concat?: boolean | undefined;
-            join?: boolean | undefined;
-            reverse?: boolean | undefined;
-            shift?: boolean | undefined;
-            slice?: boolean | undefined;
-            sort?: boolean | undefined;
-            splice?: boolean | undefined;
-            unshift?: boolean | undefined;
-            indexOf?: boolean | undefined;
-            lastIndexOf?: boolean | undefined;
-            every?: boolean | undefined;
-            some?: boolean | undefined;
-            forEach?: boolean | undefined;
-            map?: boolean | undefined;
-            filter?: boolean | undefined;
-            reduce?: boolean | undefined;
-            reduceRight?: boolean | undefined;
-            find?: boolean | undefined;
-            findIndex?: boolean | undefined;
-            fill?: boolean | undefined;
-            copyWithin?: boolean | undefined;
-            entries?: boolean | undefined;
-            keys?: boolean | undefined;
-            values?: boolean | undefined;
-            includes?: boolean | undefined;
-            flatMap?: boolean | undefined;
-            flat?: boolean | undefined;
-            at?: boolean | undefined;
-            findLast?: boolean | undefined;
-            findLastIndex?: boolean | undefined;
-            toReversed?: boolean | undefined;
-            toSorted?: boolean | undefined;
-            toSpliced?: boolean | undefined;
-            with?: boolean | undefined;
-          };
-          [Symbol.dispose]: null;
-        };
+          id: number;
+          name: string;
+          color: string;
+          emoji: string;
+          created_at: number;
+        }[];
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 } & {
@@ -294,7 +209,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         created_at: number;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 } & {
@@ -343,7 +258,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         hasMore: boolean;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 }, "/search"> | hono_types1.MergeSchemaPath<{
@@ -394,7 +309,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -415,7 +330,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   };
 } & {
@@ -456,7 +371,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } | hono_types1.MergeSchemaPath<{
@@ -511,7 +426,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -552,7 +467,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -589,13 +504,118 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/bulk">, "/basic"> | hono_types1.MergeSchemaPath<{
+}, "/bulk"> | hono_types1.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
+    };
+  };
+} & {
+  "/:id": {
+    $get: {
+      input: {
+        param: {
+          id: string;
+        };
+      };
+      output: {};
+      outputFormat: string;
+      status: hono_utils_http_status20.StatusCode;
+    };
+  };
+} & {
+  "/": {
+    $post: {
+      input: {
+        form: {
+          name: string;
+          color: string;
+          emoji?: string | undefined;
+        };
+      };
+      output: undefined;
+      outputFormat: "redirect";
+      status: 302;
+    };
+  };
+} & {
+  "/:id": {
+    $post: {
+      input: {
+        param: {
+          id: string;
+        };
+      } & {
+        form: {
+          name?: string | undefined;
+          color?: string | undefined;
+          emoji?: string | undefined;
+        };
+      };
+      output: undefined;
+      outputFormat: "redirect";
+      status: 302;
+    } | {
+      input: {
+        param: {
+          id: string;
+        };
+      } & {
+        form: {
+          name?: string | undefined;
+          color?: string | undefined;
+          emoji?: string | undefined;
+        };
+      };
+      output: {
+        id: number;
+        name: string;
+        color: string;
+        emoji: string;
+        created_at: number;
+      } | {
+        message: string;
+      };
+      outputFormat: "json";
+      status: 100 | 102 | 103 | 200 | 201 | 202 | 203 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 305 | 306 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511 | -1;
+    };
+  };
+} & {
+  "/:id/delete": {
+    $get: {
+      input: {
+        param: {
+          id: string;
+        };
+      };
+      output: {};
+      outputFormat: string;
+      status: hono_utils_http_status20.StatusCode;
+    };
+  };
+} & {
+  "/:id/delete": {
+    $post: {
+      input: {
+        param: {
+          id: string;
+        };
+      };
+      output: undefined;
+      outputFormat: "redirect";
+      status: 302;
+    };
+  };
+}, "/tags">, "/basic"> | hono_types1.MergeSchemaPath<{
+  "/": {
+    $get: {
+      input: {};
+      output: {};
+      outputFormat: string;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -608,7 +628,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -621,7 +641,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -656,7 +676,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -669,7 +689,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types1.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   };
 } & {
@@ -721,7 +741,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   }>;
 } & {
@@ -731,7 +751,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: "You have been successfully logged out!";
         outputFormat: "text";
-        status: hono_utils_http_status17.ContentfulStatusCode;
+        status: hono_utils_http_status20.ContentfulStatusCode;
       };
     }>;
   };
@@ -800,7 +820,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status17.ContentfulStatusCode;
+      status: hono_utils_http_status20.ContentfulStatusCode;
     };
   }>;
 } & {
@@ -818,7 +838,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status17.StatusCode;
+        status: hono_utils_http_status20.StatusCode;
       };
     }>;
   };
@@ -853,7 +873,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             note: string;
           };
           outputFormat: "json";
-          status: hono_utils_http_status17.ContentfulStatusCode;
+          status: hono_utils_http_status20.ContentfulStatusCode;
         };
       }>;
     };
@@ -865,100 +885,15 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: {
           items: {
-            [x: number]: {
-              id: number;
-              name: string;
-              color: string;
-              emoji: string;
-              created_at: number;
-            };
-            length: number;
-            toString: null;
-            toLocaleString: null;
-            pop: null;
-            push: never;
-            concat: never;
-            join: never;
-            reverse: null;
-            shift: null;
-            slice: never;
-            sort: never;
-            splice: never;
-            unshift: never;
-            indexOf: never;
-            lastIndexOf: never;
-            every: never;
-            some: never;
-            forEach: never;
-            map: never;
-            filter: never;
-            reduce: never;
-            reduceRight: never;
-            find: never;
-            findIndex: never;
-            fill: never;
-            copyWithin: never;
-            entries: null;
-            keys: null;
-            values: null;
-            includes: never;
-            flatMap: never;
-            flat: never;
-            at: never;
-            findLast: never;
-            findLastIndex: never;
-            toReversed: null;
-            toSorted: never;
-            toSpliced: never;
-            with: never;
-            [Symbol.iterator]: null;
-            readonly [Symbol.unscopables]: {
-              [x: number]: boolean | undefined;
-              length?: boolean | undefined;
-              toString?: boolean | undefined;
-              toLocaleString?: boolean | undefined;
-              pop?: boolean | undefined;
-              push?: boolean | undefined;
-              concat?: boolean | undefined;
-              join?: boolean | undefined;
-              reverse?: boolean | undefined;
-              shift?: boolean | undefined;
-              slice?: boolean | undefined;
-              sort?: boolean | undefined;
-              splice?: boolean | undefined;
-              unshift?: boolean | undefined;
-              indexOf?: boolean | undefined;
-              lastIndexOf?: boolean | undefined;
-              every?: boolean | undefined;
-              some?: boolean | undefined;
-              forEach?: boolean | undefined;
-              map?: boolean | undefined;
-              filter?: boolean | undefined;
-              reduce?: boolean | undefined;
-              reduceRight?: boolean | undefined;
-              find?: boolean | undefined;
-              findIndex?: boolean | undefined;
-              fill?: boolean | undefined;
-              copyWithin?: boolean | undefined;
-              entries?: boolean | undefined;
-              keys?: boolean | undefined;
-              values?: boolean | undefined;
-              includes?: boolean | undefined;
-              flatMap?: boolean | undefined;
-              flat?: boolean | undefined;
-              at?: boolean | undefined;
-              findLast?: boolean | undefined;
-              findLastIndex?: boolean | undefined;
-              toReversed?: boolean | undefined;
-              toSorted?: boolean | undefined;
-              toSpliced?: boolean | undefined;
-              with?: boolean | undefined;
-            };
-            [Symbol.dispose]: null;
-          };
+            id: number;
+            name: string;
+            color: string;
+            emoji: string;
+            created_at: number;
+          }[];
         };
         outputFormat: "json";
-        status: hono_utils_http_status17.ContentfulStatusCode;
+        status: hono_utils_http_status20.ContentfulStatusCode;
       };
       $post: {
         input: {
@@ -1021,7 +956,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             created_at: number;
           };
           outputFormat: "json";
-          status: hono_utils_http_status17.ContentfulStatusCode;
+          status: hono_utils_http_status20.ContentfulStatusCode;
         };
         $delete: {
           input: {
@@ -1070,7 +1005,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           hasMore: boolean;
         };
         outputFormat: "json";
-        status: hono_utils_http_status17.ContentfulStatusCode;
+        status: hono_utils_http_status20.ContentfulStatusCode;
       };
     }>;
   };
@@ -1126,7 +1061,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           input: {};
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status17.StatusCode;
+          status: hono_utils_http_status20.StatusCode;
         };
       }>;
     };
@@ -1151,7 +1086,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             } | null;
           };
           outputFormat: "json";
-          status: hono_utils_http_status17.ContentfulStatusCode;
+          status: hono_utils_http_status20.ContentfulStatusCode;
         };
         $post: {
           input: {
@@ -1191,7 +1126,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   }>;
 } & {
@@ -1252,7 +1187,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status17.StatusCode;
+          status: hono_utils_http_status20.StatusCode;
         };
         $post: {
           input: {
@@ -1299,7 +1234,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status17.StatusCode;
+        status: hono_utils_http_status20.StatusCode;
       };
       $post: {
         input: {
@@ -1335,12 +1270,120 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
     }>;
   };
 } & {
+  basic: {
+    tags: hono_client0.ClientRequest<string, "/basic/tags", {
+      $get: {
+        input: {};
+        output: {};
+        outputFormat: string;
+        status: hono_utils_http_status20.StatusCode;
+      };
+      $post: {
+        input: {
+          form: {
+            name: string;
+            color: string;
+            emoji?: string | undefined;
+          };
+        };
+        output: undefined;
+        outputFormat: "redirect";
+        status: 302;
+      };
+    }>;
+  };
+} & {
+  basic: {
+    tags: {
+      ":id": hono_client0.ClientRequest<string, "/basic/tags/:id", {
+        $get: {
+          input: {
+            param: {
+              id: string;
+            };
+          };
+          output: {};
+          outputFormat: string;
+          status: hono_utils_http_status20.StatusCode;
+        };
+        $post: {
+          input: {
+            param: {
+              id: string;
+            };
+          } & {
+            form: {
+              name?: string | undefined;
+              color?: string | undefined;
+              emoji?: string | undefined;
+            };
+          };
+          output: undefined;
+          outputFormat: "redirect";
+          status: 302;
+        } | {
+          input: {
+            param: {
+              id: string;
+            };
+          } & {
+            form: {
+              name?: string | undefined;
+              color?: string | undefined;
+              emoji?: string | undefined;
+            };
+          };
+          output: {
+            id: number;
+            name: string;
+            color: string;
+            emoji: string;
+            created_at: number;
+          } | {
+            message: string;
+          };
+          outputFormat: "json";
+          status: 100 | 102 | 103 | 200 | 201 | 202 | 203 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 305 | 306 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511 | -1;
+        };
+      }>;
+    };
+  };
+} & {
+  basic: {
+    tags: {
+      ":id": {
+        delete: hono_client0.ClientRequest<string, "/basic/tags/:id/delete", {
+          $get: {
+            input: {
+              param: {
+                id: string;
+              };
+            };
+            output: {};
+            outputFormat: string;
+            status: hono_utils_http_status20.StatusCode;
+          };
+          $post: {
+            input: {
+              param: {
+                id: string;
+              };
+            };
+            output: undefined;
+            outputFormat: "redirect";
+            status: 302;
+          };
+        }>;
+      };
+    };
+  };
+} & {
   admin: hono_client0.ClientRequest<string, "/admin", {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status17.StatusCode;
+      status: hono_utils_http_status20.StatusCode;
     };
   }>;
 } & {
@@ -1354,7 +1397,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status17.StatusCode;
+        status: hono_utils_http_status20.StatusCode;
       };
     }>;
   };
@@ -1370,7 +1413,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status17.StatusCode;
+          status: hono_utils_http_status20.StatusCode;
         };
       }>;
     };
@@ -1413,7 +1456,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status17.StatusCode;
+          status: hono_utils_http_status20.StatusCode;
         };
         $post: {
           input: {
@@ -1423,7 +1466,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status17.StatusCode;
+          status: hono_utils_http_status20.StatusCode;
         };
       }>;
     };
