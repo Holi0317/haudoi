@@ -13,7 +13,7 @@ part of 'search_response.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$SearchResponse implements DiagnosticableTreeMixin {
+mixin _$SearchResponse {
 
  int get count; bool get hasMore; String? get cursor; List<Link> get items;
 /// Create a copy of SearchResponse
@@ -25,12 +25,6 @@ $SearchResponseCopyWith<SearchResponse> get copyWith => _$SearchResponseCopyWith
   /// Serializes this SearchResponse to a JSON map.
   Map<String, dynamic> toJson();
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'SearchResponse'))
-    ..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('items', items));
-}
 
 @override
 bool operator ==(Object other) {
@@ -42,7 +36,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,count,hasMore,cursor,const DeepCollectionEquality().hash(items));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'SearchResponse(count: $count, hasMore: $hasMore, cursor: $cursor, items: $items)';
 }
 
@@ -217,7 +211,7 @@ return $default(_that.count,_that.hasMore,_that.cursor,_that.items);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _SearchResponse with DiagnosticableTreeMixin implements SearchResponse {
+class _SearchResponse implements SearchResponse {
   const _SearchResponse({required this.count, required this.hasMore, this.cursor, required final  List<Link> items}): _items = items;
   factory _SearchResponse.fromJson(Map<String, dynamic> json) => _$SearchResponseFromJson(json);
 
@@ -242,12 +236,6 @@ _$SearchResponseCopyWith<_SearchResponse> get copyWith => __$SearchResponseCopyW
 Map<String, dynamic> toJson() {
   return _$SearchResponseToJson(this, );
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'SearchResponse'))
-    ..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('cursor', cursor))..add(DiagnosticsProperty('items', items));
-}
 
 @override
 bool operator ==(Object other) {
@@ -259,7 +247,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,count,hasMore,cursor,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'SearchResponse(count: $count, hasMore: $hasMore, cursor: $cursor, items: $items)';
 }
 

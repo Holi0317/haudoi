@@ -8,7 +8,7 @@ part 'search_query.freezed.dart';
 abstract class SearchQuery with _$SearchQuery {
   const SearchQuery._();
 
-  @Assert('limit >= 1 && limit <= 300', 'Limit must be between 1 and 300')
+  @Assert('limit >= 1 && limit <= 100', 'Limit must be between 1 and 100')
   const factory SearchQuery({
     /// DSL search query string. Empty string means no filters applied. See repository README.md for documentation.
     String? query,

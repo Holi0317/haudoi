@@ -10,6 +10,7 @@ import '../models/link.dart';
 import '../models/search_query.dart';
 import '../models/search_response.dart';
 import '../models/server_info.dart';
+import '../models/tag.dart';
 
 class RequestException implements Exception {
   final String path;
@@ -163,6 +164,55 @@ class ApiRepository {
         abortTrigger: abortTrigger,
       );
     }
+  }
+
+  /// List all tags.
+  Future<TagListResponse> listTags({Future<void>? abortTrigger}) async {
+    final resp = await _request('GET', '/tag', abortTrigger: abortTrigger);
+
+    final responseBodyString = await resp.stream.bytesToString();
+    final jsonResponse = jsonDecode(responseBodyString);
+    return TagListResponse.fromJson(jsonResponse as Map<String, dynamic>);
+  }
+
+  /// Create a new tag.
+  Future<Tag> createTag(
+    TagCreateBody body, {
+    Future<void>? abortTrigger,
+  }) async {
+    final resp = await _request(
+      'POST',
+      '/tag',
+      body: body.toJson(),
+      abortTrigger: abortTrigger,
+    );
+
+    final responseBodyString = await resp.stream.bytesToString();
+    final jsonResponse = jsonDecode(responseBodyString);
+    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
+  }
+
+  /// Update an existing tag.
+  Future<Tag> updateTag(
+    int id,
+    TagUpdateBody body, {
+    Future<void>? abortTrigger,
+  }) async {
+    final resp = await _request(
+      'PATCH',
+      '/tag/$id',
+      body: body.toJson(),
+      abortTrigger: abortTrigger,
+    );
+
+    final responseBodyString = await resp.stream.bytesToString();
+    final jsonResponse = jsonDecode(responseBodyString);
+    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
+  }
+
+  /// Delete a tag by ID.
+  Future<void> deleteTag(int id, {Future<void>? abortTrigger}) async {
+    await _request('DELETE', '/tag/$id', abortTrigger: abortTrigger);
   }
 
   /// Get url for requesting image preview for a link.

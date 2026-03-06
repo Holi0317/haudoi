@@ -31,6 +31,10 @@ EditOp _$EditOpFromJson(
           return EditOpDelete.fromJson(
             json
           );
+                case 'set_tags':
+          return EditOpSetTags.fromJson(
+            json
+          );
         
           default:
             throw CheckedFromJsonException(
@@ -120,14 +124,15 @@ extension EditOpPatterns on EditOp {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditOpInsert value)?  insert,TResult Function( EditOpSetBool value)?  setBool,TResult Function( EditOpSetString value)?  setString,TResult Function( EditOpDelete value)?  delete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditOpInsert value)?  insert,TResult Function( EditOpSetBool value)?  setBool,TResult Function( EditOpSetString value)?  setString,TResult Function( EditOpDelete value)?  delete,TResult Function( EditOpSetTags value)?  setTags,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case EditOpInsert() when insert != null:
 return insert(_that);case EditOpSetBool() when setBool != null:
 return setBool(_that);case EditOpSetString() when setString != null:
 return setString(_that);case EditOpDelete() when delete != null:
-return delete(_that);case _:
+return delete(_that);case EditOpSetTags() when setTags != null:
+return setTags(_that);case _:
   return orElse();
 
 }
@@ -145,14 +150,15 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditOpInsert value)  insert,required TResult Function( EditOpSetBool value)  setBool,required TResult Function( EditOpSetString value)  setString,required TResult Function( EditOpDelete value)  delete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditOpInsert value)  insert,required TResult Function( EditOpSetBool value)  setBool,required TResult Function( EditOpSetString value)  setString,required TResult Function( EditOpDelete value)  delete,required TResult Function( EditOpSetTags value)  setTags,}){
 final _that = this;
 switch (_that) {
 case EditOpInsert():
 return insert(_that);case EditOpSetBool():
 return setBool(_that);case EditOpSetString():
 return setString(_that);case EditOpDelete():
-return delete(_that);}
+return delete(_that);case EditOpSetTags():
+return setTags(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -166,14 +172,15 @@ return delete(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditOpInsert value)?  insert,TResult? Function( EditOpSetBool value)?  setBool,TResult? Function( EditOpSetString value)?  setString,TResult? Function( EditOpDelete value)?  delete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditOpInsert value)?  insert,TResult? Function( EditOpSetBool value)?  setBool,TResult? Function( EditOpSetString value)?  setString,TResult? Function( EditOpDelete value)?  delete,TResult? Function( EditOpSetTags value)?  setTags,}){
 final _that = this;
 switch (_that) {
 case EditOpInsert() when insert != null:
 return insert(_that);case EditOpSetBool() when setBool != null:
 return setBool(_that);case EditOpSetString() when setString != null:
 return setString(_that);case EditOpDelete() when delete != null:
-return delete(_that);case _:
+return delete(_that);case EditOpSetTags() when setTags != null:
+return setTags(_that);case _:
   return null;
 
 }
@@ -190,13 +197,14 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  insert,TResult Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setBool,TResult Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setString,TResult Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  insert,TResult Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setBool,TResult Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setString,TResult Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  delete,TResult Function( int id,  List<int> tagIds, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setTags,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case EditOpInsert() when insert != null:
 return insert(_that.title,_that.url,_that.archive,_that.favorite,_that.note,_that.createdAt,_that.appliedAt);case EditOpSetBool() when setBool != null:
 return setBool(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpSetString() when setString != null:
 return setString(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpDelete() when delete != null:
-return delete(_that.id,_that.appliedAt);case _:
+return delete(_that.id,_that.appliedAt);case EditOpSetTags() when setTags != null:
+return setTags(_that.id,_that.tagIds,_that.appliedAt);case _:
   return orElse();
 
 }
@@ -214,13 +222,14 @@ return delete(_that.id,_that.appliedAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  insert,required TResult Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  setBool,required TResult Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  setString,required TResult Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  insert,required TResult Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  setBool,required TResult Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  setString,required TResult Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  delete,required TResult Function( int id,  List<int> tagIds, @JsonKey(includeIfNull: false)  DateTime? appliedAt)  setTags,}) {final _that = this;
 switch (_that) {
 case EditOpInsert():
 return insert(_that.title,_that.url,_that.archive,_that.favorite,_that.note,_that.createdAt,_that.appliedAt);case EditOpSetBool():
 return setBool(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpSetString():
 return setString(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpDelete():
-return delete(_that.id,_that.appliedAt);}
+return delete(_that.id,_that.appliedAt);case EditOpSetTags():
+return setTags(_that.id,_that.tagIds,_that.appliedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -234,13 +243,14 @@ return delete(_that.id,_that.appliedAt);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  insert,TResult? Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setBool,TResult? Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setString,TResult? Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? title,  String url, @JsonKey(includeIfNull: false)  bool? archive, @JsonKey(includeIfNull: false)  bool? favorite, @JsonKey(includeIfNull: false)  String? note, @JsonKey(name: 'created_at', includeIfNull: false)  int? createdAt, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  insert,TResult? Function( int id,  EditOpBoolField field,  bool value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setBool,TResult? Function( int id,  EditOpStringField field,  String value, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setString,TResult? Function( int id, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  delete,TResult? Function( int id,  List<int> tagIds, @JsonKey(includeIfNull: false)  DateTime? appliedAt)?  setTags,}) {final _that = this;
 switch (_that) {
 case EditOpInsert() when insert != null:
 return insert(_that.title,_that.url,_that.archive,_that.favorite,_that.note,_that.createdAt,_that.appliedAt);case EditOpSetBool() when setBool != null:
 return setBool(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpSetString() when setString != null:
 return setString(_that.id,_that.field,_that.value,_that.appliedAt);case EditOpDelete() when delete != null:
-return delete(_that.id,_that.appliedAt);case _:
+return delete(_that.id,_that.appliedAt);case EditOpSetTags() when setTags != null:
+return setTags(_that.id,_that.tagIds,_that.appliedAt);case _:
   return null;
 
 }
@@ -559,6 +569,89 @@ class _$EditOpDeleteCopyWithImpl<$Res>
   return _then(EditOpDelete(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,appliedAt: freezed == appliedAt ? _self.appliedAt : appliedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class EditOpSetTags extends EditOp {
+  const EditOpSetTags({required this.id, required final  List<int> tagIds, @JsonKey(includeIfNull: false) this.appliedAt, final  String? $type}): _tagIds = tagIds,$type = $type ?? 'set_tags',super._();
+  factory EditOpSetTags.fromJson(Map<String, dynamic> json) => _$EditOpSetTagsFromJson(json);
+
+ final  int id;
+ final  List<int> _tagIds;
+ List<int> get tagIds {
+  if (_tagIds is EqualUnmodifiableListView) return _tagIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tagIds);
+}
+
+@override@JsonKey(includeIfNull: false) final  DateTime? appliedAt;
+
+@JsonKey(name: 'op')
+final String $type;
+
+
+/// Create a copy of EditOp
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EditOpSetTagsCopyWith<EditOpSetTags> get copyWith => _$EditOpSetTagsCopyWithImpl<EditOpSetTags>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$EditOpSetTagsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditOpSetTags&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._tagIds, _tagIds)&&(identical(other.appliedAt, appliedAt) || other.appliedAt == appliedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_tagIds),appliedAt);
+
+@override
+String toString() {
+  return 'EditOp.setTags(id: $id, tagIds: $tagIds, appliedAt: $appliedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EditOpSetTagsCopyWith<$Res> implements $EditOpCopyWith<$Res> {
+  factory $EditOpSetTagsCopyWith(EditOpSetTags value, $Res Function(EditOpSetTags) _then) = _$EditOpSetTagsCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, List<int> tagIds,@JsonKey(includeIfNull: false) DateTime? appliedAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$EditOpSetTagsCopyWithImpl<$Res>
+    implements $EditOpSetTagsCopyWith<$Res> {
+  _$EditOpSetTagsCopyWithImpl(this._self, this._then);
+
+  final EditOpSetTags _self;
+  final $Res Function(EditOpSetTags) _then;
+
+/// Create a copy of EditOp
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? tagIds = null,Object? appliedAt = freezed,}) {
+  return _then(EditOpSetTags(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,tagIds: null == tagIds ? _self._tagIds : tagIds // ignore: cast_nullable_to_non_nullable
+as List<int>,appliedAt: freezed == appliedAt ? _self.appliedAt : appliedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

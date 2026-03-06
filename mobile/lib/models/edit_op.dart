@@ -52,6 +52,12 @@ sealed class EditOp with _$EditOp {
     @JsonKey(includeIfNull: false) DateTime? appliedAt,
   }) = EditOpDelete;
 
+  const factory EditOp.setTags({
+    required int id,
+    required List<int> tagIds,
+    @JsonKey(includeIfNull: false) DateTime? appliedAt,
+  }) = EditOpSetTags;
+
   factory EditOp.fromJson(Map<String, dynamic> json) => _$EditOpFromJson(json);
 
   /// Returns the associated link ID if applicable, or null for insert operations.
@@ -60,5 +66,6 @@ sealed class EditOp with _$EditOp {
     EditOpSetBool(:final id) => id,
     EditOpSetString(:final id) => id,
     EditOpDelete(:final id) => id,
+    EditOpSetTags(:final id) => id,
   };
 }
