@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 /// Check if a given string is a valid web URI (http or https).
 ///
 /// Returns the parsed Uri if valid, otherwise returns null.
@@ -43,4 +45,16 @@ String formatRelativeDate(int createdAtMs) {
     final years = (difference.inDays / 365).floor();
     return '${years}y ago';
   }
+}
+
+/// Convert a CSS hex color string (e.g. "#RRGGBB") to a Flutter [Color] object.
+///
+/// Assumes the input is always in the format "#RRGGBB". If the input is invalid, this will throw a [FormatException].
+///
+/// Should be safe for our use case since the server have strong validation for tag colors.
+///
+/// Ref: https://stackoverflow.com/a/57516443
+Color colorFromHex(String hexColor) {
+  final hexCode = hexColor.replaceAll('#', '');
+  return Color(int.parse('FF$hexCode', radix: 16));
 }

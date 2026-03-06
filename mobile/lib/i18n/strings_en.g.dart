@@ -49,6 +49,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
+	late final TranslationsEditTagsEn editTags = TranslationsEditTagsEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
 	Map<String, String> get linkAction => {
@@ -58,6 +59,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'unfavorite': 'Unfavorite',
 		'select': 'Select',
 		'edit': 'Edit',
+		'editTags': 'Edit Tags',
 		'share': 'Share',
 		'delete': 'Delete',
 	};
@@ -251,6 +253,20 @@ class TranslationsEditEn {
 	late final TranslationsEditFieldsEn fields = TranslationsEditFieldsEn.internal(_root);
 }
 
+// Path: editTags
+class TranslationsEditTagsEn {
+	TranslationsEditTagsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Edit Tags'
+	String get title => 'Edit Tags';
+
+	late final TranslationsEditTagsEmptyEn empty = TranslationsEditTagsEmptyEn.internal(_root);
+}
+
 // Path: editBar
 class TranslationsEditBarEn {
 	TranslationsEditBarEn.internal(this._root);
@@ -359,6 +375,21 @@ class TranslationsEditFieldsEn {
 	String get archive => 'Archive';
 }
 
+// Path: editTags.empty
+class TranslationsEditTagsEmptyEn {
+	TranslationsEditTagsEmptyEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'No tags available. Create tags to organize your links.'
+	String get message => 'No tags available. Create tags to organize your links.';
+
+	/// en: 'Create Tag'
+	String get button => 'Create Tag';
+}
+
 // Path: filter.queries
 class TranslationsFilterQueriesEn {
 	TranslationsFilterQueriesEn.internal(this._root);
@@ -456,6 +487,9 @@ extension on Translations {
 			'edit.fields.note' => 'Note',
 			'edit.fields.favorite' => 'Favorite',
 			'edit.fields.archive' => 'Archive',
+			'editTags.title' => 'Edit Tags',
+			'editTags.empty.message' => 'No tags available. Create tags to organize your links.',
+			'editTags.empty.button' => 'Create Tag',
 			'editBar.title' => ({required Object count}) => '${count} items',
 			'editBar.cancel' => 'Cancel selection',
 			'editBar.more' => 'More actions',
@@ -477,6 +511,7 @@ extension on Translations {
 			'linkAction.unfavorite' => 'Unfavorite',
 			'linkAction.select' => 'Select',
 			'linkAction.edit' => 'Edit',
+			'linkAction.editTags' => 'Edit Tags',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
 			_ => null,

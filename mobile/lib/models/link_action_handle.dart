@@ -38,6 +38,7 @@ extension LinkActionHandle on LinkAction {
     return switch (this) {
       LinkAction.share => false,
       LinkAction.edit => false,
+      LinkAction.editTags => false,
       LinkAction.select => false,
       _ => true,
     };
@@ -57,6 +58,9 @@ extension LinkActionHandle on LinkAction {
         return;
       case LinkAction.edit:
         await _editPage(context, link);
+        return;
+      case LinkAction.editTags:
+        await _editTagsPage(context, link);
         return;
       case LinkAction.select:
         controller.select(link);
@@ -128,8 +132,12 @@ extension LinkActionHandle on LinkAction {
         false,
       ),
       // These are handled separately and should never reach here
-      LinkAction.share || LinkAction.edit || LinkAction.select =>
-        throw StateError('Action $this should not be handled by _handleLinks'),
+      LinkAction.share ||
+      LinkAction.edit ||
+      LinkAction.editTags ||
+      LinkAction.select => throw StateError(
+        'Action $this should not be handled by _handleLinks',
+      ),
     };
   }
 }
@@ -190,6 +198,15 @@ Future<bool> _setBoolField(
 Future<void> _editPage(BuildContext context, Link link) async {
   context.push(
     Uri(path: '/edit', queryParameters: {'id': link.id.toString()}).toString(),
+  );
+}
+
+Future<void> _editTagsPage(BuildContext context, Link link) async {
+  context.push(
+    Uri(
+      path: '/edit/tags',
+      queryParameters: {'id': link.id.toString()},
+    ).toString(),
   );
 }
 

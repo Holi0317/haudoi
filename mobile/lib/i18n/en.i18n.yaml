@@ -60,6 +60,11 @@ edit:
     note: Note
     favorite: Favorite
     archive: Archive
+editTags:
+  title: Edit Tags
+  empty:
+    message: "No tags available. Create tags to organize your links."
+    button: "Create Tag"
 
 # ==== Widgets / components ====
 editBar:
@@ -91,5 +96,6 @@ filter:
   unfavorite: Unfavorite
   select: Select
   edit: Edit
+  editTags: Edit Tags
   share: Share
   delete: Delete

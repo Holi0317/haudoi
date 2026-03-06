@@ -84,7 +84,7 @@ extension on Link {
           result = result.copyWith(
             tags: tagIds
                 .map(
-                  (id) => tags.firstWhere(
+                  (id) => this.tags.firstWhere(
                     (tag) => tag.id == id,
                     orElse: () => Tag(
                       id: id,

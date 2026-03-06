@@ -218,3 +218,41 @@ final class SearchFamily extends $Family
   @override
   String toString() => r'searchProvider';
 }
+
+@ProviderFor(tags)
+final tagsProvider = TagsProvider._();
+
+final class TagsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Tag>>,
+          List<Tag>,
+          FutureOr<List<Tag>>
+        >
+    with $FutureModifier<List<Tag>>, $FutureProvider<List<Tag>> {
+  TagsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'tagsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tagsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Tag>> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<Tag>> create(Ref ref) {
+    return tags(ref);
+  }
+}
+
+String _$tagsHash() => r'5b92ff7f30a118384feacdd113ee18dc8bd2fe75';
