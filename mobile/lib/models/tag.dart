@@ -1,91 +1,46 @@
-class Tag {
-  final int id;
-  final String name;
-  final String color;
-  final String emoji;
-  final int createdAt;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const Tag({
-    required this.id,
-    required this.name,
-    required this.color,
-    required this.emoji,
-    required this.createdAt,
-  });
+part 'tag.freezed.dart';
+part 'tag.g.dart';
 
-  factory Tag.fromJson(Map<String, dynamic> json) {
-    return Tag(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      color: json['color'] as String,
-      emoji: json['emoji'] as String,
-      createdAt: json['created_at'] as int,
-    );
-  }
+@freezed
+abstract class Tag with _$Tag {
+  const factory Tag({
+    required int id,
+    required String name,
+    required String color,
+    required String emoji,
+    @JsonKey(name: 'created_at') required int createdAt,
+  }) = _Tag;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'color': color,
-      'emoji': emoji,
-      'created_at': createdAt,
-    };
-  }
+  factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
 
-class TagListResponse {
-  final List<Tag> items;
+@freezed
+abstract class TagListResponse with _$TagListResponse {
+  const factory TagListResponse({required List<Tag> items}) = _TagListResponse;
 
-  const TagListResponse({required this.items});
-
-  factory TagListResponse.fromJson(Map<String, dynamic> json) {
-    final itemsRaw = (json['items'] as List<dynamic>? ?? const []);
-
-    return TagListResponse(
-      items: itemsRaw
-          .map((item) => Tag.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+  factory TagListResponse.fromJson(Map<String, dynamic> json) =>
+      _$TagListResponseFromJson(json);
 }
 
-class TagCreateBody {
-  final String name;
-  final String color;
-  final String? emoji;
+@freezed
+abstract class TagCreateBody with _$TagCreateBody {
+  const factory TagCreateBody({
+    required String name,
+    required String color,
+    String? emoji,
+  }) = _TagCreateBody;
 
-  const TagCreateBody({
-    required this.name,
-    required this.color,
-    this.emoji,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'color': color,
-      if (emoji != null) 'emoji': emoji,
-    };
-  }
+  factory TagCreateBody.fromJson(Map<String, dynamic> json) =>
+      _$TagCreateBodyFromJson(json);
 }
 
-class TagUpdateBody {
-  final String? name;
-  final String? color;
-  final String? emoji;
+@freezed
+abstract class TagUpdateBody with _$TagUpdateBody {
+  const factory TagUpdateBody({String? name, String? color, String? emoji}) =
+      _TagUpdateBody;
 
-  const TagUpdateBody({
-    this.name,
-    this.color,
-    this.emoji,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (name != null) 'name': name,
-      if (color != null) 'color': color,
-      if (emoji != null) 'emoji': emoji,
-    };
-  }
+  factory TagUpdateBody.fromJson(Map<String, dynamic> json) =>
+      _$TagUpdateBodyFromJson(json);
 }
