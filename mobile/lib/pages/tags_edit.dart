@@ -6,6 +6,7 @@ import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
+import '../utils.dart';
 
 class EditTagPage extends ConsumerStatefulWidget {
   const EditTagPage({super.key, required this.id});
@@ -85,14 +86,14 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
       name: _nameController.text.trim().isEmpty
           ? tag.name
           : _nameController.text.trim(),
-      color: _isValidHexColor(_normalizedColorHex)
+      color: isValidHexColor(_normalizedColorHex)
           ? _normalizedColorHex
           : tag.color,
       emoji: _emojiController.text,
       createdAt: tag.createdAt,
     );
 
-    final canSave = _hasUnsavedChanges && _isValidHexColor(_normalizedColorHex);
+    final canSave = _hasUnsavedChanges && isValidHexColor(_normalizedColorHex);
 
     return Scaffold(
       appBar: AppBar(
@@ -150,12 +151,10 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
             labelText: t.colorPicker.label,
             hintText: '#RRGGBB',
             onChanged: (value) {
-              _colorController.text = _normalizeHexColor(value);
+              _colorController.text = normalizeHexColor(value);
               setState(() {});
             },
           ),
-          const SizedBox(height: 12),
-          const SizedBox(height: 8),
           // TODO: Add "search existing links" for this tag
         ],
       ),
@@ -180,7 +179,7 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
     _initialTag = tag;
     _nameController.text = tag.name;
     _emojiController.text = tag.emoji;
-    _colorController.text = _normalizeHexColor(tag.color);
+    _colorController.text = normalizeHexColor(tag.color);
   }
 
   bool get _hasUnsavedChanges {
@@ -191,7 +190,7 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
 
     return _nameController.text.trim() != initial.name ||
         _emojiController.text != initial.emoji ||
-        _normalizedColorHex != _normalizeHexColor(initial.color);
+        _normalizedColorHex != normalizeHexColor(initial.color);
   }
 
   Future<void> _confirmDiscardAndMaybePop() async {
@@ -232,7 +231,7 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
     final nextEmoji = _emojiController.text;
     final nextColor = _normalizedColorHex;
 
-    if (nextName.isEmpty || !_isValidHexColor(nextColor)) {
+    if (nextName.isEmpty || !isValidHexColor(nextColor)) {
       return;
     }
 
@@ -274,25 +273,7 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
     }
   }
 
-  bool _isValidHexColor(String value) {
-    return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(value);
-  }
-
   String get _normalizedColorHex {
-    return _normalizeHexColor(_colorController.text);
-  }
-
-  String _normalizeHexColor(String value) {
-    var normalized = value.trim().toUpperCase();
-
-    if (normalized.isEmpty) {
-      return normalized;
-    }
-
-    if (!normalized.startsWith('#')) {
-      normalized = '#$normalized';
-    }
-
-    return normalized;
+    return normalizeHexColor(_colorController.text);
   }
 }

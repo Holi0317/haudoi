@@ -51,6 +51,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
 	late final TranslationsTagEditEn tagEdit = TranslationsTagEditEn.internal(_root);
 	late final TranslationsTagNewEn tagNew = TranslationsTagNewEn.internal(_root);
+	late final TranslationsTagsEn tags = TranslationsTagsEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
 	Map<String, String> get linkAction => {
@@ -307,6 +308,36 @@ class TranslationsTagNewEn {
 	late final TranslationsTagNewToastEn toast = TranslationsTagNewToastEn.internal(_root);
 }
 
+// Path: tags
+class TranslationsTagsEn {
+	TranslationsTagsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tags'
+	String get title => 'Tags';
+
+	/// en: 'Create Tag'
+	String get createTag => 'Create Tag';
+
+	late final TranslationsTagsEmptyEn empty = TranslationsTagsEmptyEn.internal(_root);
+
+	/// en: 'Edit tag'
+	String get editTooltip => 'Edit tag';
+
+	/// en: 'Delete tag'
+	String get deleteTooltip => 'Delete tag';
+
+	late final TranslationsTagsDeleteDialogEn deleteDialog = TranslationsTagsDeleteDialogEn.internal(_root);
+
+	/// en: 'Created ${date}'
+	String createdLabel({required Object date}) => 'Created ${date}';
+
+	late final TranslationsTagsToastEn toast = TranslationsTagsToastEn.internal(_root);
+}
+
 // Path: editBar
 class TranslationsEditBarEn {
 	TranslationsEditBarEn.internal(this._root);
@@ -360,8 +391,8 @@ class TranslationsColorPickerEn {
 	/// en: 'Color'
 	String get label => 'Color';
 
-	/// en: 'Use'
-	String get invalidRgbHex => 'Use';
+	/// en: 'Use #RRGGBB format'
+	String get invalidRgbHex => 'Use #RRGGBB format';
 
 	/// en: 'Pick color'
 	String get pickColor => 'Pick color';
@@ -531,6 +562,54 @@ class TranslationsTagNewToastEn {
 	String createFailed({required Object error}) => 'Failed to create tag: ${error}';
 }
 
+// Path: tags.empty
+class TranslationsTagsEmptyEn {
+	TranslationsTagsEmptyEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'No tags yet'
+	String get message => 'No tags yet';
+
+	/// en: 'Create Tag'
+	String get button => 'Create Tag';
+}
+
+// Path: tags.deleteDialog
+class TranslationsTagsDeleteDialogEn {
+	TranslationsTagsDeleteDialogEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Delete Tag'
+	String get title => 'Delete Tag';
+
+	/// en: 'Are you sure you want to delete "${name}"?'
+	String deleteMessage({required Object name}) => 'Are you sure you want to delete "${name}"?';
+
+	/// en: 'Links with this tag will remain unchanged.'
+	String get warning => 'Links with this tag will remain unchanged.';
+}
+
+// Path: tags.toast
+class TranslationsTagsToastEn {
+	TranslationsTagsToastEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tag deleted'
+	String get deleted => 'Tag deleted';
+
+	/// en: 'Failed to delete tag: $error'
+	String deleteFailed({required Object error}) => 'Failed to delete tag: ${error}';
+}
+
 // Path: filter.queries
 class TranslationsFilterQueriesEn {
 	TranslationsFilterQueriesEn.internal(this._root);
@@ -666,6 +745,18 @@ extension on Translations {
 			'tagNew.discardMessage' => 'Your unsaved tag draft will be lost.',
 			'tagNew.toast.created' => 'Tag created',
 			'tagNew.toast.createFailed' => ({required Object error}) => 'Failed to create tag: ${error}',
+			'tags.title' => 'Tags',
+			'tags.createTag' => 'Create Tag',
+			'tags.empty.message' => 'No tags yet',
+			'tags.empty.button' => 'Create Tag',
+			'tags.editTooltip' => 'Edit tag',
+			'tags.deleteTooltip' => 'Delete tag',
+			'tags.deleteDialog.title' => 'Delete Tag',
+			'tags.deleteDialog.deleteMessage' => ({required Object name}) => 'Are you sure you want to delete "${name}"?',
+			'tags.deleteDialog.warning' => 'Links with this tag will remain unchanged.',
+			'tags.createdLabel' => ({required Object date}) => 'Created ${date}',
+			'tags.toast.deleted' => 'Tag deleted',
+			'tags.toast.deleteFailed' => ({required Object error}) => 'Failed to delete tag: ${error}',
 			'editBar.title' => ({required Object count}) => '${count} items',
 			'editBar.cancel' => 'Cancel selection',
 			'editBar.more' => 'More actions',
@@ -691,7 +782,7 @@ extension on Translations {
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
 			'colorPicker.label' => 'Color',
-			'colorPicker.invalidRgbHex' => 'Use',
+			'colorPicker.invalidRgbHex' => 'Use #RRGGBB format',
 			'colorPicker.pickColor' => 'Pick color',
 			'colorPicker.pickCustomColor' => 'Pick custom color',
 			'colorPicker.presetColors' => 'Preset colors',

@@ -91,6 +91,22 @@ tagNew:
   toast:
     created: Tag created
     createFailed: "Failed to create tag: $error"
+tags:
+  title: Tags
+  createTag: Create Tag
+  empty:
+    message: No tags yet
+    button: Create Tag
+  editTooltip: Edit tag
+  deleteTooltip: Delete tag
+  deleteDialog:
+    title: Delete Tag
+    deleteMessage: 'Are you sure you want to delete "${name}"?'
+    warning: Links with this tag will remain unchanged.
+  createdLabel: "Created ${date}"
+  toast:
+    deleted: Tag deleted
+    deleteFailed: "Failed to delete tag: $error"
 
 # ==== Widgets / components ====
 editBar:
@@ -128,7 +144,7 @@ filter:
 
 colorPicker:
   label: Color
-  invalidRgbHex: Use #RRGGBB format
+  invalidRgbHex: "Use #RRGGBB format"
   pickColor: Pick color
   pickCustomColor: Pick custom color
   presetColors: Preset colors

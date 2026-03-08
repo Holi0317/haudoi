@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../i18n/strings.g.dart';
+import '../utils.dart';
 
 class ColorPickerField extends StatelessWidget {
   const ColorPickerField({
@@ -38,8 +39,8 @@ class ColorPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final normalized = _normalizeHexColor(value);
-    final isValid = _isValidHexColor(normalized);
+    final normalized = normalizeHexColor(value);
+    final isValid = isValidHexColor(normalized);
     final displayColor = _safeColorFromHex(
       normalized,
       fallback: presetColors.first,
@@ -86,7 +87,7 @@ class ColorPickerField extends StatelessWidget {
 
   Future<void> _openPickerDialog(BuildContext context) async {
     var selectedColor = _safeColorFromHex(
-      _normalizeHexColor(value),
+      normalizeHexColor(value),
       fallback: presetColors.first,
     );
 
@@ -218,26 +219,9 @@ class ColorPickerField extends StatelessWidget {
     );
   }
 
-  String _normalizeHexColor(String input) {
-    var normalized = input.trim().toUpperCase();
-    if (normalized.isEmpty) {
-      return normalized;
-    }
-
-    if (!normalized.startsWith('#')) {
-      normalized = '#$normalized';
-    }
-
-    return normalized;
-  }
-
-  bool _isValidHexColor(String hex) {
-    return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(hex);
-  }
-
   Color _safeColorFromHex(String input, {required Color fallback}) {
-    final normalized = _normalizeHexColor(input);
-    if (!_isValidHexColor(normalized)) {
+    final normalized = normalizeHexColor(input);
+    if (!isValidHexColor(normalized)) {
       return fallback;
     }
 

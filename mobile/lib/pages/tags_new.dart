@@ -6,6 +6,7 @@ import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
+import '../utils.dart';
 
 class NewTagPage extends ConsumerStatefulWidget {
   const NewTagPage({super.key});
@@ -32,14 +33,14 @@ class _NewTagPageState extends ConsumerState<NewTagPage> {
   Widget build(BuildContext context) {
     final canSave =
         _nameController.text.trim().isNotEmpty &&
-        _isValidHexColor(_normalizedColorHex);
+        isValidHexColor(_normalizedColorHex);
 
     final previewTag = Tag(
       id: 0,
       name: _nameController.text.trim().isEmpty
           ? t.tagNew.defaultName
           : _nameController.text.trim(),
-      color: _isValidHexColor(_normalizedColorHex)
+      color: isValidHexColor(_normalizedColorHex)
           ? _normalizedColorHex
           : '#546E7A',
       emoji: _emojiController.text,
@@ -111,7 +112,7 @@ class _NewTagPageState extends ConsumerState<NewTagPage> {
               labelText: t.colorPicker.label,
               hintText: '#RRGGBB',
               onChanged: (value) {
-                _colorController.text = _normalizeHexColor(value);
+                _colorController.text = normalizeHexColor(value);
                 setState(() {});
               },
             ),
@@ -127,24 +128,7 @@ class _NewTagPageState extends ConsumerState<NewTagPage> {
         _normalizedColorHex != '#546E7A';
   }
 
-  String get _normalizedColorHex => _normalizeHexColor(_colorController.text);
-
-  String _normalizeHexColor(String value) {
-    var normalized = value.trim().toUpperCase();
-    if (normalized.isEmpty) {
-      return normalized;
-    }
-
-    if (!normalized.startsWith('#')) {
-      normalized = '#$normalized';
-    }
-
-    return normalized;
-  }
-
-  bool _isValidHexColor(String value) {
-    return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(value);
-  }
+  String get _normalizedColorHex => normalizeHexColor(_colorController.text);
 
   Future<void> _confirmDiscardAndMaybePop() async {
     if (!_hasUnsavedChanges) {
@@ -184,7 +168,7 @@ class _NewTagPageState extends ConsumerState<NewTagPage> {
     final emoji = _emojiController.text.trim();
     final color = _normalizedColorHex;
 
-    if (name.isEmpty || !_isValidHexColor(color)) {
+    if (name.isEmpty || !isValidHexColor(color)) {
       return;
     }
 

@@ -47,11 +47,35 @@ String formatRelativeDate(int createdAtMs) {
   }
 }
 
+/// Normalize a hex color string by trimming, converting to uppercase, and ensuring it starts with '#'.
+///
+/// Examples:
+///   '546e7a' -> '#546E7A'
+///   ' #546e7a ' -> '#546E7A'
+///   '' -> ''
+String normalizeHexColor(String value) {
+  var normalized = value.trim().toUpperCase();
+  if (normalized.isEmpty) {
+    return normalized;
+  }
+
+  if (!normalized.startsWith('#')) {
+    normalized = '#$normalized';
+  }
+
+  return normalized;
+}
+
+/// Validate if a string is a valid CSS hex color (e.g., "#RRGGBB").
+bool isValidHexColor(String value) {
+  return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(value);
+}
+
 /// Convert a CSS hex color string (e.g. "#RRGGBB") to a Flutter [Color] object.
 ///
 /// Assumes the input is always in the format "#RRGGBB". If the input is invalid, this will throw a [FormatException].
 ///
-/// Should be safe for our use case since the server have strong validation for tag colors.
+/// Should be safe for our use case since the server has strong validation for tag colors.
 ///
 /// Ref: https://stackoverflow.com/a/57516443
 Color colorFromHex(String hexColor) {

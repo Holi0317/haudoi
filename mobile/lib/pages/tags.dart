@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../components/tag_chip.dart';
+import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
 import '../utils.dart';
@@ -23,10 +24,10 @@ class _TagsPageState extends ConsumerState<TagsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tags'),
+        title: Text(t.tags.title),
         actions: [
           IconButton(
-            tooltip: 'Create Tag',
+            tooltip: t.tags.createTag,
             onPressed: () => context.push('/tags/new'),
             icon: const Icon(Icons.add),
           ),
@@ -52,11 +53,11 @@ class _TagsPageState extends ConsumerState<TagsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 12,
           children: [
-            const Text('No tags yet'),
+            Text(t.tags.empty.message),
             FilledButton.icon(
               onPressed: () => context.push('/tags/new'),
               icon: const Icon(Icons.add),
-              label: const Text('Create Tag'),
+              label: Text(t.tags.empty.button),
             ),
           ],
         ),
@@ -80,10 +81,9 @@ class _TagsPageState extends ConsumerState<TagsPage> {
               alignment: Alignment.centerLeft,
               child: TagChip(tag: tag),
             ),
-            // title: Text(
-            //   tag.emoji.isNotEmpty ? '${tag.emoji} ${tag.name}' : tag.name,
-            // ),
-            subtitle: Text('Created ${formatRelativeDate(tag.createdAt)}'),
+            subtitle: Text(
+              t.tags.createdLabel(date: formatRelativeDate(tag.createdAt)),
+            ),
             trailing: _deletingTagIds.contains(tag.id)
                 ? const SizedBox(
                     height: 20,
@@ -94,14 +94,14 @@ class _TagsPageState extends ConsumerState<TagsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        tooltip: 'Edit tag',
+                        tooltip: t.tags.editTooltip,
                         icon: const Icon(Icons.edit_outlined),
                         onPressed: () {
                           context.push('/tags/edit?id=${tag.id}');
                         },
                       ),
                       IconButton(
-                        tooltip: 'Delete tag',
+                        tooltip: t.tags.deleteTooltip,
                         icon: const Icon(Icons.delete_outline),
                         onPressed: () => _deleteTag(tag),
                       ),
@@ -118,15 +118,15 @@ class _TagsPageState extends ConsumerState<TagsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Tag'),
+          title: Text(t.tags.deleteDialog.title),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8.0,
             children: [
-              Text('Are you sure you want to delete "${tag.name}"?'),
+              Text(t.tags.deleteDialog.deleteMessage(name: tag.name)),
               Text(
-                'Links with this tag will remain unchanged.',
+                t.tags.deleteDialog.warning,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -134,11 +134,11 @@ class _TagsPageState extends ConsumerState<TagsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(t.dialogs.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Delete'),
+              child: Text(t.dialogs.delete),
             ),
           ],
         );
@@ -165,15 +165,15 @@ class _TagsPageState extends ConsumerState<TagsPage> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Tag deleted')));
+      ).showSnackBar(SnackBar(content: Text(t.tags.toast.deleted)));
     } catch (error) {
       if (!mounted) {
         return;
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to delete tag: $error')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(t.tags.toast.deleteFailed(error: '$error'))),
+      );
     } finally {
       if (mounted) {
         setState(() {
