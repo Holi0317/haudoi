@@ -11,6 +11,7 @@ import 'link_favicon.dart';
 import 'link_image_preview.dart';
 import 'long_press_menu.dart';
 import 'selection_controller.dart';
+import 'tag_chip.dart';
 
 /// A tile widget that displays a [Link] with actions.
 ///
@@ -135,34 +136,50 @@ class _LinkTileState extends ConsumerState<LinkTile>
           title: Text(
             widget.item.title.isEmpty ? uri.toString() : widget.item.title,
           ),
-          subtitle: Row(
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LinkFavicon(item: widget.item),
-              Flexible(
-                child: Text(
-                  uri.host,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Text(' • ${formatRelativeDate(widget.item.createdAt)}'),
-              if (widget.item.favorite)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.pink,
-                    size: theme.textTheme.bodyMedium!.fontSize,
+              Row(
+                children: [
+                  LinkFavicon(item: widget.item),
+                  Flexible(
+                    child: Text(
+                      uri.host,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
+                  Text(' • ${formatRelativeDate(widget.item.createdAt)}'),
+                  if (widget.item.favorite)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Icon(
+                        Icons.favorite,
+                        color: Colors.pink,
+                        size: theme.textTheme.bodyMedium!.fontSize,
+                      ),
+                    ),
 
-              if (widget.item.archive)
+                  if (widget.item.archive)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Icon(
+                        Icons.archive,
+                        color: theme.colorScheme.onSurfaceVariant,
+                        size: theme.textTheme.bodyMedium!.fontSize,
+                      ),
+                    ),
+                ],
+              ),
+              if (widget.item.tags.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Icon(
-                    Icons.archive,
-                    color: theme.colorScheme.onSurfaceVariant,
-                    size: theme.textTheme.bodyMedium!.fontSize,
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Wrap(
+                    spacing: 4.0,
+                    runSpacing: 4.0,
+                    children: widget.item.tags
+                        .map((tag) => TagChip(tag: tag))
+                        .toList(),
                   ),
                 ),
             ],

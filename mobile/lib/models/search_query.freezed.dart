@@ -221,7 +221,7 @@ return $default(_that.query,_that.cursor,_that.limit,_that.order);case _:
 
 
 class _SearchQuery extends SearchQuery with DiagnosticableTreeMixin {
-  const _SearchQuery({this.query, this.cursor, this.limit = 30, this.order = SearchOrder.createdAtDesc}): assert(limit >= 1 && limit <= 300, 'Limit must be between 1 and 300'),super._();
+  const _SearchQuery({this.query, this.cursor, this.limit = 30, this.order = SearchOrder.createdAtDesc}): assert(limit >= 1 && limit <= 100, 'Limit must be between 1 and 100'),super._();
   
 
 /// DSL search query string. Empty string means no filters applied. See repository README.md for documentation.

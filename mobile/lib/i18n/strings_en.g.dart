@@ -49,6 +49,9 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
+	late final TranslationsTagEditEn tagEdit = TranslationsTagEditEn.internal(_root);
+	late final TranslationsTagNewEn tagNew = TranslationsTagNewEn.internal(_root);
+	late final TranslationsTagsEn tags = TranslationsTagsEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
 	Map<String, String> get linkAction => {
@@ -58,9 +61,11 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'unfavorite': 'Unfavorite',
 		'select': 'Select',
 		'edit': 'Edit',
+		'editTags': 'Edit Tags',
 		'share': 'Share',
 		'delete': 'Delete',
 	};
+	late final TranslationsColorPickerEn colorPicker = TranslationsColorPickerEn.internal(_root);
 }
 
 // Path: dialogs
@@ -182,6 +187,9 @@ class TranslationsSettingsEn {
 	/// en: 'Preferences'
 	String get preferences => 'Preferences';
 
+	/// en: 'Tag Management'
+	String get tag => 'Tag Management';
+
 	/// en: 'About'
 	String get about => 'About';
 
@@ -249,6 +257,85 @@ class TranslationsEditEn {
 	String get title => 'Edit Link';
 
 	late final TranslationsEditFieldsEn fields = TranslationsEditFieldsEn.internal(_root);
+	late final TranslationsEditTagsEn tags = TranslationsEditTagsEn.internal(_root);
+}
+
+// Path: tagEdit
+class TranslationsTagEditEn {
+	TranslationsTagEditEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Edit Tag'
+	String get title => 'Edit Tag';
+
+	/// en: 'Preview'
+	String get preview => 'Preview';
+
+	/// en: 'Failed to load tags: $error'
+	String loadingError({required Object error}) => 'Failed to load tags: ${error}';
+
+	/// en: 'Tag $id not found'
+	String notFound({required Object id}) => 'Tag ${id} not found';
+
+	late final TranslationsTagEditFieldsEn fields = TranslationsTagEditFieldsEn.internal(_root);
+	late final TranslationsTagEditDiscardEn discard = TranslationsTagEditDiscardEn.internal(_root);
+	late final TranslationsTagEditToastEn toast = TranslationsTagEditToastEn.internal(_root);
+}
+
+// Path: tagNew
+class TranslationsTagNewEn {
+	TranslationsTagNewEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'New Tag'
+	String get title => 'New Tag';
+
+	/// en: 'Create'
+	String get create => 'Create';
+
+	/// en: 'New Tag'
+	String get defaultName => 'New Tag';
+
+	/// en: 'Your unsaved tag draft will be lost.'
+	String get discardMessage => 'Your unsaved tag draft will be lost.';
+
+	late final TranslationsTagNewToastEn toast = TranslationsTagNewToastEn.internal(_root);
+}
+
+// Path: tags
+class TranslationsTagsEn {
+	TranslationsTagsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tags'
+	String get title => 'Tags';
+
+	/// en: 'Create Tag'
+	String get createTag => 'Create Tag';
+
+	late final TranslationsTagsEmptyEn empty = TranslationsTagsEmptyEn.internal(_root);
+
+	/// en: 'Edit tag'
+	String get editTooltip => 'Edit tag';
+
+	/// en: 'Delete tag'
+	String get deleteTooltip => 'Delete tag';
+
+	late final TranslationsTagsDeleteDialogEn deleteDialog = TranslationsTagsDeleteDialogEn.internal(_root);
+
+	/// en: 'Created ${date}'
+	String createdLabel({required Object date}) => 'Created ${date}';
+
+	late final TranslationsTagsToastEn toast = TranslationsTagsToastEn.internal(_root);
 }
 
 // Path: editBar
@@ -291,6 +378,39 @@ class TranslationsFilterEn {
 
 	late final TranslationsFilterQueriesEn queries = TranslationsFilterQueriesEn.internal(_root);
 	late final TranslationsFilterOrderEn order = TranslationsFilterOrderEn.internal(_root);
+}
+
+// Path: colorPicker
+class TranslationsColorPickerEn {
+	TranslationsColorPickerEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Color'
+	String get label => 'Color';
+
+	/// en: 'Use #RRGGBB format'
+	String get invalidRgbHex => 'Use #RRGGBB format';
+
+	/// en: 'Pick color'
+	String get pickColor => 'Pick color';
+
+	/// en: 'Pick custom color'
+	String get pickCustomColor => 'Pick custom color';
+
+	/// en: 'Preset colors'
+	String get presetColors => 'Preset colors';
+
+	/// en: 'Randomize'
+	String get randomize => 'Randomize';
+
+	/// en: 'Custom'
+	String get custom => 'Custom';
+
+	/// en: 'Use color'
+	String get useColor => 'Use color';
 }
 
 // Path: settings.theme
@@ -359,6 +479,137 @@ class TranslationsEditFieldsEn {
 	String get archive => 'Archive';
 }
 
+// Path: edit.tags
+class TranslationsEditTagsEn {
+	TranslationsEditTagsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Edit Tags'
+	String get title => 'Edit Tags';
+
+	late final TranslationsEditTagsEmptyEn empty = TranslationsEditTagsEmptyEn.internal(_root);
+}
+
+// Path: tagEdit.fields
+class TranslationsTagEditFieldsEn {
+	TranslationsTagEditFieldsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Title'
+	String get title => 'Title';
+
+	/// en: 'Emoji'
+	String get emoji => 'Emoji';
+
+	/// en: 'e.g. 🔖'
+	String get emojiHint => 'e.g. 🔖';
+}
+
+// Path: tagEdit.discard
+class TranslationsTagEditDiscardEn {
+	TranslationsTagEditDiscardEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Discard changes?'
+	String get title => 'Discard changes?';
+
+	/// en: 'Your unsaved changes will be lost.'
+	String get message => 'Your unsaved changes will be lost.';
+
+	/// en: 'Stay'
+	String get stay => 'Stay';
+
+	/// en: 'Discard'
+	String get discard => 'Discard';
+}
+
+// Path: tagEdit.toast
+class TranslationsTagEditToastEn {
+	TranslationsTagEditToastEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tag updated'
+	String get updated => 'Tag updated';
+
+	/// en: 'Failed to update tag: $error'
+	String updateFailed({required Object error}) => 'Failed to update tag: ${error}';
+}
+
+// Path: tagNew.toast
+class TranslationsTagNewToastEn {
+	TranslationsTagNewToastEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tag created'
+	String get created => 'Tag created';
+
+	/// en: 'Failed to create tag: $error'
+	String createFailed({required Object error}) => 'Failed to create tag: ${error}';
+}
+
+// Path: tags.empty
+class TranslationsTagsEmptyEn {
+	TranslationsTagsEmptyEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'No tags yet'
+	String get message => 'No tags yet';
+
+	/// en: 'Create Tag'
+	String get button => 'Create Tag';
+}
+
+// Path: tags.deleteDialog
+class TranslationsTagsDeleteDialogEn {
+	TranslationsTagsDeleteDialogEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Delete Tag'
+	String get title => 'Delete Tag';
+
+	/// en: 'Are you sure you want to delete "${name}"?'
+	String deleteMessage({required Object name}) => 'Are you sure you want to delete "${name}"?';
+
+	/// en: 'Links with this tag will remain unchanged.'
+	String get warning => 'Links with this tag will remain unchanged.';
+}
+
+// Path: tags.toast
+class TranslationsTagsToastEn {
+	TranslationsTagsToastEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tag deleted'
+	String get deleted => 'Tag deleted';
+
+	/// en: 'Failed to delete tag: $error'
+	String deleteFailed({required Object error}) => 'Failed to delete tag: ${error}';
+}
+
 // Path: filter.queries
 class TranslationsFilterQueriesEn {
 	TranslationsFilterQueriesEn.internal(this._root);
@@ -401,6 +652,21 @@ class TranslationsFilterOrderEn {
 	String get oldestFirst => 'Oldest First';
 }
 
+// Path: edit.tags.empty
+class TranslationsEditTagsEmptyEn {
+	TranslationsEditTagsEmptyEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'No tags available. Create tags to organize your links.'
+	String get message => 'No tags available. Create tags to organize your links.';
+
+	/// en: 'Create Tag'
+	String get button => 'Create Tag';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -428,6 +694,7 @@ extension on Translations {
 			'share.success' => 'Link added',
 			'settings.title' => 'Settings',
 			'settings.preferences' => 'Preferences',
+			'settings.tag' => 'Tag Management',
 			'settings.about' => 'About',
 			'settings.helpSupport' => 'Help & Support',
 			'settings.appVersion' => 'App Version',
@@ -456,6 +723,40 @@ extension on Translations {
 			'edit.fields.note' => 'Note',
 			'edit.fields.favorite' => 'Favorite',
 			'edit.fields.archive' => 'Archive',
+			'edit.tags.title' => 'Edit Tags',
+			'edit.tags.empty.message' => 'No tags available. Create tags to organize your links.',
+			'edit.tags.empty.button' => 'Create Tag',
+			'tagEdit.title' => 'Edit Tag',
+			'tagEdit.preview' => 'Preview',
+			'tagEdit.loadingError' => ({required Object error}) => 'Failed to load tags: ${error}',
+			'tagEdit.notFound' => ({required Object id}) => 'Tag ${id} not found',
+			'tagEdit.fields.title' => 'Title',
+			'tagEdit.fields.emoji' => 'Emoji',
+			'tagEdit.fields.emojiHint' => 'e.g. 🔖',
+			'tagEdit.discard.title' => 'Discard changes?',
+			'tagEdit.discard.message' => 'Your unsaved changes will be lost.',
+			'tagEdit.discard.stay' => 'Stay',
+			'tagEdit.discard.discard' => 'Discard',
+			'tagEdit.toast.updated' => 'Tag updated',
+			'tagEdit.toast.updateFailed' => ({required Object error}) => 'Failed to update tag: ${error}',
+			'tagNew.title' => 'New Tag',
+			'tagNew.create' => 'Create',
+			'tagNew.defaultName' => 'New Tag',
+			'tagNew.discardMessage' => 'Your unsaved tag draft will be lost.',
+			'tagNew.toast.created' => 'Tag created',
+			'tagNew.toast.createFailed' => ({required Object error}) => 'Failed to create tag: ${error}',
+			'tags.title' => 'Tags',
+			'tags.createTag' => 'Create Tag',
+			'tags.empty.message' => 'No tags yet',
+			'tags.empty.button' => 'Create Tag',
+			'tags.editTooltip' => 'Edit tag',
+			'tags.deleteTooltip' => 'Delete tag',
+			'tags.deleteDialog.title' => 'Delete Tag',
+			'tags.deleteDialog.deleteMessage' => ({required Object name}) => 'Are you sure you want to delete "${name}"?',
+			'tags.deleteDialog.warning' => 'Links with this tag will remain unchanged.',
+			'tags.createdLabel' => ({required Object date}) => 'Created ${date}',
+			'tags.toast.deleted' => 'Tag deleted',
+			'tags.toast.deleteFailed' => ({required Object error}) => 'Failed to delete tag: ${error}',
 			'editBar.title' => ({required Object count}) => '${count} items',
 			'editBar.cancel' => 'Cancel selection',
 			'editBar.more' => 'More actions',
@@ -477,8 +778,17 @@ extension on Translations {
 			'linkAction.unfavorite' => 'Unfavorite',
 			'linkAction.select' => 'Select',
 			'linkAction.edit' => 'Edit',
+			'linkAction.editTags' => 'Edit Tags',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
+			'colorPicker.label' => 'Color',
+			'colorPicker.invalidRgbHex' => 'Use #RRGGBB format',
+			'colorPicker.pickColor' => 'Pick color',
+			'colorPicker.pickCustomColor' => 'Pick custom color',
+			'colorPicker.presetColors' => 'Preset colors',
+			'colorPicker.randomize' => 'Randomize',
+			'colorPicker.custom' => 'Custom',
+			'colorPicker.useColor' => 'Use color',
 			_ => null,
 		};
 	}

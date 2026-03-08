@@ -92,3 +92,23 @@ Map<String, dynamic> _$EditOpDeleteToJson(EditOpDelete instance) =>
       'appliedAt': ?instance.appliedAt?.toIso8601String(),
       'op': instance.$type,
     };
+
+EditOpSetTags _$EditOpSetTagsFromJson(Map<String, dynamic> json) =>
+    EditOpSetTags(
+      id: (json['id'] as num).toInt(),
+      tagIds: (json['tagIds'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+      appliedAt: json['appliedAt'] == null
+          ? null
+          : DateTime.parse(json['appliedAt'] as String),
+      $type: json['op'] as String?,
+    );
+
+Map<String, dynamic> _$EditOpSetTagsToJson(EditOpSetTags instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'tagIds': instance.tagIds,
+      'appliedAt': ?instance.appliedAt?.toIso8601String(),
+      'op': instance.$type,
+    };

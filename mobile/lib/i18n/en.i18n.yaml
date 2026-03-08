@@ -27,6 +27,7 @@ share:
 settings:
   title: Settings
   preferences: Preferences
+  tag: Tag Management
   about: About
   helpSupport: Help & Support
   appVersion: "App Version"
@@ -60,6 +61,52 @@ edit:
     note: Note
     favorite: Favorite
     archive: Archive
+  tags:
+    title: Edit Tags
+    empty:
+      message: "No tags available. Create tags to organize your links."
+      button: "Create Tag"
+tagEdit:
+  title: Edit Tag
+  preview: Preview
+  loadingError: "Failed to load tags: $error"
+  notFound: "Tag $id not found"
+  fields:
+    title: Title
+    emoji: Emoji
+    emojiHint: "e.g. 🔖"
+  discard:
+    title: Discard changes?
+    message: Your unsaved changes will be lost.
+    stay: Stay
+    discard: Discard
+  toast:
+    updated: Tag updated
+    updateFailed: "Failed to update tag: $error"
+tagNew:
+  title: New Tag
+  create: Create
+  defaultName: New Tag
+  discardMessage: Your unsaved tag draft will be lost.
+  toast:
+    created: Tag created
+    createFailed: "Failed to create tag: $error"
+tags:
+  title: Tags
+  createTag: Create Tag
+  empty:
+    message: No tags yet
+    button: Create Tag
+  editTooltip: Edit tag
+  deleteTooltip: Delete tag
+  deleteDialog:
+    title: Delete Tag
+    deleteMessage: 'Are you sure you want to delete "${name}"?'
+    warning: Links with this tag will remain unchanged.
+  createdLabel: "Created ${date}"
+  toast:
+    deleted: Tag deleted
+    deleteFailed: "Failed to delete tag: $error"
 
 # ==== Widgets / components ====
 editBar:
@@ -91,5 +138,16 @@ filter:
   unfavorite: Unfavorite
   select: Select
   edit: Edit
+  editTags: Edit Tags
   share: Share
   delete: Delete
+
+colorPicker:
+  label: Color
+  invalidRgbHex: "Use #RRGGBB format"
+  pickColor: Pick color
+  pickCustomColor: Pick custom color
+  presetColors: Preset colors
+  randomize: Randomize
+  custom: Custom
+  useColor: Use color

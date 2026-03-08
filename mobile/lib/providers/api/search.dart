@@ -5,6 +5,7 @@ import '../../models/edit_op.dart';
 import '../../models/link.dart';
 import '../../models/search_query.dart';
 import '../../models/search_response.dart';
+import '../../models/tag.dart';
 import '../sync/queue.dart';
 import 'api.dart';
 
@@ -77,7 +78,25 @@ extension on Link {
         case EditOpDelete():
           return null;
         case EditOpInsert():
-        // Insert ops are not applicable to existing links
+          // Insert ops are not applicable to existing links
+          break;
+        case EditOpSetTags(:final tagIds):
+          result = result.copyWith(
+            tags: tagIds
+                .map(
+                  (id) => this.tags.firstWhere(
+                    (tag) => tag.id == id,
+                    orElse: () => Tag(
+                      id: id,
+                      name: 'Unknown',
+                      color: '#000000',
+                      emoji: '',
+                      createdAt: 0,
+                    ),
+                  ),
+                )
+                .toList(),
+          );
       }
     }
 

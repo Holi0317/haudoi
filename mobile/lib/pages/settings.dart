@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../components/settings/app_version_tile.dart';
 import '../components/settings/theme_select_tile.dart';
@@ -45,6 +46,13 @@ class SettingsPage extends ConsumerWidget {
         ),
         // Theme Selection
         const ThemeSelectTile(),
+        ListTile(
+          leading: const Icon(Icons.label),
+          title: Text(t.settings.tag),
+          onTap: () {
+            context.push("/tags");
+          },
+        ),
       ],
     );
   }
