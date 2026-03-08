@@ -8,6 +8,9 @@ import 'pages/search.dart';
 import 'pages/settings.dart';
 import 'pages/share_receive.dart';
 import 'pages/shell.dart';
+import 'pages/tags_edit.dart';
+import 'pages/tags.dart';
+import 'pages/tags_new.dart';
 import 'pages/unread.dart';
 
 final router = GoRouter(
@@ -56,6 +59,34 @@ final router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final url = state.uri.queryParameters['url'];
         return ShareReceivePage(sharedUrl: url);
+      },
+    ),
+    GoRoute(
+      path: '/tags',
+      builder: (BuildContext context, GoRouterState state) {
+        return const TagsPage();
+      },
+    ),
+    GoRoute(
+      path: '/tags/new',
+      builder: (BuildContext context, GoRouterState state) {
+        return const NewTagPage();
+      },
+    ),
+    GoRoute(
+      path: '/tags/edit',
+      builder: (BuildContext context, GoRouterState state) {
+        final id = state.uri.queryParameters['id'];
+        if (id == null) {
+          throw Exception('Missing id parameter for /tags/edit route');
+        }
+
+        final parsedId = int.tryParse(id);
+        if (parsedId == null) {
+          throw Exception('Invalid id parameter for /tags/edit route: $id');
+        }
+
+        return EditTagPage(id: parsedId);
       },
     ),
     StatefulShellRoute.indexedStack(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../i18n/strings.g.dart';
 import '../models/edit_op.dart';
@@ -80,8 +81,7 @@ class _EditTagsPageState extends ConsumerState<EditTagsPage> {
             Text(t.editTags.empty.message),
             ElevatedButton(
               onPressed: () {
-                // TODO: Implement /tags/new navigation or page
-                // context.push('/tags/new');
+                context.push('/tags/new');
               },
               child: Text(t.editTags.empty.button),
             ),
