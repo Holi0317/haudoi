@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'pages/edit.dart';
-import 'pages/edit_tags.dart';
 import 'pages/login.dart';
 import 'pages/search.dart';
 import 'pages/settings.dart';
@@ -36,22 +35,6 @@ final router = GoRouter(
         }
 
         return EditPage(id: parsedId);
-      },
-    ),
-    GoRoute(
-      path: '/edit/tags',
-      builder: (BuildContext context, GoRouterState state) {
-        final id = state.uri.queryParameters['id'];
-        if (id == null) {
-          throw Exception('Missing id parameter for /edit/tags route');
-        }
-
-        final parsedId = int.tryParse(id);
-        if (parsedId == null) {
-          throw Exception('Invalid id parameter for /edit/tags route: $id');
-        }
-
-        return EditTagsPage(id: parsedId);
       },
     ),
     GoRoute(

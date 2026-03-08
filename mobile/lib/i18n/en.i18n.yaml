@@ -61,11 +61,11 @@ edit:
     note: Note
     favorite: Favorite
     archive: Archive
-editTags:
-  title: Edit Tags
-  empty:
-    message: "No tags available. Create tags to organize your links."
-    button: "Create Tag"
+  tags:
+    title: Edit Tags
+    empty:
+      message: "No tags available. Create tags to organize your links."
+      button: "Create Tag"
 tagEdit:
   title: Edit Tag
   preview: Preview

@@ -49,7 +49,6 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
-	late final TranslationsEditTagsEn editTags = TranslationsEditTagsEn.internal(_root);
 	late final TranslationsTagEditEn tagEdit = TranslationsTagEditEn.internal(_root);
 	late final TranslationsTagNewEn tagNew = TranslationsTagNewEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
@@ -257,20 +256,7 @@ class TranslationsEditEn {
 	String get title => 'Edit Link';
 
 	late final TranslationsEditFieldsEn fields = TranslationsEditFieldsEn.internal(_root);
-}
-
-// Path: editTags
-class TranslationsEditTagsEn {
-	TranslationsEditTagsEn.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Edit Tags'
-	String get title => 'Edit Tags';
-
-	late final TranslationsEditTagsEmptyEn empty = TranslationsEditTagsEmptyEn.internal(_root);
+	late final TranslationsEditTagsEn tags = TranslationsEditTagsEn.internal(_root);
 }
 
 // Path: tagEdit
@@ -462,19 +448,18 @@ class TranslationsEditFieldsEn {
 	String get archive => 'Archive';
 }
 
-// Path: editTags.empty
-class TranslationsEditTagsEmptyEn {
-	TranslationsEditTagsEmptyEn.internal(this._root);
+// Path: edit.tags
+class TranslationsEditTagsEn {
+	TranslationsEditTagsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'No tags available. Create tags to organize your links.'
-	String get message => 'No tags available. Create tags to organize your links.';
+	/// en: 'Edit Tags'
+	String get title => 'Edit Tags';
 
-	/// en: 'Create Tag'
-	String get button => 'Create Tag';
+	late final TranslationsEditTagsEmptyEn empty = TranslationsEditTagsEmptyEn.internal(_root);
 }
 
 // Path: tagEdit.fields
@@ -588,6 +573,21 @@ class TranslationsFilterOrderEn {
 	String get oldestFirst => 'Oldest First';
 }
 
+// Path: edit.tags.empty
+class TranslationsEditTagsEmptyEn {
+	TranslationsEditTagsEmptyEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'No tags available. Create tags to organize your links.'
+	String get message => 'No tags available. Create tags to organize your links.';
+
+	/// en: 'Create Tag'
+	String get button => 'Create Tag';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -644,9 +644,9 @@ extension on Translations {
 			'edit.fields.note' => 'Note',
 			'edit.fields.favorite' => 'Favorite',
 			'edit.fields.archive' => 'Archive',
-			'editTags.title' => 'Edit Tags',
-			'editTags.empty.message' => 'No tags available. Create tags to organize your links.',
-			'editTags.empty.button' => 'Create Tag',
+			'edit.tags.title' => 'Edit Tags',
+			'edit.tags.empty.message' => 'No tags available. Create tags to organize your links.',
+			'edit.tags.empty.button' => 'Create Tag',
 			'tagEdit.title' => 'Edit Tag',
 			'tagEdit.preview' => 'Preview',
 			'tagEdit.loadingError' => ({required Object error}) => 'Failed to load tags: ${error}',
