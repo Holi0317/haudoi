@@ -1,29 +1,29 @@
 import * as hono_client0 from "hono/client";
 import { ClientRequestOptions } from "hono/client";
-import * as hono_utils_http_status20 from "hono/utils/http-status";
-import * as hono_types3 from "hono/types";
+import * as hono_utils_http_status0 from "hono/utils/http-status";
+import * as hono_types0 from "hono/types";
 import * as hono_hono_base0 from "hono/hono-base";
 
 //#region src/router/index.d.ts
-declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_types3.MergeSchemaPath<{
+declare const app: hono_hono_base0.HonoBase<Env, hono_types0.BlankSchema | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
-}, "/"> | hono_types3.MergeSchemaPath<hono_types3.BlankSchema | hono_types3.MergeSchemaPath<{
+}, "/"> | hono_types0.MergeSchemaPath<hono_types0.BlankSchema | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: "You have been successfully logged out!";
       outputFormat: "text";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
-}, "/logout"> | hono_types3.MergeSchemaPath<{
+}, "/logout"> | hono_types0.MergeSchemaPath<{
   "/login": {
     $get: {
       input: {
@@ -60,7 +60,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 400;
     };
   };
-}, "/github">, "/auth"> | hono_types3.MergeSchemaPath<{
+}, "/github">, "/auth"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
@@ -80,10 +80,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
-} | hono_types3.MergeSchemaPath<{
+} | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {
@@ -97,10 +97,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
-}, "/image"> | hono_types3.MergeSchemaPath<{
+}, "/image"> | hono_types0.MergeSchemaPath<{
   "/:id": {
     $get: {
       input: {
@@ -136,10 +136,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         }[];
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
-}, "/item"> | hono_types3.MergeSchemaPath<{
+}, "/item"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
@@ -153,7 +153,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         }[];
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
 } & {
@@ -216,7 +216,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         created_at: number;
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
 } & {
@@ -232,7 +232,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 204;
     };
   };
-}, "/tag"> | hono_types3.MergeSchemaPath<{
+}, "/tag"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {
@@ -265,10 +265,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         hasMore: boolean;
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
-}, "/search"> | hono_types3.MergeSchemaPath<{
+}, "/search"> | hono_types0.MergeSchemaPath<{
   "/": {
     $post: {
       input: {
@@ -310,13 +310,13 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/edit"> | hono_types3.MergeSchemaPath<{
+}, "/edit"> | hono_types0.MergeSchemaPath<{
   "/export": {
     $post: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -337,7 +337,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   };
 } & {
@@ -365,7 +365,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/bulk">, "/api"> | hono_types3.MergeSchemaPath<{
+}, "/bulk">, "/api"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {
@@ -378,10 +378,10 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
-} | hono_types3.MergeSchemaPath<{
+} | hono_types0.MergeSchemaPath<{
   "/": {
     $post: {
       input: {
@@ -409,12 +409,12 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/insert"> | hono_types3.MergeSchemaPath<{
+}, "/insert"> | hono_types0.MergeSchemaPath<{
   "/": {
     $post: {
       input: {
         form: {
-          id: hono_types3.ParsedFormValue | hono_types3.ParsedFormValue[];
+          id: hono_types0.ParsedFormValue | hono_types0.ParsedFormValue[];
           qs?: string | undefined;
         };
       };
@@ -423,7 +423,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 302;
     };
   };
-}, "/archive"> | hono_types3.MergeSchemaPath<{
+}, "/archive"> | hono_types0.MergeSchemaPath<{
   "/:id": {
     $get: {
       input: {
@@ -433,7 +433,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -445,7 +445,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
         };
       } & {
         form: {
-          tags: hono_types3.ParsedFormValue | hono_types3.ParsedFormValue[];
+          tags: hono_types0.ParsedFormValue | hono_types0.ParsedFormValue[];
           archive?: string | undefined;
           favorite?: string | undefined;
           note?: string | undefined;
@@ -469,13 +469,13 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 302;
     };
   };
-}, "/edit"> | hono_types3.MergeSchemaPath<{
+}, "/edit"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -512,13 +512,13 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 201;
     };
   };
-}, "/bulk"> | hono_types3.MergeSchemaPath<{
+}, "/bulk"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -531,7 +531,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -601,7 +601,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -617,13 +617,13 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       status: 302;
     };
   };
-}, "/tags">, "/basic"> | hono_types3.MergeSchemaPath<{
+}, "/tags">, "/basic"> | hono_types0.MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -636,7 +636,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -649,7 +649,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -684,7 +684,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -697,7 +697,7 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types3.BlankSchema | hono_
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   };
 } & {
@@ -749,7 +749,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   }>;
 } & {
@@ -759,7 +759,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: "You have been successfully logged out!";
         outputFormat: "text";
-        status: hono_utils_http_status20.ContentfulStatusCode;
+        status: hono_utils_http_status0.ContentfulStatusCode;
       };
     }>;
   };
@@ -828,7 +828,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         } | null;
       };
       outputFormat: "json";
-      status: hono_utils_http_status20.ContentfulStatusCode;
+      status: hono_utils_http_status0.ContentfulStatusCode;
     };
   }>;
 } & {
@@ -846,7 +846,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status20.StatusCode;
+        status: hono_utils_http_status0.StatusCode;
       };
     }>;
   };
@@ -888,7 +888,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             }[];
           };
           outputFormat: "json";
-          status: hono_utils_http_status20.ContentfulStatusCode;
+          status: hono_utils_http_status0.ContentfulStatusCode;
         };
       }>;
     };
@@ -908,7 +908,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           }[];
         };
         outputFormat: "json";
-        status: hono_utils_http_status20.ContentfulStatusCode;
+        status: hono_utils_http_status0.ContentfulStatusCode;
       };
       $post: {
         input: {
@@ -971,7 +971,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             created_at: number;
           };
           outputFormat: "json";
-          status: hono_utils_http_status20.ContentfulStatusCode;
+          status: hono_utils_http_status0.ContentfulStatusCode;
         };
         $delete: {
           input: {
@@ -1020,7 +1020,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           hasMore: boolean;
         };
         outputFormat: "json";
-        status: hono_utils_http_status20.ContentfulStatusCode;
+        status: hono_utils_http_status0.ContentfulStatusCode;
       };
     }>;
   };
@@ -1076,7 +1076,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           input: {};
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
       }>;
     };
@@ -1101,7 +1101,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             } | null;
           };
           outputFormat: "json";
-          status: hono_utils_http_status20.ContentfulStatusCode;
+          status: hono_utils_http_status0.ContentfulStatusCode;
         };
         $post: {
           input: {
@@ -1141,7 +1141,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       };
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   }>;
 } & {
@@ -1180,7 +1180,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       $post: {
         input: {
           form: {
-            id: hono_types3.ParsedFormValue | hono_types3.ParsedFormValue[];
+            id: hono_types0.ParsedFormValue | hono_types0.ParsedFormValue[];
             qs?: string | undefined;
           };
         };
@@ -1202,7 +1202,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
         $post: {
           input: {
@@ -1211,7 +1211,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             };
           } & {
             form: {
-              tags: hono_types3.ParsedFormValue | hono_types3.ParsedFormValue[];
+              tags: hono_types0.ParsedFormValue | hono_types0.ParsedFormValue[];
               archive?: string | undefined;
               favorite?: string | undefined;
               note?: string | undefined;
@@ -1250,7 +1250,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status20.StatusCode;
+        status: hono_utils_http_status0.StatusCode;
       };
       $post: {
         input: {
@@ -1292,7 +1292,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {};
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status20.StatusCode;
+        status: hono_utils_http_status0.StatusCode;
       };
       $post: {
         input: {
@@ -1320,7 +1320,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
         $post: {
           input: {
@@ -1377,7 +1377,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             };
             output: {};
             outputFormat: string;
-            status: hono_utils_http_status20.StatusCode;
+            status: hono_utils_http_status0.StatusCode;
           };
           $post: {
             input: {
@@ -1399,7 +1399,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
       input: {};
       output: {};
       outputFormat: string;
-      status: hono_utils_http_status20.StatusCode;
+      status: hono_utils_http_status0.StatusCode;
     };
   }>;
 } & {
@@ -1413,7 +1413,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         };
         output: {};
         outputFormat: string;
-        status: hono_utils_http_status20.StatusCode;
+        status: hono_utils_http_status0.StatusCode;
       };
     }>;
   };
@@ -1429,7 +1429,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
       }>;
     };
@@ -1472,7 +1472,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
         $post: {
           input: {
@@ -1482,7 +1482,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           };
           output: {};
           outputFormat: string;
-          status: hono_utils_http_status20.StatusCode;
+          status: hono_utils_http_status0.StatusCode;
         };
       }>;
     };
