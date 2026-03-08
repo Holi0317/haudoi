@@ -8,8 +8,6 @@ import '../components/selection_controller.dart';
 import '../i18n/strings.g.dart';
 import '../models/link_action.dart';
 import '../models/search_query.dart';
-import '../providers/api/search.dart';
-import '../providers/extensions.dart';
 
 class UnreadPage extends ConsumerStatefulWidget {
   const UnreadPage({super.key});

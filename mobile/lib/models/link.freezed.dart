@@ -13,7 +13,7 @@ part of 'link.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$Link implements DiagnosticableTreeMixin {
+mixin _$Link {
 
  int get id; String get title; String get url; bool get favorite; bool get archive; List<Tag> get tags;@JsonKey(name: 'created_at') int get createdAt; String get note;
 /// Create a copy of Link
@@ -25,12 +25,6 @@ $LinkCopyWith<Link> get copyWith => _$LinkCopyWithImpl<Link>(this as Link, _$ide
   /// Serializes this Link to a JSON map.
   Map<String, dynamic> toJson();
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'Link'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('url', url))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('archive', archive))..add(DiagnosticsProperty('tags', tags))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('note', note));
-}
 
 @override
 bool operator ==(Object other) {
@@ -42,7 +36,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,id,title,url,favorite,archive,const DeepCollectionEquality().hash(tags),createdAt,note);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'Link(id: $id, title: $title, url: $url, favorite: $favorite, archive: $archive, tags: $tags, createdAt: $createdAt, note: $note)';
 }
 
@@ -221,7 +215,7 @@ return $default(_that.id,_that.title,_that.url,_that.favorite,_that.archive,_tha
 /// @nodoc
 @JsonSerializable()
 
-class _Link with DiagnosticableTreeMixin implements Link {
+class _Link implements Link {
   const _Link({required this.id, required this.title, required this.url, required this.favorite, required this.archive, required final  List<Tag> tags, @JsonKey(name: 'created_at') required this.createdAt, required this.note}): _tags = tags;
   factory _Link.fromJson(Map<String, dynamic> json) => _$LinkFromJson(json);
 
@@ -250,12 +244,6 @@ _$LinkCopyWith<_Link> get copyWith => __$LinkCopyWithImpl<_Link>(this, _$identit
 Map<String, dynamic> toJson() {
   return _$LinkToJson(this, );
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'Link'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('url', url))..add(DiagnosticsProperty('favorite', favorite))..add(DiagnosticsProperty('archive', archive))..add(DiagnosticsProperty('tags', tags))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('note', note));
-}
 
 @override
 bool operator ==(Object other) {
@@ -267,7 +255,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,id,title,url,favorite,archive,const DeepCollectionEquality().hash(_tags),createdAt,note);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'Link(id: $id, title: $title, url: $url, favorite: $favorite, archive: $archive, tags: $tags, createdAt: $createdAt, note: $note)';
 }
 
