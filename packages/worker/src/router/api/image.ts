@@ -41,7 +41,7 @@ export default factory
       new URL(url),
       async () => {
         // Fetch and extract image URL from the page based on type
-        let imageUrl: URL | null = null;
+        let imageUrl: URL | null;
 
         if (type === "favicon") {
           imageUrl = await getFaviconUrl(ky, url);
