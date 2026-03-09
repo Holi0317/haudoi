@@ -3,6 +3,8 @@ packages:
   - packages/dsl
   - packages/extension
 
+lockfileIncludeTarballUrl: true
+
 onlyBuiltDependencies:
   - esbuild
   - sharp
