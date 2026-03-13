@@ -5,6 +5,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+dependencies {
+    // Chrome custom tab dependency
+    implementation("androidx.browser:browser:1.9.0")
+}
+
 android {
     namespace = "com.github.holi0317.haudoi"
     compileSdk = flutter.compileSdkVersion

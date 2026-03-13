@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="android.flutter_web_auth_2" target="17" />
+      <module name="android.shared_preferences_android" target="17" />
+      <module name="android.sqflite_android" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
