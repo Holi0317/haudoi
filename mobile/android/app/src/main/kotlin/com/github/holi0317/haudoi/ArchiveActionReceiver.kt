@@ -27,6 +27,11 @@ class ArchiveActionReceiver : BroadcastReceiver() {
         )
         logger.fine("callback receiver received ${event.summary()}")
         ArchiveActionStore.enqueue(context, event)
+
+        logger.fine("starting main activity")
+        context.startActivity(Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 }
 
