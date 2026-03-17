@@ -9,32 +9,26 @@ import androidx.core.net.toUri
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-
-
-private data class ArchiveActionEvent(val linkId: Int, val url: String? = null) {
-    fun toMap(): Map<String, Any> = buildMap {
-        put("linkId", linkId)
-        url?.let { put("url", it) }
-    }
-}
+import java.util.logging.Logger
 
 class MainActivity : FlutterActivity() {
-    private var methodChannel: MethodChannel? = null
+    private val logger = Logger.getLogger(MainActivity::class.java.getName())
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        methodChannel = MethodChannel(
+        logger.fine("configureFlutterEngine register channel=$CHANNEL")
+        MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL,
-        )
-
-        methodChannel!!.setMethodCallHandler { call, result ->
+        ).setMethodCallHandler { call, result ->
+            logger.fine("channel call method=${call.method}")
             when (call.method) {
                 "openLinkWithArchiveAction" -> {
                     val url = call.argument<String>("url")
                     val linkId = call.argument<Int>("linkId")
                     if (url == null || linkId == null) {
+                        logger.warning("openLinkWithArchiveAction invalid args url=$url linkId=$linkId")
                         result.error(
                             "INVALID_ARGUMENTS",
                             "Expected non-null url and linkId arguments",
@@ -44,9 +38,15 @@ class MainActivity : FlutterActivity() {
                     }
 
                     val event = ArchiveActionEvent(linkId = linkId, url = url)
-
+                    logger.fine("launch custom tab request ${event.summary()}")
                     openCustomTabWithArchiveAction(event)
                     result.success(null)
+                }
+
+                "drainPendingArchiveActions" -> {
+                    val drainedEvents = ArchiveActionStore.drain(this)
+                    logger.fine("bridge drainPendingArchiveActions count=${drainedEvents.size}")
+                    result.success(drainedEvents.map(ArchiveActionEvent::toMap))
                 }
 
                 else -> result.notImplemented()
@@ -54,28 +54,16 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: android.os.Bundle?) {
-        super.onCreate(savedInstanceState)
-        processArchiveIntent(intent)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        processArchiveIntent(intent)
-    }
-
     private fun openCustomTabWithArchiveAction(event: ArchiveActionEvent) {
-        val archiveIntent = Intent(this, MainActivity::class.java).apply {
-            action = ACTION_ARCHIVE_LINK
-            putExtra(EXTRA_LINK_ID, event.linkId)
-            putExtra(EXTRA_URL, event.url)
-            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val archiveIntent = Intent(this, ArchiveActionReceiver::class.java).apply {
+            action = ArchiveActionContract.ACTION_ARCHIVE_LINK
+            putExtra(ArchiveActionContract.EXTRA_LINK_ID, event.linkId)
+            putExtra(ArchiveActionContract.EXTRA_URL, event.url)
         }
 
         val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-
-        val pendingIntent = PendingIntent.getActivity(
+        logger.fine("launch custom tab create archive broadcast PendingIntent requestCode=${event.linkId} ${event.summary()}")
+        val pendingIntent = PendingIntent.getBroadcast(
             this,
             event.linkId,
             archiveIntent,
@@ -93,42 +81,11 @@ class MainActivity : FlutterActivity() {
             .setActionButton(archiveIcon, "Archive", pendingIntent, true)
             .build()
 
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        logger.fine("launch custom tab url=${event.url}")
         customTabsIntent.launchUrl(this, event.url!!.toUri())
-    }
-
-    private fun processArchiveIntent(intent: Intent?) {
-        if (intent?.action != ACTION_ARCHIVE_LINK) {
-            return
-        }
-
-        val linkId = intent.getIntExtra(EXTRA_LINK_ID, -1)
-        if (linkId == -1) {
-            return
-        }
-
-        val payload = ArchiveActionEvent(
-            linkId = linkId,
-            url = intent.getStringExtra(EXTRA_URL),
-        )
-
-        dispatchArchiveAction(payload)
-
-        // Clear action to avoid duplicate handling if the activity is recreated.
-        intent.action = null
-    }
-
-    private fun dispatchArchiveAction(payload: ArchiveActionEvent) {
-        val channel = methodChannel
-            ?: throw IllegalStateException("MethodChannel is not initialized. Cannot dispatch archive action.")
-
-        channel.invokeMethod("onArchiveAction", payload.toMap())
     }
 
     companion object {
         private const val CHANNEL = "com.github.holi0317.haudoi/custom_tabs"
-        private const val ACTION_ARCHIVE_LINK = "com.github.holi0317.haudoi.action.ARCHIVE_LINK"
-        private const val EXTRA_LINK_ID = "linkId"
-        private const val EXTRA_URL = "url"
     }
 }
