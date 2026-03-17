@@ -46,6 +46,9 @@ class _ArchiveActionWorkerWidgetState
           );
           _logger.fine('worker queued archive edit ${event.summary}');
         });
+
+    // Drain once on mount so cold starts and process restarts consume any event the
+    // Android receiver already persisted. See ArchiveActionSupport.kt for the flow.
     _logger.fine('worker drain on startup');
     unawaited(CustomTabsBridge.instance.drainPendingArchiveActions());
   }
@@ -57,6 +60,7 @@ class _ArchiveActionWorkerWidgetState
       return;
     }
 
+    // Drain again when the app is foregrounded after the custom tab or deep link returns.
     _logger.fine('worker drain on resume');
     unawaited(CustomTabsBridge.instance.drainPendingArchiveActions());
   }

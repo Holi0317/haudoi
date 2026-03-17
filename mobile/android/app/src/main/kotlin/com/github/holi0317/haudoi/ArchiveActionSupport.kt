@@ -8,6 +8,22 @@ import java.util.logging.Logger
 
 private val logger = Logger.getLogger("ArchiveActionSupport")
 
+/**
+ * Source of truth for the Android side of the archive callback flow.
+ *
+ * Data flow:
+ * 1. Flutter calls `CustomTabsBridge.openLinkWithArchiveAction`.
+ * 2. `MainActivity.openCustomTabWithArchiveAction` opens a custom tab and attaches a
+ *    `PendingIntent` targeting `ArchiveActionReceiver`.
+ * 3. When the user taps the archive action, the receiver stores an [ArchiveActionEvent]
+ *    immediately in [ArchiveActionStore].
+ * 4. The receiver resumes [MainActivity]. The event is persisted first so warm start,
+ *    cold start, and delayed Flutter initialization all behave the same.
+ * 5. Flutter later calls `drainPendingArchiveActions`, and `ArchiveActionWorkerWidget`
+ *    turns drained events into app edit operations.
+ *
+ * Keep the contract keys and persistence shape here so Kotlin and Flutter stay aligned.
+ */
 internal data class ArchiveActionEvent(val linkId: Int, val url: String? = null) {
     fun toMap(): Map<String, Any> = buildMap {
         put("linkId", linkId)

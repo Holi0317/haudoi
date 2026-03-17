@@ -17,6 +17,8 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        // Flutter calls into this channel to open a custom tab and later drain queued
+        // archive callbacks. For the end-to-end flow, see ArchiveActionSupport.kt.
         logger.fine("configureFlutterEngine register channel=$CHANNEL")
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -55,6 +57,9 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun openCustomTabWithArchiveAction(event: ArchiveActionEvent) {
+        // The toolbar action does not talk to Flutter directly. It fires a broadcast
+        // PendingIntent so Android can enqueue the event even when the app is backgrounded.
+        // See ArchiveActionSupport.kt for the full callback flow.
         val archiveIntent = Intent(this, ArchiveActionReceiver::class.java).apply {
             action = ArchiveActionContract.ACTION_ARCHIVE_LINK
             putExtra(ArchiveActionContract.EXTRA_LINK_ID, event.linkId)

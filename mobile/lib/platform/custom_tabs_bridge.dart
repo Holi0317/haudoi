@@ -14,6 +14,11 @@ class ArchiveActionEvent {
   String get summary => 'linkId=$linkId url=${url ?? '<null>'}';
 }
 
+/// Native bridge for Android custom tabs (browser) and archive action callbacks.
+///
+/// GH-115: Implement iOS support
+///
+/// See ArchiveActionSupport.kt for the design.
 class CustomTabsBridge {
   CustomTabsBridge._();
 
@@ -38,6 +43,8 @@ class CustomTabsBridge {
       return;
     }
 
+    // Android owns the callback entrypoint. Flutter only needs to install the
+    // channel handler once, then drain the persisted queue when appropriate.
     _isInitialized = true;
     _logger.info('initialize register method channel handler');
     _channel.setMethodCallHandler(_handleMethodCall);
@@ -50,6 +57,7 @@ class CustomTabsBridge {
     }
 
     initialize();
+    // See ArchiveActionSupport.kt for the native side of this queue-and-drain flow.
     _logger.fine('drain request pending archive actions');
 
     try {

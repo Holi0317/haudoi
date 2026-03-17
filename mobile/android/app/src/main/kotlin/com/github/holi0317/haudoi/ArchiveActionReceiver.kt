@@ -26,12 +26,16 @@ class ArchiveActionReceiver : BroadcastReceiver() {
             url = intent.getStringExtra(ArchiveActionContract.EXTRA_URL),
         )
         logger.fine("callback receiver received ${event.summary()}")
+
+        // Persist first, then resume the app. Flutter may not be ready yet, so the
+        // queue is the real handoff boundary. See ArchiveActionSupport.kt for the flow.
         ArchiveActionStore.enqueue(context, event)
 
         logger.fine("starting main activity")
         context.startActivity(Intent(context, MainActivity::class.java).apply {
+            // NEW_TASK is required from a BroadcastReceiver. MainActivity's singleTask
+            // manifest launchMode handles reuse/resume of the existing app task.
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
     }
 }
-
