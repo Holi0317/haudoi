@@ -1,5 +1,6 @@
 .idea/caches
 .idea/copilot.*
+.idea/assetWizardSettings.xml
 
 ### Flutter ###
 # Flutter/Dart/Pub related
