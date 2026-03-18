@@ -13,9 +13,10 @@ private val logger = Logger.getLogger("ArchiveActionSupport")
  * Source of truth for the Android side of the archive callback flow.
  *
  * Data flow:
- * 1. Flutter calls `CustomTabsBridge.openLinkWithArchiveAction`.
- * 2. `MainActivity.openCustomTabWithArchiveAction` opens a custom tab and attaches a
- *    `PendingIntent` targeting `ArchiveActionReceiver`.
+ * 1. Flutter calls `CustomTabsBridge.openLink`.
+ * 2. If `archiveButton=true`, `MainActivity.openLink` opens a custom tab and attaches a
+ *    `PendingIntent` targeting `ArchiveActionReceiver`, while packing [ArchiveActionEvent]
+ *    data into the intent extras.
  * 3. When the user taps the archive action, the receiver stores an [ArchiveActionEvent]
  *    immediately in [ArchiveActionStore].
  * 4. The receiver resumes [MainActivity]. The event is persisted first so warm start,
