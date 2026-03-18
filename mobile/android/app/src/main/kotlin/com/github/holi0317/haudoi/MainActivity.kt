@@ -65,7 +65,7 @@ class MainActivity : FlutterActivity() {
 
         if (archiveButton) {
             val archiveIcon = ResourcesCompat.getDrawable(
-                context.resources,
+                resources,
                 R.drawable.ic_archive,
                 null
             )!!.toBitmap()
