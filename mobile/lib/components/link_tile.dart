@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/link.dart';
 import '../models/link_action.dart';
 import '../models/link_action_handle.dart';
+import '../platform/custom_tabs_bridge.dart';
 import '../utils.dart';
 import 'link_favicon.dart';
 import 'link_image_preview.dart';
@@ -206,20 +206,15 @@ class _LinkTileState extends ConsumerState<LinkTile>
   }
 
   Future<void> _open() async {
-    // TODO(GH-16): Add action button in custom tabs. Might need to write native code for that.
-    // See https://developer.chrome.com/docs/android/custom-tabs/guide-interactivity
-    // For now open the drawer after opening the link for archive
-    final opened = await launchUrl(
-      uri,
-      mode: LaunchMode.inAppBrowserView,
-      webOnlyWindowName: "_blank",
+    final opened = await CustomTabsBridge.instance.openLink(
+      uri: uri,
+      linkId: widget.item.id,
+      archiveButton: !widget.item.archive,
     );
 
     if (!opened) {
       throw Exception('Could not launch $uri');
     }
-
-    await controller.openEndActionPane();
   }
 
   Future<void> _showActionMenu(RelativeRect position) async {
