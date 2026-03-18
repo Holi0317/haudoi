@@ -24,13 +24,15 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             logger.fine("channel call method=${call.method}")
             when (call.method) {
-                "openLinkWithArchiveAction" -> {
+                "openLink" -> {
                     val event: ArchiveActionEvent
+
+                    val archiveButton = call.argument<Boolean>("archiveButton") ?: false
 
                     try {
                         event = ArchiveActionEvent.fromMethodCall(call)
                     } catch (e: IllegalArgumentException) {
-                        logger.warning("openLinkWithArchiveAction invalid args ${e.message}")
+                        logger.warning("openLink invalid args ${e.message}")
                         result.error(
                             "INVALID_ARGUMENTS",
                             "Expected url and linkId arguments: ${e.message}",
@@ -40,7 +42,7 @@ class MainActivity : FlutterActivity() {
                     }
 
                     logger.fine("launch custom tab request $event")
-                    openCustomTabWithArchiveAction(event)
+                    openCustomTab(event, archiveButton)
                     result.success(null)
                 }
 
@@ -55,22 +57,24 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun openCustomTabWithArchiveAction(event: ArchiveActionEvent) {
+    private fun openCustomTab(event: ArchiveActionEvent, archiveButton: Boolean) {
         val pendingIntent = ArchiveActionReceiver.makePendingIntent(this, event)
 
-        val archiveIcon = ResourcesCompat.getDrawable(
-            context.resources,
-            R.drawable.ic_archive,
-            null
-        )!!.toBitmap()
-
-        val customTabsIntent = CustomTabsIntent.Builder()
+        var builder = CustomTabsIntent.Builder()
             .setShowTitle(true)
-            .setActionButton(archiveIcon, "Archive", pendingIntent, true)
-            .build()
+
+        if (archiveButton) {
+            val archiveIcon = ResourcesCompat.getDrawable(
+                context.resources,
+                R.drawable.ic_archive,
+                null
+            )!!.toBitmap()
+
+            builder = builder.setActionButton(archiveIcon, "Archive", pendingIntent, true)
+        }
 
         logger.fine("launch custom tab url=${event.url}")
-        customTabsIntent.launchUrl(this, event.url!!.toUri())
+        builder.build().launchUrl(this, event.url!!.toUri())
     }
 
     companion object {

@@ -206,9 +206,10 @@ class _LinkTileState extends ConsumerState<LinkTile>
   }
 
   Future<void> _open() async {
-    final opened = await CustomTabsBridge.instance.openLinkWithArchiveAction(
+    final opened = await CustomTabsBridge.instance.openLink(
       uri: uri,
       linkId: widget.item.id,
+      archiveButton: !widget.item.archive,
     );
 
     if (!opened) {

@@ -74,14 +74,13 @@ class CustomTabsBridge {
     }
   }
 
-  Future<bool> openLinkWithArchiveAction({
+  Future<bool> openLink({
     required Uri uri,
     required int linkId,
+    required bool archiveButton,
   }) async {
     if (!Platform.isAndroid) {
-      _logger.fine(
-        'openLinkWithArchiveAction fallback launcher linkId=$linkId url=$uri',
-      );
+      _logger.fine('openLink fallback launcher linkId=$linkId url=$uri');
       return launchUrl(
         uri,
         mode: LaunchMode.inAppBrowserView,
@@ -90,25 +89,18 @@ class CustomTabsBridge {
     }
 
     initialize();
-    _logger.info(
-      'openLinkWithArchiveAction invoke native linkId=$linkId url=$uri',
-    );
+    _logger.info('openLink invoke native linkId=$linkId url=$uri');
 
     try {
-      await _channel.invokeMethod<void>('openLinkWithArchiveAction', {
+      await _channel.invokeMethod<void>('openLink', {
         'url': uri.toString(),
         'linkId': linkId,
+        'archiveButton': archiveButton,
       });
-      _logger.fine(
-        'openLinkWithArchiveAction native call succeeded linkId=$linkId',
-      );
+      _logger.fine('openLink native call succeeded linkId=$linkId');
       return true;
     } on PlatformException catch (error, st) {
-      _logger.warning(
-        'openLinkWithArchiveAction native call failed',
-        error,
-        st,
-      );
+      _logger.warning('openLink native call failed', error, st);
       return false;
     }
   }
