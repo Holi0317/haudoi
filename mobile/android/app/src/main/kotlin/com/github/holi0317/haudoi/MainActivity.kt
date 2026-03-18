@@ -1,7 +1,5 @@
 package com.github.holi0317.haudoi
 
-import android.app.PendingIntent
-import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -27,20 +25,21 @@ class MainActivity : FlutterActivity() {
             logger.fine("channel call method=${call.method}")
             when (call.method) {
                 "openLinkWithArchiveAction" -> {
-                    val url = call.argument<String>("url")
-                    val linkId = call.argument<Int>("linkId")
-                    if (url == null || linkId == null) {
-                        logger.warning("openLinkWithArchiveAction invalid args url=$url linkId=$linkId")
+                    val event: ArchiveActionEvent
+
+                    try {
+                        event = ArchiveActionEvent.fromMethodCall(call)
+                    } catch (e: IllegalArgumentException) {
+                        logger.warning("openLinkWithArchiveAction invalid args ${e.message}")
                         result.error(
                             "INVALID_ARGUMENTS",
-                            "Expected non-null url and linkId arguments",
+                            "Expected url and linkId arguments: ${e.message}",
                             null,
                         )
                         return@setMethodCallHandler
                     }
 
-                    val event = ArchiveActionEvent(linkId = linkId, url = url)
-                    logger.fine("launch custom tab request ${event.summary()}")
+                    logger.fine("launch custom tab request $event")
                     openCustomTabWithArchiveAction(event)
                     result.success(null)
                 }
@@ -57,23 +56,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun openCustomTabWithArchiveAction(event: ArchiveActionEvent) {
-        // The toolbar action does not talk to Flutter directly. It fires a broadcast
-        // PendingIntent so Android can enqueue the event even when the app is backgrounded.
-        // See ArchiveActionSupport.kt for the full callback flow.
-        val archiveIntent = Intent(this, ArchiveActionReceiver::class.java).apply {
-            action = ArchiveActionContract.ACTION_ARCHIVE_LINK
-            putExtra(ArchiveActionContract.EXTRA_LINK_ID, event.linkId)
-            putExtra(ArchiveActionContract.EXTRA_URL, event.url)
-        }
-
-        val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        logger.fine("launch custom tab create archive broadcast PendingIntent requestCode=${event.linkId} ${event.summary()}")
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            event.linkId,
-            archiveIntent,
-            pendingIntentFlags,
-        )
+        val pendingIntent = ArchiveActionReceiver.makePendingIntent(this, event)
 
         val archiveIcon = ResourcesCompat.getDrawable(
             context.resources,

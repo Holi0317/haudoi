@@ -2,6 +2,7 @@ package com.github.holi0317.haudoi
 
 import android.content.Context
 import androidx.core.content.edit
+import io.flutter.plugin.common.MethodCall
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.logging.Logger
@@ -38,6 +39,22 @@ internal data class ArchiveActionEvent(val linkId: Int, val url: String? = null)
     fun summary(): String = "linkId=$linkId url=${url ?: "<null>"}"
 
     companion object {
+        /**
+         * Create [ArchiveActionEvent] from a Flutter method call.
+         */
+        fun fromMethodCall(call: MethodCall): ArchiveActionEvent {
+            // While url is optional for the callback, it is required for launching the url because,
+            // well, how would null url even work?
+            val url = call.argument<String>("url")
+                ?: throw IllegalArgumentException("missing url argument in method call $call")
+
+            val linkId = call.argument<Int>("linkId")
+                ?: throw IllegalArgumentException("missing linkId argument in method call $call")
+
+
+            return ArchiveActionEvent(linkId = linkId, url = url)
+        }
+
         fun fromJson(json: JSONObject): ArchiveActionEvent? {
             val linkId = json.optInt(ArchiveActionContract.EXTRA_LINK_ID, -1)
             if (linkId == -1) {
