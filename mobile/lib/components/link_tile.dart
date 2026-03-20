@@ -131,6 +131,8 @@ class _LinkTileState extends ConsumerState<LinkTile>
       child: LongPressMenu(
         onLongPress: isSelecting ? null : _showActionMenu,
         child: ListTile(
+          horizontalTitleGap: 0,
+          minLeadingWidth: 0,
           title: Text(
             widget.item.title.isEmpty ? uri.toString() : widget.item.title,
           ),
@@ -138,7 +140,10 @@ class _LinkTileState extends ConsumerState<LinkTile>
           selected: isSelected,
           selectedColor: theme.colorScheme.onSurface,
           selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
-          leading: LinkImagePreview(item: widget.item),
+          leading: LinkImagePreview(
+            item: widget.item,
+            padding: const EdgeInsetsGeometry.only(right: 16.0),
+          ),
           trailing: isSelecting
               ? Checkbox(value: isSelected, onChanged: null)
               : null,
