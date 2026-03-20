@@ -96,10 +96,7 @@ class _LinkTileState extends ConsumerState<LinkTile>
         extentRatio: 0.2,
 
         children: [
-          if (widget.item.favorite)
-            LinkAction.unfavorite.slideable(ref, widget.controller, widget.item)
-          else
-            LinkAction.favorite.slideable(ref, widget.controller, widget.item),
+          LinkAction.select.slideable(ref, widget.controller, widget.item),
         ],
       ),
 
