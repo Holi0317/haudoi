@@ -139,7 +139,7 @@ class _LinkTileState extends ConsumerState<LinkTile>
           selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
           leading: LinkImagePreview(
             item: widget.item,
-            padding: const EdgeInsetsGeometry.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 16.0),
           ),
           trailing: isSelecting
               ? Checkbox(value: isSelected, onChanged: null)
