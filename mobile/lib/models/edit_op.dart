@@ -54,7 +54,7 @@ sealed class EditOp with _$EditOp {
 
   const factory EditOp.setTags({
     required int id,
-    required List<int> tagIds,
+    @JsonKey(name: "tag_ids") required List<int> tagIds,
     @JsonKey(includeIfNull: false) DateTime? appliedAt,
   }) = EditOpSetTags;
 

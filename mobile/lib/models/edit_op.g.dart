@@ -96,7 +96,7 @@ Map<String, dynamic> _$EditOpDeleteToJson(EditOpDelete instance) =>
 EditOpSetTags _$EditOpSetTagsFromJson(Map<String, dynamic> json) =>
     EditOpSetTags(
       id: (json['id'] as num).toInt(),
-      tagIds: (json['tagIds'] as List<dynamic>)
+      tagIds: (json['tag_ids'] as List<dynamic>)
           .map((e) => (e as num).toInt())
           .toList(),
       appliedAt: json['appliedAt'] == null
@@ -108,7 +108,7 @@ EditOpSetTags _$EditOpSetTagsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$EditOpSetTagsToJson(EditOpSetTags instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'tagIds': instance.tagIds,
+      'tag_ids': instance.tagIds,
       'appliedAt': ?instance.appliedAt?.toIso8601String(),
       'op': instance.$type,
     };
