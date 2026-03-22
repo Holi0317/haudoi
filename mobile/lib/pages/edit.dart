@@ -1,127 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
-import '../components/link_image_preview.dart';
+import '../components/edit_page_form.dart';
 import '../i18n/strings.g.dart';
 import '../models/edit_op.dart';
 import '../models/link.dart';
-import '../models/tag.dart';
 import '../providers/api/api.dart';
 import '../providers/api/item.dart';
 import '../providers/sync/queue.dart';
-import '../utils.dart';
 
-class EditPage extends ConsumerStatefulWidget {
+class EditPage extends HookConsumerWidget {
   const EditPage({super.key, required this.id});
 
   final int id;
 
   @override
-  ConsumerState<EditPage> createState() => _EditPageState();
-}
-
-class _EditPageState extends ConsumerState<EditPage> {
-  late TextEditingController _noteController;
-  bool _isFavorite = false;
-  bool _isArchive = false;
-  Set<int> _selectedTagIds = {};
-  bool _initialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _noteController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  void _initializeFormFromLink(Link link) {
-    if (_initialized) return;
-
-    setState(() {
-      _noteController.text = link.note;
-      _isFavorite = link.favorite;
-      _isArchive = link.archive;
-      _selectedTagIds = link.tags.map((tag) => tag.id).toSet();
-
-      _initialized = true;
-    });
-  }
-
-  bool _hasSameTags(Link link) {
-    final initialTagIds = link.tags.map((tag) => tag.id).toSet();
-    return initialTagIds.length == _selectedTagIds.length &&
-        initialTagIds.containsAll(_selectedTagIds);
-  }
-
-  List<EditOp> _buildEditOps(Link link) {
-    final ops = <EditOp>[];
-
-    if (_noteController.text != link.note) {
-      ops.add(
-        EditOp.setString(
-          id: widget.id,
-          field: EditOpStringField.note,
-          value: _noteController.text,
-        ),
-      );
-    }
-
-    if (_isArchive != link.archive) {
-      ops.add(
-        EditOp.setBool(
-          id: widget.id,
-          field: EditOpBoolField.archive,
-          value: _isArchive,
-        ),
-      );
-    }
-
-    if (_isFavorite != link.favorite) {
-      ops.add(
-        EditOp.setBool(
-          id: widget.id,
-          field: EditOpBoolField.favorite,
-          value: _isFavorite,
-        ),
-      );
-    }
-
-    if (!_hasSameTags(link)) {
-      final tagIds = _selectedTagIds.toList()..sort();
-      ops.add(EditOp.setTags(id: widget.id, tagIds: tagIds));
-    }
-
-    return ops;
-  }
-
-  void _handleSave() {
-    final linkAsync = ref.read(linkItemProvider(widget.id));
-    final link = linkAsync.value;
-    if (link == null) return;
-
-    final ops = _buildEditOps(link);
-
-    if (ops.isNotEmpty) {
-      ref.read(editQueueProvider.notifier).addAll(ops);
-    }
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(t.edit.toast)));
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final linkAsync = ref.watch(linkItemProvider(widget.id));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final linkAsync = ref.watch(linkItemProvider(id));
     final tagsAsync = ref.watch(tagsProvider);
+
+    final form = _makeForm(ref);
+    // React to form status change so that `canSubmit` is updated when `form.valid` changes.
+    useStream(form.statusChanged, initialData: form.status);
+    final canSubmit = linkAsync.hasValue && tagsAsync.hasValue && form.valid;
 
     return Scaffold(
       appBar: AppBar(
@@ -130,8 +33,8 @@ class _EditPageState extends ConsumerState<EditPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
-              onPressed: linkAsync.hasValue && tagsAsync.hasValue
-                  ? _handleSave
+              onPressed: canSubmit
+                  ? () => _submit(context, ref, form, linkAsync.requireValue)
                   : null,
               icon: const Icon(Icons.check),
               label: Text(t.edit.save),
@@ -151,7 +54,7 @@ class _EditPageState extends ConsumerState<EditPage> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  ref.invalidate(linkItemProvider(widget.id));
+                  ref.invalidate(linkItemProvider(id));
                   ref.invalidate(tagsProvider);
                 },
                 child: Text(t.edit.retry),
@@ -160,117 +63,109 @@ class _EditPageState extends ConsumerState<EditPage> {
           ),
         ),
         (AsyncData(value: final link), AsyncData(value: final tags)) =>
-          _buildForm(context, link, tags),
+          EditPageForm(form: form, link: link, tags: tags),
         (_, _) => const Center(child: CircularProgressIndicator()),
       },
     );
   }
 
-  Widget _buildForm(BuildContext context, Link link, List<Tag> tags) {
-    // Initialize form data on first load
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeFormFromLink(link);
-    });
+  FormGroup _makeForm(WidgetRef ref) {
+    final linkAsync = ref.watch(linkItemProvider(id));
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView(
-        children: [
-          SizedBox(height: 200, child: LinkImagePreview(item: link)),
-          const SizedBox(height: 16),
-          ListTile(
-            title: Text(t.edit.fields.title),
-            subtitle: Text(link.title),
-            contentPadding: EdgeInsets.zero,
-          ),
-          ListTile(
-            title: Text(t.edit.fields.url),
-            subtitle: Text(link.url),
-            contentPadding: EdgeInsets.zero,
-            trailing: IconButton(
-              icon: const Icon(Icons.open_in_new),
-              onPressed: () => launchUrl(Uri.parse(link.url)),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _noteController,
-            decoration: InputDecoration(
-              labelText: t.edit.fields.note,
-              border: const OutlineInputBorder(),
-              alignLabelWithHint: true,
-            ),
-            maxLines: 8,
-            minLines: 4,
-            maxLength: 4096,
-          ),
-          SwitchListTile(
-            title: Text(t.edit.fields.favorite),
-            value: _isFavorite,
-            onChanged: (value) {
-              setState(() {
-                _isFavorite = value;
-              });
-            },
-          ),
-          SwitchListTile(
-            title: Text(t.edit.fields.archive),
-            value: _isArchive,
-            onChanged: (value) {
-              setState(() {
-                _isArchive = value;
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-          ListTile(
-            title: Text(t.edit.tags.title),
-            contentPadding: EdgeInsets.zero,
-          ),
-          if (tags.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 12,
-                  children: [
-                    Text(t.edit.tags.empty.message),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.push('/tags/new');
-                      },
-                      child: Text(t.edit.tags.empty.button),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            ...tags.map((tag) {
-              final isSelected = _selectedTagIds.contains(tag.id);
-              final color = colorFromHex(tag.color);
-
-              return CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  tag.emoji.isNotEmpty ? '${tag.emoji} ${tag.name}' : tag.name,
-                ),
-                secondary: Icon(Icons.label, size: 16, color: color),
-                value: isSelected,
-                onChanged: (selected) {
-                  setState(() {
-                    if (selected == true) {
-                      _selectedTagIds.add(tag.id);
-                    } else {
-                      _selectedTagIds.remove(tag.id);
-                    }
-                  });
-                },
-              );
-            }),
-        ],
-      ),
+    final form = useMemoized(
+      () => FormGroup({
+        'isFavorite': FormControl<bool>(value: false),
+        'isArchive': FormControl<bool>(value: false),
+        'selectedTagIds': FormControl<Set<int>>(value: {}),
+        'note': FormControl<String>(
+          value: '',
+          validators: const [MaxLengthValidator(4096)],
+        ),
+      }),
     );
+
+    // Initialize form fields when link data is loaded
+    useEffect(() {
+      final link = linkAsync.value;
+
+      if (link != null) {
+        form.value = {
+          'isFavorite': link.favorite,
+          'isArchive': link.archive,
+          'selectedTagIds': link.tags.map((tag) => tag.id).toSet(),
+          'note': link.note,
+        };
+
+        form.markAsPristine();
+      }
+
+      return null;
+    }, [linkAsync.value]);
+
+    return form;
+  }
+
+  void _submit(BuildContext context, WidgetRef ref, FormGroup form, Link link) {
+    form.updateValueAndValidity();
+
+    if (form.invalid) {
+      return;
+    }
+
+    final ops = _buildEditOps(form, link);
+
+    if (ops.isNotEmpty) {
+      ref.read(editQueueProvider.notifier).addAll(ops);
+    }
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.edit.toast)));
+    Navigator.of(context).pop();
+  }
+
+  /// Build a list of edit operations base on the form and changed fields.
+  List<EditOp> _buildEditOps(FormGroup form, Link link) {
+    final ops = <EditOp>[];
+
+    final value = form.value;
+    final note = value['note'] as String;
+    final isArchive = value['isArchive'] as bool;
+    final isFavorite = value['isFavorite'] as bool;
+    final selectedTagIds = value['selectedTagIds'] as Set<int>;
+
+    if (note != link.note) {
+      ops.add(
+        EditOp.setString(id: id, field: EditOpStringField.note, value: note),
+      );
+    }
+
+    if (isArchive != link.archive) {
+      ops.add(
+        EditOp.setBool(
+          id: id,
+          field: EditOpBoolField.archive,
+          value: isArchive,
+        ),
+      );
+    }
+
+    if (isFavorite != link.favorite) {
+      ops.add(
+        EditOp.setBool(
+          id: id,
+          field: EditOpBoolField.favorite,
+          value: isFavorite,
+        ),
+      );
+    }
+
+    final linkTagIds = link.tags.map((tag) => tag.id).toSet();
+    if (selectedTagIds != linkTagIds) {
+      final tagIds = selectedTagIds.toList()..sort();
+      ops.add(EditOp.setTags(id: id, tagIds: tagIds));
+    }
+
+    return ops;
   }
 }
