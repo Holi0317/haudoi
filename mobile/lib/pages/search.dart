@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../components/edit_app_bar.dart';
 import '../components/filter_overlay.dart';
@@ -10,57 +10,50 @@ import '../i18n/strings.g.dart';
 import '../models/link_action.dart';
 import '../models/search_query.dart';
 
-class SearchPage extends ConsumerStatefulWidget {
+class SearchPage extends HookWidget {
   const SearchPage({super.key});
 
   @override
-  ConsumerState<SearchPage> createState() => _SearchPageState();
-}
-
-class _SearchPageState extends ConsumerState<SearchPage> {
-  final _selectionCtl = SelectionController();
-  final _textCtl = TextEditingController();
-  var query = const SearchQuery();
-  final _focusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    _selectionCtl.addListener(_onSelectionChanged);
-    _textCtl.addListener(_onTextChanged);
-  }
-
-  @override
-  void dispose() {
-    _selectionCtl.dispose();
-    _textCtl.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _onSelectionChanged() {
-    setState(() {});
-  }
-
-  void _onTextChanged() {
-    setState(() {
-      query = query.copyWith(query: _textCtl.text);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final PreferredSizeWidget appBar = !_selectionCtl.isSelecting
+    final focusNode = useFocusNode();
+
+    final selectionCtl = useMemoized(() => SelectionController(), []);
+    final isSelecting = useListenableSelector(
+      selectionCtl,
+      () => selectionCtl.isSelecting,
+    );
+
+    final query = useState(const SearchQuery());
+
+    final textCtl = useTextEditingController();
+    // Sync text controller to query state
+    useEffect(() {
+      query.value = query.value.copyWith(query: textCtl.text);
+      return null;
+    }, [textCtl.text]);
+
+    final openFilter = useCallback(() {
+      FilterOverlay.show(
+        context,
+        query: query.value,
+        onQueryChanged: (newQuery) {
+          query.value = newQuery;
+          textCtl.text = newQuery.query ?? '';
+        },
+      );
+    }, [query, textCtl, context]);
+
+    final PreferredSizeWidget appBar = !isSelecting
         ? AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: SizedBox(
               height: kToolbarHeight - 12,
               child: TextField(
                 autofocus: true,
-                focusNode: _focusNode,
-                controller: _textCtl,
+                focusNode: focusNode,
+                controller: textCtl,
                 onChanged: (value) =>
-                    setState(() => query = query.copyWith(query: value)),
+                    query.value = query.value.copyWith(query: value),
                 decoration: InputDecoration(
                   hintText: t.search.search,
                   hintStyle: TextStyle(
@@ -77,7 +70,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       Icons.filter_alt,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
-                    onPressed: () => _openFilter(context),
+                    onPressed: openFilter,
                   ),
                 ),
                 textInputAction: TextInputAction.search,
@@ -85,7 +78,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           )
         : EditAppBar(
-            controller: _selectionCtl,
+            controller: selectionCtl,
             actions: [LinkAction.archive, LinkAction.favorite],
             menuActions: [
               LinkAction.unarchive,
@@ -95,26 +88,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           );
 
     return ReselectListener(
-      onReselect: () {
-        _focusNode.requestFocus();
-      },
+      onReselect: focusNode.requestFocus,
       child: Scaffold(
         appBar: appBar,
-        body: LinkList(query: query, controller: _selectionCtl),
+        body: LinkList(query: query.value, controller: selectionCtl),
       ),
-    );
-  }
-
-  void _openFilter(BuildContext context) {
-    FilterOverlay.show(
-      context,
-      query: query,
-      onQueryChanged: (newQuery) {
-        setState(() {
-          query = newQuery;
-          _textCtl.text = newQuery.query ?? '';
-        });
-      },
     );
   }
 }

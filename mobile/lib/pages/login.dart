@@ -1,127 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 import '../i18n/strings.g.dart';
 import '../providers/bindings/shared_preferences.dart';
 import '../repositories/api.dart';
+import '../validators/url.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key});
+final _logger = Logger('LoginPage');
 
-  @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
-}
+class _LoginAction {
+  _LoginAction(this.context, this.ref)
+    : form = _buildForm(ref),
+      isLoading = useState(false);
 
-class _LoginPageState extends ConsumerState<LoginPage> {
-  final _logger = Logger('LoginPage');
+  final BuildContext context;
+  final WidgetRef ref;
 
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _apiUrlController;
-  bool _isLoading = false;
+  final FormGroup form;
+  final ValueNotifier<bool> isLoading;
 
-  @override
-  void initState() {
-    super.initState();
-    _apiUrlController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _apiUrlController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ref.listen(preferenceProvider(SharedPreferenceKey.apiUrl), (
-      previous,
-      next,
-    ) {
-      if (next.value != null && next.value != previous?.value) {
-        _apiUrlController.text = next.value!;
-      }
-    });
+  static FormGroup _buildForm(WidgetRef ref) {
+    final form = useMemoized(
+      () => FormGroup({
+        'apiUrl': FormControl<String>(
+          validators: [Validators.required, const AbsoluteUrlValidator()],
+        ),
+      }),
+    );
 
     final apiUrl = ref.watch(preferenceProvider(SharedPreferenceKey.apiUrl));
 
-    return Scaffold(
-      appBar: AppBar(title: Text(t.login.title)),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 16.0,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  controller: _apiUrlController,
-                  decoration: InputDecoration(
-                    labelText: t.login.apiUrlLabel,
-                    error: apiUrl.error != null
-                        ? Text(apiUrl.error!.toString())
-                        : null,
-                  ),
-                  enabled: apiUrl.hasValue && !_isLoading,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return t.formErr.emptyValue;
-                    }
+    // Initialize form with saved API URL
+    useEffect(() {
+      final value = apiUrl.value;
+      if (value != null) {
+        form.control('apiUrl').value = value;
+      }
 
-                    // Basic URL validation
-                    final uri = Uri.tryParse(value);
-                    if (uri == null || !uri.isAbsolute) {
-                      return t.formErr.invalidUrl;
-                    }
+      return null;
+    }, [apiUrl]);
 
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (_isLoading)
-                      const SizedBox(
-                        width: 48,
-                        height: 40,
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    else
-                      FilledButton(
-                        style: TextButton.styleFrom(
-                          textStyle: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        onPressed: _login,
-                        child: Text(t.login.loginButton),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    return form;
   }
 
-  Future<void> _login() async {
-    // Disable button if loading/error
-    if (_isLoading || !_formKey.currentState!.validate()) {
+  Future<void> submit() async {
+    // Disable button if another submission is in flight
+    if (isLoading.value) {
       return;
     }
 
-    setState(() => _isLoading = true);
+    // Make sure the form is up to date and valid
+    form.updateValueAndValidity();
+    if (form.invalid) {
+      return;
+    }
+
+    isLoading.value = true;
 
     try {
-      final u = Uri.parse(_apiUrlController.text);
+      final value = form.control("apiUrl").value as String;
+      final u = Uri.parse(value);
       final apiUrl = u.replace(path: "/api").toString();
       final loginUrl = u
           .replace(path: "/auth/github/login", query: "redirect=haudoi:")
@@ -152,8 +96,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
       _showSnackBar(t.login.authFailedMessage(error: e.toString()));
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
+      if (context.mounted) {
+        isLoading.value = false;
       }
     }
   }
@@ -197,5 +141,61 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
     }
+  }
+}
+
+class LoginPage extends HookConsumerWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actions = _LoginAction(context, ref);
+
+    final form = actions.form;
+    final isLoading = actions.isLoading;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(t.login.title)),
+      body: Center(
+        child: ReactiveForm(
+          formGroup: form,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ReactiveTextField(
+                  formControlName: 'apiUrl',
+                  decoration: InputDecoration(labelText: t.login.apiUrlLabel),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (isLoading.value)
+                      const SizedBox(
+                        width: 48,
+                        height: 40,
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else
+                      FilledButton(
+                        style: TextButton.styleFrom(
+                          textStyle: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        onPressed: actions.submit,
+                        child: Text(t.login.loginButton),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

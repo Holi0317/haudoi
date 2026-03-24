@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../hooks/slidable.dart';
 import '../models/link.dart';
 import '../models/link_action.dart';
 import '../models/link_action_handle.dart';
@@ -15,7 +17,7 @@ import 'selection_controller.dart';
 ///
 /// WARNING: This does not expects [item.id] to change. Make sure to provide a key
 /// if the item instance may change to a different link with the same id.
-class LinkTile extends ConsumerStatefulWidget {
+class LinkTile extends HookConsumerWidget {
   const LinkTile({
     super.key,
     required this.item,
@@ -34,135 +36,98 @@ class LinkTile extends ConsumerStatefulWidget {
   final bool dismissible;
 
   @override
-  ConsumerState<LinkTile> createState() => _LinkTileState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final slidableController = useSlidableController();
+    final uri = useMemoized(() => Uri.parse(item.url), [item.url]);
 
-class _LinkTileState extends ConsumerState<LinkTile>
-    with TickerProviderStateMixin {
-  late final controller = SlidableController(this);
+    final isSelected = useListenableSelector(
+      controller,
+      () => controller.contains(item.id),
+    );
+    final isSelecting = useListenableSelector(
+      controller,
+      () => controller.isSelecting,
+    );
 
-  // FIXME: Handle url parsing error
-  late final uri = Uri.parse(widget.item.url);
+    final onLongPress = isSelecting
+        ? null
+        : (RelativeRect position) => _showActionMenu(context, ref, position);
 
-  bool get isSelecting => widget.controller.isSelecting;
-
-  bool get isSelected => widget.controller.contains(widget.item.id);
-
-  @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_onSelectionChanged);
-  }
-
-  @override
-  void didUpdateWidget(LinkTile oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(_onSelectionChanged);
-      widget.controller.addListener(_onSelectionChanged);
+    void onTap() {
+      if (isSelecting) {
+        controller.toggle(item);
+      } else {
+        _open(uri);
+      }
     }
 
-    // Close slidable when entering selection mode
-    // Seems that disabling the slidable doesn't close it automatically
-    if (widget.controller.isSelecting &&
-        !oldWidget.controller.isSelecting &&
-        controller.ratio != 0) {
-      controller.close(duration: const Duration());
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(_onSelectionChanged);
-    controller.dispose();
-    super.dispose();
-  }
-
-  void _onSelectionChanged() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Slidable(
-      key: ValueKey(widget.item.id),
-      controller: controller,
+      key: ValueKey(item.id),
+      controller: slidableController,
       enabled: !isSelecting,
 
       startActionPane: ActionPane(
         motion: const ScrollMotion(),
         extentRatio: 0.2,
 
-        children: [
-          LinkAction.select.slideable(ref, widget.controller, widget.item),
-        ],
+        children: [LinkAction.select.slideable(ref, controller, item)],
       ),
 
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         extentRatio: 0.4,
 
-        dismissible: widget.dismissible && !widget.item.archive
+        dismissible: dismissible && !item.archive
             ? DismissiblePane(
                 onDismissed: () => LinkAction.archive.handleOne(
                   context,
                   ref,
-                  widget.controller,
-                  widget.item,
+                  controller,
+                  item,
                 ),
               )
             : null,
 
         children: [
           // FIXME: Icon animation....?
-          LinkAction.share.slideable(ref, widget.controller, widget.item),
-          if (widget.item.archive)
-            LinkAction.unarchive.slideable(ref, widget.controller, widget.item)
+          LinkAction.share.slideable(ref, controller, item),
+          if (item.archive)
+            LinkAction.unarchive.slideable(ref, controller, item)
           else
-            LinkAction.archive.slideable(ref, widget.controller, widget.item),
+            LinkAction.archive.slideable(ref, controller, item),
         ],
       ),
 
       child: LongPressMenu(
-        onLongPress: isSelecting ? null : _showActionMenu,
+        onLongPress: onLongPress,
         child: ListTile(
           horizontalTitleGap: 0,
           minLeadingWidth: 0,
-          title: Text(
-            widget.item.title.isEmpty ? uri.toString() : widget.item.title,
-          ),
-          subtitle: LinkTileSubtitle(item: widget.item),
+          title: Text(item.title.isEmpty ? uri.toString() : item.title),
+          subtitle: LinkTileSubtitle(item: item),
           selected: isSelected,
           selectedColor: theme.colorScheme.onSurface,
           selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
           leading: LinkImagePreview(
-            item: widget.item,
+            item: item,
             padding: const EdgeInsets.only(right: 16.0),
           ),
           trailing: isSelecting
               ? Checkbox(value: isSelected, onChanged: null)
               : null,
-          onTap: _onTap,
+          onTap: onTap,
         ),
       ),
     );
   }
 
-  void _onTap() {
-    if (isSelecting) {
-      widget.controller.toggle(widget.item);
-    } else {
-      _open();
-    }
-  }
-
-  Future<void> _open() async {
+  Future<void> _open(Uri uri) async {
     final opened = await CustomTabsBridge.instance.openLink(
       uri: uri,
-      linkId: widget.item.id,
-      archiveButton: !widget.item.archive,
+      linkId: item.id,
+      archiveButton: !item.archive,
     );
 
     if (!opened) {
@@ -170,17 +135,18 @@ class _LinkTileState extends ConsumerState<LinkTile>
     }
   }
 
-  Future<void> _showActionMenu(RelativeRect position) async {
+  Future<void> _showActionMenu(
+    BuildContext context,
+    WidgetRef ref,
+    RelativeRect position,
+  ) async {
     final action = await showMenu<LinkAction>(
       context: context,
       position: position,
       items: [
-        if (widget.item.favorite)
-          LinkAction.unfavorite
-        else
-          LinkAction.favorite,
+        if (item.favorite) LinkAction.unfavorite else LinkAction.favorite,
         LinkAction.share,
-        if (widget.item.archive) LinkAction.unarchive else LinkAction.archive,
+        if (item.archive) LinkAction.unarchive else LinkAction.archive,
         LinkAction.edit,
         LinkAction.delete,
         LinkAction.select,
@@ -191,10 +157,10 @@ class _LinkTileState extends ConsumerState<LinkTile>
       return;
     }
 
-    if (!mounted) {
+    if (!context.mounted) {
       return;
     }
 
-    await action.handleOne(context, ref, widget.controller, widget.item);
+    await action.handleOne(context, ref, controller, item);
   }
 }

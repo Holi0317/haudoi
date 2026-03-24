@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
@@ -8,45 +9,15 @@ import '../models/tag.dart';
 import '../providers/api/api.dart';
 import '../utils.dart';
 
-class TagsPage extends ConsumerStatefulWidget {
-  const TagsPage({super.key});
+class _TagContent extends HookConsumerWidget {
+  const _TagContent({required this.tags});
+
+  final List<Tag> tags;
 
   @override
-  ConsumerState<TagsPage> createState() => _TagsPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final deletingTagIds = useState(<int>{});
 
-class _TagsPageState extends ConsumerState<TagsPage> {
-  final Set<int> _deletingTagIds = {};
-
-  @override
-  Widget build(BuildContext context) {
-    final tagsAsync = ref.watch(tagsProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(t.tags.title),
-        actions: [
-          IconButton(
-            tooltip: t.tags.createTag,
-            onPressed: () => context.push('/tags/new'),
-            icon: const Icon(Icons.add),
-          ),
-        ],
-      ),
-      body: switch (tagsAsync) {
-        AsyncData(value: final tags) => _buildBody(tags),
-        AsyncError(error: final error) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text('Failed to load tags: $error'),
-          ),
-        ),
-        _ => const Center(child: CircularProgressIndicator()),
-      },
-    );
-  }
-
-  Widget _buildBody(List<Tag> tags) {
     if (tags.isEmpty) {
       return Center(
         child: Column(
@@ -84,7 +55,7 @@ class _TagsPageState extends ConsumerState<TagsPage> {
             subtitle: Text(
               t.tags.createdLabel(date: formatRelativeDate(tag.createdAt)),
             ),
-            trailing: _deletingTagIds.contains(tag.id)
+            trailing: deletingTagIds.value.contains(tag.id)
                 ? const SizedBox(
                     height: 20,
                     width: 20,
@@ -103,7 +74,8 @@ class _TagsPageState extends ConsumerState<TagsPage> {
                       IconButton(
                         tooltip: t.tags.deleteTooltip,
                         icon: const Icon(Icons.delete_outline),
-                        onPressed: () => _deleteTag(tag),
+                        onPressed: () =>
+                            _deleteTag(context, ref, tag, deletingTagIds),
                       ),
                     ],
                   ),
@@ -113,7 +85,12 @@ class _TagsPageState extends ConsumerState<TagsPage> {
     );
   }
 
-  Future<void> _deleteTag(Tag tag) async {
+  Future<void> _deleteTag(
+    BuildContext context,
+    WidgetRef ref,
+    Tag tag,
+    ValueNotifier<Set<int>> deletingTagIds,
+  ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -149,9 +126,7 @@ class _TagsPageState extends ConsumerState<TagsPage> {
       return;
     }
 
-    setState(() {
-      _deletingTagIds.add(tag.id);
-    });
+    deletingTagIds.value = deletingTagIds.value.toSet()..add(tag.id);
 
     try {
       final api = await ref.read(apiRepositoryProvider.future);
@@ -159,7 +134,7 @@ class _TagsPageState extends ConsumerState<TagsPage> {
       ref.invalidate(tagsProvider);
       ref.invalidate(searchProvider);
 
-      if (!mounted) {
+      if (!context.mounted) {
         return;
       }
 
@@ -167,7 +142,7 @@ class _TagsPageState extends ConsumerState<TagsPage> {
         context,
       ).showSnackBar(SnackBar(content: Text(t.tags.toast.deleted)));
     } catch (error) {
-      if (!mounted) {
+      if (!context.mounted) {
         return;
       }
 
@@ -175,11 +150,41 @@ class _TagsPageState extends ConsumerState<TagsPage> {
         SnackBar(content: Text(t.tags.toast.deleteFailed(error: '$error'))),
       );
     } finally {
-      if (mounted) {
-        setState(() {
-          _deletingTagIds.remove(tag.id);
-        });
+      if (context.mounted) {
+        deletingTagIds.value = deletingTagIds.value.toSet()..remove(tag.id);
       }
     }
+  }
+}
+
+class TagsPage extends ConsumerWidget {
+  const TagsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagsAsync = ref.watch(tagsProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(t.tags.title),
+        actions: [
+          IconButton(
+            tooltip: t.tags.createTag,
+            onPressed: () => context.push('/tags/new'),
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      body: switch (tagsAsync) {
+        AsyncData(value: final tags) => _TagContent(tags: tags),
+        AsyncError(error: final error) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text('Failed to load tags: $error'),
+          ),
+        ),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
+    );
   }
 }
