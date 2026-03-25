@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../components/color_picker_field.dart';
+import '../components/color_picker/field.dart';
 import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
-import '../utils.dart';
+import '../utils.dart' hide colorFromHex;
 
 class EditTagPage extends ConsumerStatefulWidget {
   const EditTagPage({super.key, required this.id});
@@ -147,11 +148,15 @@ class _EditTagPageState extends ConsumerState<EditTagPage> {
           ),
           const SizedBox(height: 12),
           ColorPickerField(
-            value: _normalizedColorHex,
-            labelText: t.colorPicker.label,
-            hintText: '#RRGGBB',
+            value: colorFromHex(_colorController.text)!,
+            decoration: InputDecoration(
+              labelText: t.colorPicker.label,
+              hintText: '#RRGGBB',
+              border: const OutlineInputBorder(),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
+            ),
             onChanged: (value) {
-              _colorController.text = normalizeHexColor(value);
+              _colorController.text = value.toHexString();
               setState(() {});
             },
           ),

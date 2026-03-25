@@ -85,6 +85,9 @@ class TranslationsDialogsEn {
 	/// en: 'Close'
 	String get close => 'Close';
 
+	/// en: 'Confirm'
+	String get confirm => 'Confirm';
+
 	/// en: 'Copied to clipboard'
 	String get copiedToClipboard => 'Copied to clipboard';
 
@@ -678,6 +681,7 @@ extension on Translations {
 			'dialogs.cancel' => 'Cancel',
 			'dialogs.delete' => 'Delete',
 			'dialogs.close' => 'Close',
+			'dialogs.confirm' => 'Confirm',
 			'dialogs.copiedToClipboard' => 'Copied to clipboard',
 			'dialogs.loading' => 'Loading...',
 			'formErr.emptyValue' => 'This field cannot be empty.',

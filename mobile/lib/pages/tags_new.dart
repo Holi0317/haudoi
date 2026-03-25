@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../components/color_picker_field.dart';
 import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
@@ -107,15 +106,15 @@ class _NewTagPageState extends ConsumerState<NewTagPage> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 12),
-            ColorPickerField(
-              value: _normalizedColorHex,
-              labelText: t.colorPicker.label,
-              hintText: '#RRGGBB',
-              onChanged: (value) {
-                _colorController.text = normalizeHexColor(value);
-                setState(() {});
-              },
-            ),
+            // ColorPickerField(
+            //   value: _normalizedColorHex,
+            //   labelText: t.colorPicker.label,
+            //   hintText: '#RRGGBB',
+            //   onChanged: (value) {
+            //     _colorController.text = normalizeHexColor(value);
+            //     setState(() {});
+            //   },
+            // ),
           ],
         ),
       ),

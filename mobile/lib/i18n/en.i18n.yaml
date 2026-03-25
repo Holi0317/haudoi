@@ -3,6 +3,7 @@ dialogs:
   cancel: Cancel
   delete: Delete
   close: Close
+  confirm: Confirm
   copiedToClipboard: Copied to clipboard
   loading: "Loading..."
 formErr:
