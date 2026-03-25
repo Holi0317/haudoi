@@ -1,53 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:reactive_forms/reactive_forms.dart';
 
+import '../hooks/globalkey.dart';
 import '../i18n/strings.g.dart';
 import '../providers/bindings/shared_preferences.dart';
 import '../repositories/api.dart';
-import '../validators/url.dart';
 
 final _logger = Logger('LoginPage');
 
 class _LoginAction {
   _LoginAction(this.context, this.ref)
-    : form = _buildForm(ref),
+    : formKey = useFormBuilderKey(),
       isLoading = useState(false);
 
   final BuildContext context;
   final WidgetRef ref;
 
-  final FormGroup form;
+  final GlobalKey<FormBuilderState> formKey;
   final ValueNotifier<bool> isLoading;
-
-  static FormGroup _buildForm(WidgetRef ref) {
-    final form = useMemoized(
-      () => FormGroup({
-        'apiUrl': FormControl<String>(
-          validators: [Validators.required, const AbsoluteUrlValidator()],
-        ),
-      }),
-    );
-
-    final apiUrl = ref.watch(preferenceProvider(SharedPreferenceKey.apiUrl));
-
-    // Initialize form with saved API URL
-    useEffect(() {
-      final value = apiUrl.value;
-      if (value != null) {
-        form.control('apiUrl').value = value;
-      }
-
-      return null;
-    }, [apiUrl]);
-
-    return form;
-  }
 
   Future<void> submit() async {
     // Disable button if another submission is in flight
@@ -55,16 +32,17 @@ class _LoginAction {
       return;
     }
 
-    // Make sure the form is up to date and valid
-    form.updateValueAndValidity();
-    if (form.invalid) {
+    final form = formKey.currentState!;
+
+    // Validate and save the form values
+    if (!form.saveAndValidate()) {
       return;
     }
 
     isLoading.value = true;
 
     try {
-      final value = form.control("apiUrl").value as String;
+      final value = form.value["apiUrl"] as String;
       final u = Uri.parse(value);
       final apiUrl = u.replace(path: "/api").toString();
       final loginUrl = u
@@ -150,15 +128,27 @@ class LoginPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final actions = _LoginAction(context, ref);
-
-    final form = actions.form;
+    final formKey = actions.formKey;
     final isLoading = actions.isLoading;
+
+    final apiUrl = ref.watch(preferenceProvider(SharedPreferenceKey.apiUrl));
+
+    // Initialize form with saved API URL
+    useEffect(() {
+      final value = apiUrl.value;
+      if (value != null && formKey.currentState != null) {
+        formKey.currentState!.patchValue({'apiUrl': value});
+      }
+
+      return null;
+    }, [apiUrl, formKey.currentState]);
 
     return Scaffold(
       appBar: AppBar(title: Text(t.login.title)),
       body: Center(
-        child: ReactiveForm(
-          formGroup: form,
+        child: FormBuilder(
+          key: formKey,
+          enabled: !isLoading.value,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 24.0,
@@ -167,9 +157,17 @@ class LoginPage extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ReactiveTextField(
-                  formControlName: 'apiUrl',
+                FormBuilderTextField(
+                  name: 'apiUrl',
                   decoration: InputDecoration(labelText: t.login.apiUrlLabel),
+                  keyboardType: TextInputType.url,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.url(
+                      protocols: ["http", "https"],
+                      requireTld: true,
+                    ),
+                  ]),
                 ),
                 const SizedBox(height: 32),
                 Row(
