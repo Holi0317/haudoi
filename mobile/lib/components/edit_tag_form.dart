@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 import '../hooks/globalkey.dart';
 import '../i18n/strings.g.dart';
@@ -12,10 +13,16 @@ import 'tag_chip.dart';
 class EditTagForm extends HookWidget {
   const EditTagForm({
     super.key,
+    required this.title,
+    required this.actionLabel,
     required this.value,
     required this.onSubmit,
     this.isLoading = false,
   });
+
+  /// Title in [AppBar]
+  final Widget title;
+  final Widget actionLabel;
 
   final Tag value;
   final ValueChanged<Tag> onSubmit;
@@ -28,7 +35,7 @@ class EditTagForm extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.tagEdit.title),
+        title: title,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => _confirmPop(context, formKey),
@@ -41,7 +48,7 @@ class EditTagForm extends HookWidget {
               icon: isLoading
                   ? const CircularProgressIndicator()
                   : const Icon(Icons.save),
-              label: Text(t.edit.save),
+              label: actionLabel,
             ),
           ),
         ],
@@ -75,6 +82,7 @@ class EditTagForm extends HookWidget {
             FormBuilderTextField(
               name: 'name',
               initialValue: value.name,
+              validator: FormBuilderValidators.required(),
               decoration: InputDecoration(
                 labelText: t.tagEdit.fields.title,
                 border: const OutlineInputBorder(),

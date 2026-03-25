@@ -61,6 +61,8 @@ class EditTagPage extends HookConsumerWidget {
     }
 
     return EditTagForm(
+      title: Text(t.tagEdit.title),
+      actionLabel: Text(t.edit.save),
       value: tag,
       onSubmit: (tag) async {
         if (isLoading.value) {
@@ -71,7 +73,9 @@ class EditTagPage extends HookConsumerWidget {
           isLoading.value = true;
           await _submit(context, ref, tag);
         } finally {
-          isLoading.value = false;
+          if (context.mounted) {
+            isLoading.value = false;
+          }
         }
       },
       isLoading: isLoading.value,

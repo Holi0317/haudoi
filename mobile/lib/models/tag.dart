@@ -29,7 +29,7 @@ abstract class TagCreateBody with _$TagCreateBody {
   const factory TagCreateBody({
     required String name,
     required String color,
-    String? emoji,
+    @JsonKey(includeIfNull: false) String? emoji,
   }) = _TagCreateBody;
 
   factory TagCreateBody.fromJson(Map<String, dynamic> json) =>
