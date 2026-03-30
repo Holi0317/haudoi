@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../models/link.dart';
 
@@ -79,4 +80,15 @@ class SelectionController extends ChangeNotifier {
     _selection = const [];
     notifyListeners();
   }
+}
+
+/// Hook for creating and using a [SelectionController] in a widget.
+SelectionController useSelectionController() {
+  final controller = useMemoized(() => SelectionController(), []);
+
+  useEffect(() {
+    return controller.dispose;
+  }, []);
+
+  return controller;
 }

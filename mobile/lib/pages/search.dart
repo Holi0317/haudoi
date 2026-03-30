@@ -17,7 +17,7 @@ class SearchPage extends HookWidget {
   Widget build(BuildContext context) {
     final focusNode = useFocusNode();
 
-    final selectionCtl = useMemoized(() => SelectionController(), []);
+    final selectionCtl = useSelectionController();
     final isSelecting = useListenableSelector(
       selectionCtl,
       () => selectionCtl.isSelecting,
