@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ReselectNotifier extends ChangeNotifier {
   void notifyReselect() {
@@ -24,40 +25,25 @@ class ReselectScope extends InheritedNotifier<ReselectNotifier> {
 ///
 /// Reselect means user tapping on selected icon in bottom navigation bar. Pages probably want to scroll to top
 /// or refresh content when reselected.
-class ReselectListener extends StatefulWidget {
+class ReselectListener extends HookWidget {
+  const ReselectListener({
+    super.key,
+    required this.onReselect,
+    required this.child,
+  });
+
   final VoidCallback onReselect;
   final Widget child;
 
-  const ReselectListener({
-    required this.onReselect,
-    required this.child,
-    super.key,
-  });
-
   @override
-  State<ReselectListener> createState() => _ReselectListenerState();
-}
+  Widget build(BuildContext context) {
+    final notifier = ReselectScope.of(context);
 
-class _ReselectListenerState extends State<ReselectListener> {
-  late ReselectNotifier _notifier;
+    useEffect(() {
+      notifier.addListener(onReselect);
+      return () => notifier.removeListener(onReselect);
+    }, [notifier, onReselect]);
 
-  void _handle() {
-    widget.onReselect();
+    return child;
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _notifier = ReselectScope.of(context);
-    _notifier.addListener(_handle);
-  }
-
-  @override
-  void dispose() {
-    _notifier.removeListener(_handle);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }

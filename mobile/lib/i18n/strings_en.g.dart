@@ -54,6 +54,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsTagsEn tags = TranslationsTagsEn.internal(_root);
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
+	late final TranslationsColorPickerEn colorPicker = TranslationsColorPickerEn.internal(_root);
 	Map<String, String> get linkAction => {
 		'archive': 'Archive',
 		'unarchive': 'Unarchive',
@@ -65,7 +66,6 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		'share': 'Share',
 		'delete': 'Delete',
 	};
-	late final TranslationsColorPickerEn colorPicker = TranslationsColorPickerEn.internal(_root);
 }
 
 // Path: dialogs
@@ -84,6 +84,9 @@ class TranslationsDialogsEn {
 
 	/// en: 'Close'
 	String get close => 'Close';
+
+	/// en: 'Confirm'
+	String get confirm => 'Confirm';
 
 	/// en: 'Copied to clipboard'
 	String get copiedToClipboard => 'Copied to clipboard';
@@ -391,14 +394,8 @@ class TranslationsColorPickerEn {
 	/// en: 'Color'
 	String get label => 'Color';
 
-	/// en: 'Use #RRGGBB format'
-	String get invalidRgbHex => 'Use #RRGGBB format';
-
 	/// en: 'Pick color'
 	String get pickColor => 'Pick color';
-
-	/// en: 'Pick custom color'
-	String get pickCustomColor => 'Pick custom color';
 
 	/// en: 'Preset colors'
 	String get presetColors => 'Preset colors';
@@ -406,11 +403,11 @@ class TranslationsColorPickerEn {
 	/// en: 'Randomize'
 	String get randomize => 'Randomize';
 
+	/// en: 'Preset'
+	String get preset => 'Preset';
+
 	/// en: 'Custom'
 	String get custom => 'Custom';
-
-	/// en: 'Use color'
-	String get useColor => 'Use color';
 }
 
 // Path: settings.theme
@@ -678,6 +675,7 @@ extension on Translations {
 			'dialogs.cancel' => 'Cancel',
 			'dialogs.delete' => 'Delete',
 			'dialogs.close' => 'Close',
+			'dialogs.confirm' => 'Confirm',
 			'dialogs.copiedToClipboard' => 'Copied to clipboard',
 			'dialogs.loading' => 'Loading...',
 			'formErr.emptyValue' => 'This field cannot be empty.',
@@ -772,6 +770,12 @@ extension on Translations {
 			'filter.order.title' => 'Order',
 			'filter.order.newestFirst' => 'Newest First',
 			'filter.order.oldestFirst' => 'Oldest First',
+			'colorPicker.label' => 'Color',
+			'colorPicker.pickColor' => 'Pick color',
+			'colorPicker.presetColors' => 'Preset colors',
+			'colorPicker.randomize' => 'Randomize',
+			'colorPicker.preset' => 'Preset',
+			'colorPicker.custom' => 'Custom',
 			'linkAction.archive' => 'Archive',
 			'linkAction.unarchive' => 'Unarchive',
 			'linkAction.favorite' => 'Favorite',
@@ -781,14 +785,6 @@ extension on Translations {
 			'linkAction.editTags' => 'Edit Tags',
 			'linkAction.share' => 'Share',
 			'linkAction.delete' => 'Delete',
-			'colorPicker.label' => 'Color',
-			'colorPicker.invalidRgbHex' => 'Use #RRGGBB format',
-			'colorPicker.pickColor' => 'Pick color',
-			'colorPicker.pickCustomColor' => 'Pick custom color',
-			'colorPicker.presetColors' => 'Preset colors',
-			'colorPicker.randomize' => 'Randomize',
-			'colorPicker.custom' => 'Custom',
-			'colorPicker.useColor' => 'Use color',
 			_ => null,
 		};
 	}

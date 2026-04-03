@@ -43,7 +43,7 @@ Map<String, dynamic> _$TagCreateBodyToJson(_TagCreateBody instance) =>
     <String, dynamic>{
       'name': instance.name,
       'color': instance.color,
-      'emoji': instance.emoji,
+      'emoji': ?instance.emoji,
     };
 
 _TagUpdateBody _$TagUpdateBodyFromJson(Map<String, dynamic> json) =>

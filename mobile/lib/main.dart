@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_builder_validators/localization/l10n.dart';
 import 'package:logging/logging.dart';
 
 import 'app_router.dart';
@@ -53,7 +54,10 @@ void main() {
                   locale: TranslationProvider.of(context).flutterLocale,
                   // use provider
                   supportedLocales: AppLocaleUtils.supportedLocales,
-                  localizationsDelegates: GlobalMaterialLocalizations.delegates,
+                  localizationsDelegates: [
+                    ...GlobalMaterialLocalizations.delegates,
+                    FormBuilderLocalizations.delegate,
+                  ],
                   routerConfig: router,
                   // FIXME: Replace with a proper title
                   title: 'Flutter Demo',

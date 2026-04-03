@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../models/search_query.dart';
 import 'filter_form.dart';
@@ -9,7 +10,7 @@ import 'filter_form.dart';
 ///
 /// Position of the overlay is pretty hard-coded. It assumes that the overlay
 /// is shown right below an [AppBar] at the top of the screen.
-class FilterOverlay extends StatefulWidget {
+class FilterOverlay extends HookWidget {
   const FilterOverlay({
     super.key,
     required this.query,
@@ -20,9 +21,6 @@ class FilterOverlay extends StatefulWidget {
   final SearchQuery query;
   final ValueChanged<SearchQuery> onQueryChanged;
   final VoidCallback onDismiss;
-
-  @override
-  State<FilterOverlay> createState() => _FilterOverlayState();
 
   /// Show the filter overlay as an overlay entry.
   static void show(
@@ -43,73 +41,51 @@ class FilterOverlay extends StatefulWidget {
 
     Overlay.of(context).insert(entry);
   }
-}
-
-class _FilterOverlayState extends State<FilterOverlay>
-    with SingleTickerProviderStateMixin {
-  // We maintain a local copy of the query to ensure immediate UI updates
-  // when the user interacts with the filter controls. This provides instant
-  // visual feedback while the parent widget's state is being updated.
-  late SearchQuery _currentQuery;
-
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
 
   @override
-  void initState() {
-    super.initState();
-    _currentQuery = widget.query;
+  Widget build(BuildContext context) {
+    // We maintain a local copy of the query to ensure immediate UI updates
+    // when the user interacts with the filter controls. This provides instant
+    // visual feedback while the parent widget's state is being updated.
+    final currentQuery = useState(query);
+    final updateQuery = useCallback((SearchQuery newQuery) {
+      currentQuery.value = newQuery;
+      onQueryChanged(newQuery);
+    }, [currentQuery, onQueryChanged]);
 
-    _animationController = AnimationController(
-      vsync: this,
+    final animationController = useAnimationController(
       duration: const Duration(milliseconds: 250),
     );
-
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
+    final fadeAnimation = CurvedAnimation(
+      parent: animationController,
       curve: Curves.easeOut,
     );
-
-    _slideAnimation =
+    final slideAnimation =
         Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(
           CurvedAnimation(
-            parent: _animationController,
+            parent: animationController,
             curve: Curves.easeOutCubic,
           ),
         );
 
-    // Start the show animation
-    _animationController.forward();
-  }
+    useEffect(() {
+      // Start the show animation on mount
+      animationController.forward();
+      return null;
+    }, []);
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+    final dismiss = useCallback(() async {
+      await animationController.reverse();
+      onDismiss();
+    }, [animationController, onDismiss]);
 
-  void _updateQuery(SearchQuery newQuery) {
-    setState(() {
-      _currentQuery = newQuery;
-    });
-    widget.onQueryChanged(newQuery);
-  }
-
-  Future<void> _dismiss() async {
-    await _animationController.reverse();
-    widget.onDismiss();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final top = kToolbarHeight + MediaQuery.of(context).padding.top;
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          _dismiss();
+          dismiss();
         }
       },
       child: Positioned.fill(
@@ -119,10 +95,10 @@ class _FilterOverlayState extends State<FilterOverlay>
             children: [
               // dismiss when tapping outside with fade animation
               FadeTransition(
-                opacity: _fadeAnimation,
+                opacity: fadeAnimation,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: _dismiss,
+                  onTap: dismiss,
                   child: Container(color: Colors.black.withValues(alpha: 0.3)),
                 ),
               ),
@@ -132,18 +108,18 @@ class _FilterOverlayState extends State<FilterOverlay>
                 left: 0,
                 right: 0,
                 child: SlideTransition(
-                  position: _slideAnimation,
+                  position: slideAnimation,
                   child: Material(
                     elevation: 8,
                     color: Theme.of(context).cardColor,
                     child: FilterForm(
-                      query: _currentQuery.query,
-                      order: _currentQuery.order,
+                      query: currentQuery.value.query,
+                      order: currentQuery.value.order,
                       onQueryChanged: (value) {
-                        _updateQuery(_currentQuery.copyWith(query: value));
+                        updateQuery(currentQuery.value.copyWith(query: value));
                       },
                       onOrderChanged: (value) {
-                        _updateQuery(_currentQuery.copyWith(order: value));
+                        updateQuery(currentQuery.value.copyWith(order: value));
                       },
                     ),
                   ),

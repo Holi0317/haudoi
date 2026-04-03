@@ -2,14 +2,15 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../models/link.dart';
 import '../providers/api/api.dart';
 import '../repositories/api.dart';
 import './shimmer.dart';
 
-class LinkImagePreview extends ConsumerStatefulWidget {
+class LinkImagePreview extends HookConsumerWidget {
   const LinkImagePreview({
     super.key,
     required this.item,
@@ -17,32 +18,21 @@ class LinkImagePreview extends ConsumerStatefulWidget {
   });
 
   final Link item;
-
   final EdgeInsetsGeometry padding;
 
   @override
-  ConsumerState<LinkImagePreview> createState() => _LinkImagePreviewState();
-}
-
-class _LinkImagePreviewState extends ConsumerState<LinkImagePreview> {
-  bool _hide = false;
-
-  @override
-  void didUpdateWidget(covariant LinkImagePreview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.item.url != widget.item.url) {
-      setState(() {
-        _hide = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final apiRepository = ref.watch(apiRepositoryProvider);
+    final hide = useState(false);
 
-    if (_hide) {
+    // Whenever the URL changes, reset hide state
+    // This is necessary because the same widget instance may be reused for different links
+    useEffect(() {
+      hide.value = false;
+      return null;
+    }, [item.url]);
+
+    if (hide.value) {
       return const SizedBox.shrink();
     }
 
@@ -52,7 +42,7 @@ class _LinkImagePreviewState extends ConsumerState<LinkImagePreview> {
         final height = constraint.maxHeight;
 
         return Padding(
-          padding: widget.padding,
+          padding: padding,
           child: SizedBox(
             width: width,
             height: height,
@@ -62,6 +52,7 @@ class _LinkImagePreviewState extends ConsumerState<LinkImagePreview> {
                 value,
                 width,
                 height,
+                hide,
               ),
               AsyncValue(error: != null) => const Icon(Icons.error),
               AsyncValue() => _buildShimmer(context, width, height),
@@ -90,9 +81,10 @@ class _LinkImagePreviewState extends ConsumerState<LinkImagePreview> {
     ApiRepository api,
     double width,
     double height,
+    ValueNotifier<bool> hide,
   ) {
     final imageUrl = api.imageUrl(
-      widget.item.url,
+      item.url,
       dpr: MediaQuery.devicePixelRatioOf(context),
       width: width,
       height: height,
@@ -113,9 +105,7 @@ class _LinkImagePreviewState extends ConsumerState<LinkImagePreview> {
       errorWidget: (context, url, error) => const SizedBox.shrink(),
       errorListener: (value) {
         if (context.mounted) {
-          setState(() {
-            _hide = true;
-          });
+          hide.value = true;
         }
       },
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../components/edit_app_bar.dart';
 import '../components/link_list.dart';
@@ -11,45 +12,29 @@ import '../models/search_query.dart';
 import '../providers/api/search.dart';
 import '../providers/extensions.dart';
 
-class UnreadPage extends ConsumerStatefulWidget {
+class UnreadPage extends HookConsumerWidget {
   const UnreadPage({super.key});
 
   @override
-  ConsumerState<UnreadPage> createState() => _UnreadPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useSelectionController();
+    final isSelecting = useListenableSelector(
+      controller,
+      () => controller.isSelecting,
+    );
 
-class _UnreadPageState extends ConsumerState<UnreadPage> {
-  final _controller = SelectionController();
-  SearchOrder _order = SearchOrder.createdAtDesc;
+    final order = useState(SearchOrder.createdAtDesc);
 
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(_onSelectionChanged);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onSelectionChanged() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final unreadSearchQuery = SearchQuery(
       query: "archive:false",
-      order: _order,
+      order: order.value,
     );
 
     final count = ref.watch(
       searchAppliedProvider(unreadSearchQuery).selectData((data) => data.count),
     );
 
-    final PreferredSizeWidget appBar = !_controller.isSelecting
+    final PreferredSizeWidget appBar = !isSelecting
         ? AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: switch (count) {
@@ -59,10 +44,10 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
               ),
               _ => Text(t.nav.unread),
             },
-            actions: [_sortAction(context)],
+            actions: [_sortAction(context, order)],
           )
         : EditAppBar(
-            controller: _controller,
+            controller: controller,
             actions: [LinkAction.delete, LinkAction.archive],
           );
 
@@ -81,28 +66,26 @@ class _UnreadPageState extends ConsumerState<UnreadPage> {
         body: LinkList(
           query: unreadSearchQuery,
           dismissible: true,
-          controller: _controller,
+          controller: controller,
         ),
       ),
     );
   }
 
-  Widget _sortAction(BuildContext context) {
+  Widget _sortAction(BuildContext context, ValueNotifier<SearchOrder> order) {
     return IconButton(
       icon: Icon(
-        _order == SearchOrder.createdAtAsc
+        order.value == SearchOrder.createdAtAsc
             ? Icons.arrow_upward
             : Icons.arrow_downward,
       ),
-      tooltip: _order == SearchOrder.createdAtAsc
+      tooltip: order.value == SearchOrder.createdAtAsc
           ? t.unread.toggleSortingAsc
           : t.unread.toggleSortingDesc,
       onPressed: () {
-        setState(() {
-          _order = _order == SearchOrder.createdAtAsc
-              ? SearchOrder.createdAtDesc
-              : SearchOrder.createdAtAsc;
-        });
+        order.value = order.value == SearchOrder.createdAtAsc
+            ? SearchOrder.createdAtDesc
+            : SearchOrder.createdAtAsc;
       },
     );
   }

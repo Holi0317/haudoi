@@ -559,7 +559,7 @@ as List<Tag>,
 /// @nodoc
 mixin _$TagCreateBody {
 
- String get name; String get color; String? get emoji;
+ String get name; String get color;@JsonKey(includeIfNull: false) String? get emoji;
 /// Create a copy of TagCreateBody
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -592,7 +592,7 @@ abstract mixin class $TagCreateBodyCopyWith<$Res>  {
   factory $TagCreateBodyCopyWith(TagCreateBody value, $Res Function(TagCreateBody) _then) = _$TagCreateBodyCopyWithImpl;
 @useResult
 $Res call({
- String name, String color, String? emoji
+ String name, String color,@JsonKey(includeIfNull: false) String? emoji
 });
 
 
@@ -699,7 +699,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String color,  String? emoji)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String color, @JsonKey(includeIfNull: false)  String? emoji)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TagCreateBody() when $default != null:
 return $default(_that.name,_that.color,_that.emoji);case _:
@@ -720,7 +720,7 @@ return $default(_that.name,_that.color,_that.emoji);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String color,  String? emoji)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String color, @JsonKey(includeIfNull: false)  String? emoji)  $default,) {final _that = this;
 switch (_that) {
 case _TagCreateBody():
 return $default(_that.name,_that.color,_that.emoji);case _:
@@ -740,7 +740,7 @@ return $default(_that.name,_that.color,_that.emoji);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String color,  String? emoji)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String color, @JsonKey(includeIfNull: false)  String? emoji)?  $default,) {final _that = this;
 switch (_that) {
 case _TagCreateBody() when $default != null:
 return $default(_that.name,_that.color,_that.emoji);case _:
@@ -755,12 +755,12 @@ return $default(_that.name,_that.color,_that.emoji);case _:
 @JsonSerializable()
 
 class _TagCreateBody implements TagCreateBody {
-  const _TagCreateBody({required this.name, required this.color, this.emoji});
+  const _TagCreateBody({required this.name, required this.color, @JsonKey(includeIfNull: false) this.emoji});
   factory _TagCreateBody.fromJson(Map<String, dynamic> json) => _$TagCreateBodyFromJson(json);
 
 @override final  String name;
 @override final  String color;
-@override final  String? emoji;
+@override@JsonKey(includeIfNull: false) final  String? emoji;
 
 /// Create a copy of TagCreateBody
 /// with the given fields replaced by the non-null parameter values.
@@ -795,7 +795,7 @@ abstract mixin class _$TagCreateBodyCopyWith<$Res> implements $TagCreateBodyCopy
   factory _$TagCreateBodyCopyWith(_TagCreateBody value, $Res Function(_TagCreateBody) _then) = __$TagCreateBodyCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String color, String? emoji
+ String name, String color,@JsonKey(includeIfNull: false) String? emoji
 });
 
 
