@@ -131,6 +131,14 @@ filter:
     newestFirst: Newest First
     oldestFirst: Oldest First
 
+colorPicker:
+  label: Color
+  pickColor: Pick color
+  presetColors: Preset colors
+  randomize: Randomize
+  preset: Preset
+  custom: Custom
+
 # See link_action enum. Must match the enum's key.
 "linkAction(map)":
   archive: Archive
@@ -142,13 +150,3 @@ filter:
   editTags: Edit Tags
   share: Share
   delete: Delete
-
-colorPicker:
-  label: Color
-  invalidRgbHex: "Use #RRGGBB format"
-  pickColor: Pick color
-  pickCustomColor: Pick custom color
-  presetColors: Preset colors
-  randomize: Randomize
-  custom: Custom
-  useColor: Use color

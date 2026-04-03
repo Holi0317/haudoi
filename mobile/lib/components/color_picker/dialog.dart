@@ -29,9 +29,12 @@ class ColorPickerDialog extends HookWidget {
           children: [
             TabBar.secondary(
               controller: tabController,
-              tabs: const [
-                Tab(text: 'Preset', icon: Icon(Icons.palette)),
-                Tab(text: 'Custom', icon: Icon(Icons.tune)),
+              tabs: [
+                Tab(
+                  text: t.colorPicker.preset,
+                  icon: const Icon(Icons.palette),
+                ),
+                Tab(text: t.colorPicker.custom, icon: const Icon(Icons.tune)),
               ],
             ),
             Expanded(
