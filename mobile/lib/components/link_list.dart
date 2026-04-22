@@ -32,6 +32,7 @@ class LinkList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cursors = useState(<String>[]);
     final state = ref.watch(searchPaginatedProvider(query, cursors.value));
+    final isFirstPageLoading = state.isLoading && state.pages == null;
 
     final isSelecting = useListenableSelector(
       controller,
@@ -69,6 +70,11 @@ class LinkList extends HookConsumerWidget {
 
             cursors.value = List.unmodifiable([...cursors.value, nextCursor]);
           },
+          // This is the scrollbox. We can't disable scrolling inside the shimmer.
+          // So disable scrolling only while the first page shimmer is shown.
+          physics: isFirstPageLoading
+              ? const NeverScrollableScrollPhysics()
+              : null,
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, item, index) => LinkTile(
               key: ValueKey(item.id),
@@ -77,28 +83,13 @@ class LinkList extends HookConsumerWidget {
               controller: controller,
             ),
             animateTransitions: true,
-            firstPageProgressIndicatorBuilder: _buildFirstPageLoadingIndicator,
-            newPageProgressIndicatorBuilder: _buildNewPageLoadingIndicator,
+            firstPageProgressIndicatorBuilder: (context) =>
+                const LinkTileShimmer(itemCount: 50),
+            newPageProgressIndicatorBuilder: (context) =>
+                const LinkTileShimmer(itemCount: 3),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildFirstPageLoadingIndicator(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.sizeOf(context).height * 1.5,
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 50,
-        itemBuilder: (context, index) => const LinkTileShimmer(),
-      ),
-    );
-  }
-
-  Widget _buildNewPageLoadingIndicator(BuildContext context) {
-    return Column(
-      children: List.generate(3, (index) => const LinkTileShimmer()),
     );
   }
 }

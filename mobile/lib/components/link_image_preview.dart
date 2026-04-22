@@ -4,11 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../models/link.dart';
 import '../providers/api/api.dart';
 import '../repositories/api.dart';
-import './shimmer.dart';
 
 class LinkImagePreview extends HookConsumerWidget {
   const LinkImagePreview({
@@ -64,14 +64,12 @@ class LinkImagePreview extends HookConsumerWidget {
   }
 
   Widget _buildShimmer(BuildContext context, double width, double height) {
-    return Shimmer(
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
-        ),
+    final color = Theme.of(context).colorScheme.surfaceContainerHighest;
+
+    return Skeletonizer(
+      child: ColoredBox(
+        color: color,
+        child: SizedBox(width: width, height: height),
       ),
     );
   }

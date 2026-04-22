@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../models/server_info.dart';
@@ -11,7 +12,6 @@ import '../../providers/api/api.dart';
 import '../../providers/bindings/shared_preferences.dart';
 import '../../providers/extensions.dart';
 import '../../providers/sync/queue.dart';
-import '../shimmer.dart';
 
 class Whoami extends ConsumerWidget {
   Whoami({super.key});
@@ -57,12 +57,8 @@ class Whoami extends ConsumerWidget {
       children: [
         // User Avatar
         CircleAvatar(
+          backgroundImage: CachedNetworkImageProvider(session.avatarUrl),
           radius: 40,
-          backgroundColor: Colors.grey.shade300,
-          child: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(session.avatarUrl),
-            radius: 40,
-          ),
         ),
         Expanded(
           child: Column(
@@ -125,38 +121,38 @@ class Whoami extends ConsumerWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    return Shimmer(
+    return Skeletonizer(
       child: Row(
         spacing: 16,
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              shape: BoxShape.circle,
-            ),
-          ),
+          // User Avatar
+          const CircleAvatar(radius: 40),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 180,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                const Text(
+                  'Loading',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-
+                Text(
+                  t.settings.userLine(
+                    login: 'login',
+                    source: 'source',
+                    host: 'example.com',
+                  ),
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
                 const SizedBox(height: 8),
-                Container(
-                  width: 120,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                FilledButton(
+                  onPressed: null,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.logout, size: 20),
+                      const SizedBox(width: 8),
+                      Text(t.settings.logout.title),
+                    ],
                   ),
                 ),
               ],

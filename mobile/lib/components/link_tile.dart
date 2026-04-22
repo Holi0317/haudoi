@@ -13,6 +13,45 @@ import 'link_tile_subtitle.dart';
 import 'long_press_menu.dart';
 import 'selection_controller.dart';
 
+/// Display a [Link] in [ListTile].
+/// This is a stateless widget and does not hook into any actions. Use [LinkTile] instead.
+/// Separated from [ListTile] for skeleton loading display.
+class LinkTileDisplay extends HookWidget {
+  const LinkTileDisplay({
+    super.key,
+    required this.item,
+    required this.selected,
+    required this.isSelecting,
+    required this.leading,
+    this.onTap,
+  });
+
+  final Link item;
+  final bool selected;
+  final bool isSelecting;
+  final Widget leading;
+  final GestureTapCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final uri = useMemoized(() => Uri.parse(item.url), [item.url]);
+
+    return ListTile(
+      horizontalTitleGap: 0,
+      minLeadingWidth: 0,
+      title: Text(item.title.isEmpty ? uri.toString() : item.title),
+      subtitle: LinkTileSubtitle(item: item),
+      selected: selected,
+      selectedColor: theme.colorScheme.onSurface,
+      selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+      leading: leading,
+      trailing: isSelecting ? Checkbox(value: selected, onChanged: null) : null,
+      onTap: onTap,
+    );
+  }
+}
+
 /// A tile widget that displays a [Link] with actions.
 ///
 /// WARNING: This does not expects [item.id] to change. Make sure to provide a key
@@ -61,8 +100,6 @@ class LinkTile extends HookConsumerWidget {
       }
     }
 
-    final theme = Theme.of(context);
-
     return Slidable(
       key: ValueKey(item.id),
       controller: slidableController,
@@ -102,21 +139,14 @@ class LinkTile extends HookConsumerWidget {
 
       child: LongPressMenu(
         onLongPress: onLongPress,
-        child: ListTile(
-          horizontalTitleGap: 0,
-          minLeadingWidth: 0,
-          title: Text(item.title.isEmpty ? uri.toString() : item.title),
-          subtitle: LinkTileSubtitle(item: item),
+        child: LinkTileDisplay(
+          item: item,
           selected: isSelected,
-          selectedColor: theme.colorScheme.onSurface,
-          selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+          isSelecting: isSelecting,
           leading: LinkImagePreview(
             item: item,
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 16),
           ),
-          trailing: isSelecting
-              ? Checkbox(value: isSelected, onChanged: null)
-              : null,
           onTap: onTap,
         ),
       ),
