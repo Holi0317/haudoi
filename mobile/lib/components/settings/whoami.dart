@@ -132,14 +132,14 @@ class Whoami extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Loading",
+                  'Loading',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   t.settings.userLine(
-                    login: "login",
-                    source: "source",
-                    host: "example.com",
+                    login: 'login',
+                    source: 'source',
+                    host: 'example.com',
                   ),
                   style: TextStyle(color: Colors.grey.shade600),
                 ),

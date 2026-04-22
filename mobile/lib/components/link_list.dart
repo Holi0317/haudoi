@@ -32,6 +32,7 @@ class LinkList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cursors = useState(<String>[]);
     final state = ref.watch(searchPaginatedProvider(query, cursors.value));
+    final isFirstPageLoading = state.isLoading && state.pages == null;
 
     final isSelecting = useListenableSelector(
       controller,
@@ -70,8 +71,8 @@ class LinkList extends HookConsumerWidget {
             cursors.value = List.unmodifiable([...cursors.value, nextCursor]);
           },
           // This is the scrollbox. We can't disable scrolling inside the shimmer.
-          // So disabling scrolling when it is loading here instead.
-          physics: state.isLoading
+          // So disable scrolling only while the first page shimmer is shown.
+          physics: isFirstPageLoading
               ? const NeverScrollableScrollPhysics()
               : null,
           builderDelegate: PagedChildBuilderDelegate(

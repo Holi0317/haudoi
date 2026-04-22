@@ -6,7 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../models/link.dart';
 import 'link_tile.dart';
 
-/// A shimmer loading placeholder for LinkTile
+/// A skeleton loading placeholder for [LinkTile]
 class LinkTileShimmer extends StatelessWidget {
   const LinkTileShimmer({super.key, required this.itemCount});
 
@@ -16,6 +16,8 @@ class LinkTileShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: true,
+      // FIXME: Couldn't figure out how to make this child have height and won't break layout.
+      // Brute forcing by eagerly generating the whole list now.
       child: Column(
         children: List.generate(
           itemCount,
