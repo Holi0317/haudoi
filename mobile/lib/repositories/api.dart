@@ -61,7 +61,38 @@ class ApiRepository {
   }) : _authToken = authToken,
        _client = transport;
 
+  /// Send a request to the server and parse response body as JSON.
+  ///
+  /// Use [_requestRaw] for endpoints with non-JSON response body or empty response.
+  /// Pass in [fromJson] to parse the JSON response into desired type.
+  /// For other parameters, see [_requestRaw].
+  Future<T> _requestJson<T>(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String>? queryParameters,
+    Future<void>? abortTrigger,
+    required T Function(Map<String, dynamic>) fromJson,
+  }) async {
+    final resp = await _requestRaw(
+      method,
+      path,
+      body: body,
+      queryParameters: queryParameters,
+      abortTrigger: abortTrigger,
+    );
+
+    final responseBodyString = await resp.stream.bytesToString();
+    final jsonResponse = jsonDecode(responseBodyString);
+
+    return fromJson(jsonResponse as Map<String, dynamic>);
+  }
+
   /// Send a request to the server.
+  ///
+  /// This is a low-level method for getting raw response stream, suitable for endpoints
+  /// where the response body is not JSON, or is empty.
+  /// Use [_requestJson] for endpoint with JSON response body instead.
   ///
   /// This will emit a [http.ClientException] if there is a transport-level
   /// failure when communication with the server. For example, if the server could
@@ -73,7 +104,7 @@ class ApiRepository {
   ///
   /// If [body] is provided, request will be sent as json. Do not provide [body]
   /// on GET request.
-  Future<http.StreamedResponse> _request(
+  Future<http.StreamedResponse> _requestRaw(
     String method,
     String path, {
     Object? body,
@@ -116,48 +147,47 @@ class ApiRepository {
     }
   }
 
-  Future<ServerInfo> info({Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/', abortTrigger: abortTrigger);
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return ServerInfo.fromJson(jsonResponse as Map<String, dynamic>);
+  Future<ServerInfo> info({Future<void>? abortTrigger}) {
+    return _requestJson(
+      'GET',
+      '/',
+      abortTrigger: abortTrigger,
+      fromJson: ServerInfo.fromJson,
+    );
   }
 
   /// Search (or list) links from server.
   Future<SearchResponse> search(
     SearchQuery query, {
     Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  }) {
+    return _requestJson(
       'GET',
       '/search',
       queryParameters: query.toMap(),
       abortTrigger: abortTrigger,
+      fromJson: SearchResponse.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return SearchResponse.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Get a single link from server.
   ///
   /// If the item ID is not found, a [RequestException] with `statusCode == 404`
   /// will be thrown.
-  Future<Link> getItem(int id, {Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/item/$id', abortTrigger: abortTrigger);
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Link.fromJson(jsonResponse as Map<String, dynamic>);
+  Future<Link> getItem(int id, {Future<void>? abortTrigger}) {
+    return _requestJson(
+      'GET',
+      '/item/$id',
+      abortTrigger: abortTrigger,
+      fromJson: Link.fromJson,
+    );
   }
 
   /// Edit or insert links.
   Future<void> edit(List<EditOp> op, {Future<void>? abortTrigger}) async {
     // Each batch only supports at most 30 items
     for (final chunk in op.slices(30)) {
-      await _request(
+      await _requestRaw(
         'POST',
         '/edit',
         body: {'op': chunk},
@@ -167,29 +197,24 @@ class ApiRepository {
   }
 
   /// List all tags.
-  Future<TagListResponse> listTags({Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/tag', abortTrigger: abortTrigger);
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return TagListResponse.fromJson(jsonResponse as Map<String, dynamic>);
+  Future<TagListResponse> listTags({Future<void>? abortTrigger}) {
+    return _requestJson(
+      'GET',
+      '/tag',
+      abortTrigger: abortTrigger,
+      fromJson: TagListResponse.fromJson,
+    );
   }
 
   /// Create a new tag.
-  Future<Tag> createTag(
-    TagCreateBody body, {
-    Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  Future<Tag> createTag(TagCreateBody body, {Future<void>? abortTrigger}) {
+    return _requestJson(
       'POST',
       '/tag',
       body: body.toJson(),
       abortTrigger: abortTrigger,
+      fromJson: Tag.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Update an existing tag.
@@ -197,22 +222,19 @@ class ApiRepository {
     int id,
     TagUpdateBody body, {
     Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  }) {
+    return _requestJson(
       'PATCH',
       '/tag/$id',
       body: body.toJson(),
       abortTrigger: abortTrigger,
+      fromJson: Tag.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Delete a tag by ID.
   Future<void> deleteTag(int id, {Future<void>? abortTrigger}) async {
-    await _request('DELETE', '/tag/$id', abortTrigger: abortTrigger);
+    await _requestRaw('DELETE', '/tag/$id', abortTrigger: abortTrigger);
   }
 
   /// Get url for requesting image preview for a link.
