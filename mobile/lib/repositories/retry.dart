@@ -2,28 +2,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'api_error.dart';
 
+// Client errors that won't be resolved by retrying.
 const _noRetryStatus = {
-  // Transient errors
-  400, 408, 500, 502, 503, 504,
-
-  // Throttling errors
-  /* 400, */ 403, 429, /* 502, 503, */ 509,
+  400, // Bad Request
+  401, // Unauthorized
+  403, // Forbidden
+  404, // Not Found
+  405, // Method Not Allowed
+  409, // Conflict
+  410, // Gone
+  422, // Unprocessable Entity
 };
 
-/// Retry strategy for riverpod provider.
+/// Retry strategy for Riverpod providers.
 ///
-/// Mostly based on AWS SDK's default retry strategy:
-/// See https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
+/// Only [TransportApiError] (network blips, DNS failures, etc.) and
+/// [HttpApiError] with non-permanent status codes are retried.
+/// Everything else — client errors, cancellations, decoding failures, and
+/// definitive server responses — is surfaced to the caller immediately.
 Duration? retryStrategy(int retryCount, Object error) {
-  if (error is HttpApiError && _noRetryStatus.contains(error.statusCode)) {
-    return null;
-  }
+  final shouldRetry = switch (error) {
+    TransportApiError() => true,
+    HttpApiError() => !_noRetryStatus.contains(error.statusCode),
+    _ => false,
+  };
+
+  if (!shouldRetry) return null;
 
   return ProviderContainer.defaultRetry(
     retryCount,
     error,
     maxRetries: 3,
     minDelay: const Duration(milliseconds: 100),
-    maxDelay: const Duration(seconds: 20),
+    maxDelay: const Duration(seconds: 8),
   );
 }
