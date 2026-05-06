@@ -9,6 +9,7 @@ import '../../models/server_info.dart';
 import '../../models/tag.dart';
 import '../../models/with_timestamp.dart';
 import '../../repositories/api.dart';
+import '../../repositories/api_error.dart';
 import '../bindings/http.dart';
 import '../extensions.dart';
 import './../bindings/shared_preferences.dart';
@@ -35,7 +36,13 @@ Future<ApiRepository> apiRepository(Ref ref) async {
   return client;
 }
 
-enum AuthStateEnum { authenticated, notConfig, unauthenticated, loading }
+enum AuthStateEnum {
+  authenticated,
+  notConfig,
+  unauthenticated,
+  networkErr,
+  loading,
+}
 
 @riverpod
 class AuthState extends _$AuthState {
@@ -58,8 +65,10 @@ class AuthState extends _$AuthState {
 
     await _probe();
 
-    final subscription = client.eventBus.on<RequestException>().listen((event) {
-      if (event.statusCode == 401) {
+    final subscription1 = client.eventBus.on<KnownServerApiError>().listen((
+      event,
+    ) {
+      if (event.model.code == "unauthenticated") {
         _logger.info(
           "Received 401 Unauthorized response on ${event.method} ${event.path}, marking authState unauthenticated. Body = ${event.body}",
         );
@@ -67,7 +76,21 @@ class AuthState extends _$AuthState {
       }
     });
 
-    ref.onDispose(subscription.cancel);
+    ref.onDispose(subscription1.cancel);
+
+    final subscription2 = client.eventBus.on<TransportApiError>().listen((
+      event,
+    ) {
+      _logger.warning(
+        "Received transport error on ${event.method} ${event.path}: ${event.cause}",
+        event.cause,
+        event.stackTrace,
+      );
+
+      state = AuthStateEnum.networkErr;
+    });
+
+    ref.onDispose(subscription2.cancel);
   }
 
   Future<void> _probe() async {

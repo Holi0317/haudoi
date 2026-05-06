@@ -1,3 +1,5 @@
+import '../models/api_error.dart';
+
 sealed class ApiError implements Exception {
   /// HTTP method used for this request, for example `GET` or `POST`.
   final String method;
@@ -33,20 +35,23 @@ final class TransportApiError extends ApiError {
   String toString() => 'TransportApiError for $method $path: $cause';
 }
 
-/// Error raised when the request times out before completion.
-final class TimeoutApiError extends ApiError {
-  const TimeoutApiError({required super.method, required super.path});
-
-  @override
-  String toString() => 'TimeoutApiError for $method $path';
-}
-
 /// Error raised when the request is cancelled intentionally.
 ///
 /// This is expected in many flows, for example when a user leaves a screen
-/// and in-flight requests are aborted.
+/// and in-flight requests are aborted, or the request has timeout.
 final class CancelledApiError extends ApiError {
-  const CancelledApiError({required super.method, required super.path});
+  /// Original exception thrown by the HTTP transport.
+  final Object cause;
+
+  /// Optional stack trace for diagnostics.
+  final StackTrace? stackTrace;
+
+  const CancelledApiError({
+    required super.method,
+    required super.path,
+    required this.cause,
+    this.stackTrace,
+  });
 
   @override
   String toString() => 'CancelledApiError for $method $path';
@@ -82,28 +87,19 @@ class HttpApiError extends ApiError {
 /// Use this variant when the backend returns a recognized machine-readable
 /// code (for example `TAG_NAME_EXISTS`) that consumers can branch on.
 final class KnownServerApiError extends HttpApiError {
-  /// Machine-readable error code from server response.
-  final String code;
-
-  /// Optional human-readable error message from server response.
-  final String? message;
+  final ApiErrorModel model;
 
   const KnownServerApiError({
     required super.method,
     required super.path,
     required super.statusCode,
     required super.body,
-    required this.code,
-    this.message,
+    required this.model,
   });
 
   @override
   String toString() {
-    if (message case final m?) {
-      return 'KnownServerApiError for $method $path $statusCode [$code]: $m';
-    }
-
-    return 'KnownServerApiError for $method $path $statusCode [$code]';
+    return 'KnownServerApiError for $method $path $statusCode [${model.code}]: ${model.message}';
   }
 }
 
@@ -176,4 +172,3 @@ final class UnknownApiError extends ApiError {
   @override
   String toString() => 'UnknownApiError for $method $path: $cause';
 }
-

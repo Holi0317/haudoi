@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'api.dart';
+import 'api_error.dart';
 
 const _noRetryStatus = {
   // Transient errors
@@ -15,7 +15,7 @@ const _noRetryStatus = {
 /// Mostly based on AWS SDK's default retry strategy:
 /// See https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
 Duration? retryStrategy(int retryCount, Object error) {
-  if (error is RequestException && _noRetryStatus.contains(error.statusCode)) {
+  if (error is HttpApiError && _noRetryStatus.contains(error.statusCode)) {
     return null;
   }
 
