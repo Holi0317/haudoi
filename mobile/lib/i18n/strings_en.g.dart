@@ -42,6 +42,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	// Translations
 	late final TranslationsDialogsEn dialogs = TranslationsDialogsEn.internal(_root);
 	late final TranslationsFormErrEn formErr = TranslationsFormErrEn.internal(_root);
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
 	late final TranslationsNavEn nav = TranslationsNavEn.internal(_root);
 	late final TranslationsUnreadEn unread = TranslationsUnreadEn.internal(_root);
 	late final TranslationsSearchEn search = TranslationsSearchEn.internal(_root);
@@ -287,9 +291,6 @@ class TranslationsEditEn {
 
 	/// en: 'Changes saved'
 	String get toast => 'Changes saved';
-
-	/// en: 'Retry'
-	String get retry => 'Retry';
 
 	/// en: 'Edit Link'
 	String get title => 'Edit Link';
@@ -727,6 +728,7 @@ extension on Translations {
 			'dialogs.loading' => 'Loading...',
 			'formErr.emptyValue' => 'This field cannot be empty.',
 			'formErr.invalidUrl' => 'Please enter a valid URL.',
+			'retry' => 'Retry',
 			'nav.unread' => 'Unread',
 			'nav.search' => 'Search',
 			'nav.settings' => 'Settings',
@@ -769,7 +771,6 @@ extension on Translations {
 			'login.serverError' => ({required Object message}) => 'Server error: ${message}',
 			'edit.save' => 'Save',
 			'edit.toast' => 'Changes saved',
-			'edit.retry' => 'Retry',
 			'edit.title' => 'Edit Link',
 			'edit.fields.title' => 'Title',
 			'edit.fields.url' => 'URL',

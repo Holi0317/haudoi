@@ -9,6 +9,7 @@ dialogs:
 formErr:
   emptyValue: This field cannot be empty.
   invalidUrl: Please enter a valid URL.
+retry: "Retry"
 
 # ==== Screen/page specific ====
 nav:
@@ -64,7 +65,6 @@ login:
 edit:
   save: Save
   toast: Changes saved
-  retry: Retry
   title: Edit Link
   fields:
     title: Title

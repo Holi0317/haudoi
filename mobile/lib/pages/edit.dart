@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../components/edit_page_form.dart';
+import '../components/error_state.dart';
 import '../i18n/strings.g.dart';
 import '../providers/api/api.dart';
 import '../providers/api/item.dart';
@@ -19,21 +20,12 @@ class EditPage extends HookConsumerWidget {
     return switch ((linkAsync, tagsAsync)) {
       (AsyncError(error: final error), _) ||
       (_, AsyncError(error: final error)) => _buildLoading(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-            const SizedBox(height: 16),
-            Text('Error: $error'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref.invalidate(linkItemProvider(id));
-                ref.invalidate(tagsProvider);
-              },
-              child: Text(t.edit.retry),
-            ),
-          ],
+        child: ErrorState(
+          error: error,
+          onRetry: () {
+            ref.invalidate(linkItemProvider(id));
+            ref.invalidate(tagsProvider);
+          },
         ),
       ),
       (AsyncData(value: final link), AsyncData(value: final tags)) =>

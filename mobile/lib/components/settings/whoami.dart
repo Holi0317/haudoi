@@ -12,6 +12,7 @@ import '../../providers/api/api.dart';
 import '../../providers/bindings/shared_preferences.dart';
 import '../../providers/extensions.dart';
 import '../../providers/sync/queue.dart';
+import '../error_state.dart';
 
 class Whoami extends ConsumerWidget {
   Whoami({super.key});
@@ -40,7 +41,14 @@ class Whoami extends ConsumerWidget {
           apiUrl,
         ),
         AsyncValue(value: == null, hasValue: true) => _buildUnauth(context),
-        AsyncValue(:final error?) => _buildError(context, error),
+        AsyncValue(:final error?) => ErrorState(
+          error: error,
+          onRetry: () => ref.invalidate(serverInfoProvider),
+          onSecondaryAction: () {
+            _logout(context, ref);
+          },
+          secondaryActionLabel: t.settings.logout.title,
+        ),
         AsyncValue() => _buildLoading(context),
       },
     );
@@ -113,11 +121,6 @@ class Whoami extends ConsumerWidget {
 
   Widget _buildUnauth(BuildContext context) {
     return Text(t.settings.unauthenticated);
-  }
-
-  Widget _buildError(BuildContext context, Object error) {
-    // TODO: Better error handling. Retry button, error message, and redirect to login.
-    return Text('Error: $error');
   }
 
   Widget _buildLoading(BuildContext context) {

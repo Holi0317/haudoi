@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 
+import '../components/error_state.dart';
 import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
@@ -186,11 +187,9 @@ class TagsPage extends ConsumerWidget {
       ),
       body: switch (tagsAsync) {
         AsyncData(value: final tags) => _TagContent(tags: tags),
-        AsyncError(error: final error) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text('Failed to load tags: $error'),
-          ),
+        AsyncError(error: final error) => ErrorState(
+          error: error,
+          onRetry: () => ref.invalidate(tagsProvider),
         ),
         _ => const Center(child: CircularProgressIndicator()),
       },

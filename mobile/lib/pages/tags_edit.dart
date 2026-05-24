@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 
+import '../components/error_state.dart';
 import '../components/edit_tag_form.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
@@ -25,11 +26,9 @@ class EditTagPage extends HookConsumerWidget {
     return switch (tagsAsync) {
       AsyncError(error: final error) => Scaffold(
         appBar: AppBar(title: Text(t.tagEdit.title)),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(t.tagEdit.loadingError(error: '$error')),
-          ),
+        body: ErrorState(
+          error: error,
+          onRetry: () => ref.invalidate(tagsProvider),
         ),
       ),
       AsyncData(value: final tags) => _buildLoaded(
