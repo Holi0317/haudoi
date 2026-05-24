@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../hooks/globalkey.dart';
 import '../i18n/strings.g.dart';
@@ -15,6 +16,8 @@ import '../repositories/api.dart';
 import '../repositories/api_error.dart';
 
 final _logger = Logger('LoginPage');
+
+const _githubUrl = 'https://github.com/anomalyco/haudoi';
 
 class _LoginAction {
   _LoginAction(this.context, this.ref)
@@ -127,6 +130,13 @@ class _LoginAction {
       ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
+
+  Future<void> openGithub() async {
+    final uri = Uri.parse(_githubUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 }
 
 class LoginPage extends HookConsumerWidget {
@@ -152,53 +162,88 @@ class LoginPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(t.login.title)),
-      body: Center(
-        child: FormBuilder(
-          key: formKey,
-          enabled: !isLoading.value,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 16.0,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(
+              Icons.bookmark,
+              size: 64,
+              color: Theme.of(context).colorScheme.primary,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                FormBuilderTextField(
-                  name: 'apiUrl',
-                  decoration: InputDecoration(labelText: t.login.apiUrlLabel),
-                  keyboardType: TextInputType.url,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.url(
-                      protocols: ["http", "https"],
-                      requireTld: true,
+            const SizedBox(height: 16),
+            Text(
+              'Haudoi',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              t.login.description,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: actions.openGithub,
+              icon: const Icon(Icons.open_in_new),
+              label: Text(t.login.viewOnGithub),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              t.login.apiUrlInstructions,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 16),
+            FormBuilder(
+              key: formKey,
+              enabled: !isLoading.value,
+              child: Column(
+                children: [
+                  FormBuilderTextField(
+                    name: 'apiUrl',
+                    decoration: InputDecoration(
+                      labelText: t.login.apiUrlLabel,
+                      hintText: t.login.apiUrlHint,
                     ),
-                  ]),
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (isLoading.value)
-                      const SizedBox(
-                        width: 48,
-                        height: 40,
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    else
-                      FilledButton(
-                        style: TextButton.styleFrom(
-                          textStyle: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        onPressed: actions.submit,
-                        child: Text(t.login.loginButton),
+                    keyboardType: TextInputType.url,
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.url(
+                        protocols: ["http", "https"],
+                        requireTld: true,
                       ),
-                  ],
-                ),
-              ],
+                    ]),
+                  ),
+                  const SizedBox(height: 32),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (isLoading.value)
+                        const SizedBox(
+                          width: 48,
+                          height: 40,
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else
+                        FilledButton(
+                          style: TextButton.styleFrom(
+                            textStyle: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          onPressed: actions.submit,
+                          child: Text(t.login.loginButton),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

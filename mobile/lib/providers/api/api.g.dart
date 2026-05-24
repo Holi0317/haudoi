@@ -80,7 +80,7 @@ final class AuthStateProvider
   }
 }
 
-String _$authStateHash() => r'4de8920115d3820a8fabcea0d33c181141adc8c0';
+String _$authStateHash() => r'97445e89a5ae701686d09deffcd5edf23cd76f1f';
 
 abstract class _$AuthState extends $Notifier<AuthStateEnum> {
   AuthStateEnum build();

@@ -48,6 +48,12 @@ enum AuthStateEnum {
 class AuthState extends _$AuthState {
   final _logger = Logger('AuthStateProvider');
 
+  void _setState(AuthStateEnum newState) {
+    if (ref.mounted) {
+      state = newState;
+    }
+  }
+
   @override
   AuthStateEnum build() {
     _watchUnauth();
@@ -59,7 +65,7 @@ class AuthState extends _$AuthState {
     final client = await ref.watch(apiRepositoryProvider.future);
 
     if (client.baseUrl.isEmpty) {
-      state = AuthStateEnum.notConfig;
+      _setState(AuthStateEnum.notConfig);
       return;
     }
 
@@ -72,7 +78,7 @@ class AuthState extends _$AuthState {
         _logger.info(
           "Received 401 Unauthorized response on ${event.method} ${event.path}, marking authState unauthenticated. Body = ${event.body}",
         );
-        state = AuthStateEnum.unauthenticated;
+        _setState(AuthStateEnum.unauthenticated);
       }
     });
 
@@ -87,7 +93,7 @@ class AuthState extends _$AuthState {
         event.stackTrace,
       );
 
-      state = AuthStateEnum.networkErr;
+      _setState(AuthStateEnum.networkErr);
     });
 
     ref.onDispose(subscription2.cancel);
@@ -95,27 +101,27 @@ class AuthState extends _$AuthState {
 
   Future<void> _probe() async {
     try {
-      final info = await ref.watch(serverInfoProvider.future);
+      final serverInfoData = await ref.watch(serverInfoProvider.future);
 
-      state = info.session != null
+      _setState(serverInfoData.session != null
           ? AuthStateEnum.authenticated
-          : AuthStateEnum.unauthenticated;
+          : AuthStateEnum.unauthenticated);
     } on CancelledApiError catch (err) {
       _logger.warning("Probe was cancelled", err);
     } on TransportApiError catch (err) {
       _logger.warning("Network error while probing server", err);
-      state = AuthStateEnum.networkErr;
+      _setState(AuthStateEnum.networkErr);
     } on KnownServerApiError catch (err) {
       _logger.warning(
         "Server error while probing: [${err.model.code}] ${err.model.message}",
       );
-      state = AuthStateEnum.unauthenticated;
+      _setState(AuthStateEnum.unauthenticated);
     } on ApiError catch (err) {
       _logger.warning("API error while probing server: $err");
-      state = AuthStateEnum.networkErr;
+      _setState(AuthStateEnum.networkErr);
     } catch (err) {
       _logger.warning("Unexpected error while probing server: $err");
-      state = AuthStateEnum.networkErr;
+      _setState(AuthStateEnum.networkErr);
     }
   }
 }

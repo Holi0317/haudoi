@@ -57,8 +57,16 @@ apiError:
   unknown: "An unexpected error occurred."
 login:
   title: Login
+  description:
+    "Haudoi is a bookmark management app that helps you save, organize, and
+    access your links across all your devices."
+  apiUrlInstructions:
+    "Enter the API URL of your self-hosted Haudoi server. If you don't have one,
+    see the GitHub repository below for setup instructions."
   apiUrlLabel: "API URL"
+  apiUrlHint: "https://your-haudoi-server.com"
   loginButton: Login
+  viewOnGithub: "View on GitHub"
   authFailedNoToken: "Authentication failed: No token received"
   authFailedMessage: "Authentication failed: $error"
   serverUnreachable: "Cannot reach server. Is the URL correct?"
