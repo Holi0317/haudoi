@@ -12,6 +12,7 @@ import '../hooks/globalkey.dart';
 import '../i18n/strings.g.dart';
 import '../providers/bindings/shared_preferences.dart';
 import '../repositories/api.dart';
+import '../repositories/api_error.dart';
 
 final _logger = Logger('LoginPage');
 
@@ -92,9 +93,15 @@ class _LoginAction {
 
     try {
       await apiRepository.info();
-    } catch (e) {
-      // FIXME: Error translation
-      throw Exception('Unable to connect to server. Is the URL correct?: $e');
+    } on TransportApiError catch (e) {
+      _logger.warning('Server unreachable at $apiUrl', e);
+      throw Exception(t.login.serverUnreachable);
+    } on KnownServerApiError catch (e) {
+      _logger.warning('Server error at $apiUrl: ${e.model.code}', e);
+      throw Exception(t.login.serverError(message: e.model.message));
+    } on ApiError catch (e) {
+      _logger.warning('Invalid server response at $apiUrl', e);
+      throw Exception(t.login.serverInvalidResponse);
     }
 
     _logger.info('Server at $apiUrl is valid');

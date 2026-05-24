@@ -7,6 +7,7 @@ import '../components/edit_tag_form.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
+import '../repositories/api_error.dart';
 
 final _logger = Logger('NewTagPage');
 
@@ -55,13 +56,18 @@ class NewTagPage extends HookConsumerWidget {
         } catch (error, st) {
           _logger.warning("Failed to create tag", error, st);
 
+          // Cancellation is expected (e.g. user navigated away); silently ignore.
+          if (error is CancelledApiError) return;
+
           if (!context.mounted) {
             return;
           }
 
+          final message = error is ApiError ? error.userMessage() : '$error';
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(t.tagNew.toast.createFailed(error: '$error')),
+              content: Text(t.tagNew.toast.createFailed(error: message)),
             ),
           );
         } finally {

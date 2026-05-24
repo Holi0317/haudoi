@@ -33,7 +33,7 @@ class Whoami extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: switch (session) {
-        AsyncValue(:final value!, hasValue: true) => _buildData(
+        AsyncValue(:final value?, hasValue: true) => _buildData(
           context,
           ref,
           value,

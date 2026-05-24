@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/edit_op.dart';
+import '../../repositories/api_error.dart';
 import '../api/api.dart';
 import '../api/item.dart';
 import '../extensions.dart';
@@ -67,7 +68,13 @@ class SyncWorker extends _$SyncWorker {
 
       log.info('Processed ${ops.length} EditOp successfully.');
     } catch (e, st) {
-      log.severe('Failed to process EditOp', e, st);
+      if (e is CancelledApiError) {
+        log.fine('EditOp processing was cancelled (aborted): $e');
+      } else if (e is TransportApiError) {
+        log.warning('Network error while processing EditOp — will retry on next trigger', e, st);
+      } else {
+        log.severe('Failed to process EditOp', e, st);
+      }
     } finally {
       _editProcessing = false;
     }

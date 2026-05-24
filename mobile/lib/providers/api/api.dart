@@ -100,10 +100,22 @@ class AuthState extends _$AuthState {
       state = info.session != null
           ? AuthStateEnum.authenticated
           : AuthStateEnum.unauthenticated;
-    } catch (err) {
-      // FIXME: distinguish network error and unauthenticated
-      _logger.warning("Failed to fetch server info: $err");
+    } on CancelledApiError catch (err) {
+      _logger.warning("Probe was cancelled", err);
+    } on TransportApiError catch (err) {
+      _logger.warning("Network error while probing server", err);
+      state = AuthStateEnum.networkErr;
+    } on KnownServerApiError catch (err) {
+      _logger.warning(
+        "Server error while probing: [${err.model.code}] ${err.model.message}",
+      );
       state = AuthStateEnum.unauthenticated;
+    } on ApiError catch (err) {
+      _logger.warning("API error while probing server: $err");
+      state = AuthStateEnum.networkErr;
+    } catch (err) {
+      _logger.warning("Unexpected error while probing server: $err");
+      state = AuthStateEnum.networkErr;
     }
   }
 }

@@ -1,5 +1,8 @@
+import '../i18n/strings.g.dart';
 import '../models/api_error.dart';
 
+/// Base class for API errors, covering transport failures, HTTP errors, and
+/// payload decoding issues.
 sealed class ApiError implements Exception {
   /// HTTP method used for this request, for example `GET` or `POST`.
   final String method;
@@ -7,7 +10,21 @@ sealed class ApiError implements Exception {
   /// API path for this request, always starting with `/`.
   final String path;
 
-  const ApiError({required this.method, required this.path});
+  /// Original exception.
+  final Object? cause;
+
+  /// Optional stack trace for diagnostics.
+  final StackTrace? stackTrace;
+
+  const ApiError({
+    required this.method,
+    required this.path,
+    this.cause,
+    this.stackTrace,
+  });
+
+  /// Convert this error into a user-facing, localized message.
+  String userMessage();
 
   @override
   String toString() => 'ApiError for $method $path';
@@ -18,18 +35,15 @@ sealed class ApiError implements Exception {
 /// This covers network and transport failures, such as DNS lookup failure,
 /// TCP/TLS handshake issues, or client-side socket errors.
 final class TransportApiError extends ApiError {
-  /// Original exception thrown by the HTTP transport.
-  final Object cause;
-
-  /// Optional stack trace for diagnostics.
-  final StackTrace? stackTrace;
-
   const TransportApiError({
     required super.method,
     required super.path,
-    required this.cause,
-    this.stackTrace,
+    required super.cause,
+    super.stackTrace,
   });
+
+  @override
+  String userMessage() => t.apiError.network;
 
   @override
   String toString() => 'TransportApiError for $method $path: $cause';
@@ -40,18 +54,15 @@ final class TransportApiError extends ApiError {
 /// This is expected in many flows, for example when a user leaves a screen
 /// and in-flight requests are aborted, or the request has timeout.
 final class CancelledApiError extends ApiError {
-  /// Original exception thrown by the HTTP transport.
-  final Object cause;
-
-  /// Optional stack trace for diagnostics.
-  final StackTrace? stackTrace;
-
   const CancelledApiError({
     required super.method,
     required super.path,
-    required this.cause,
-    this.stackTrace,
+    required super.cause,
+    super.stackTrace,
   });
+
+  @override
+  String userMessage() => t.apiError.cancelled;
 
   @override
   String toString() => 'CancelledApiError for $method $path';
@@ -77,6 +88,9 @@ class HttpApiError extends ApiError {
   });
 
   @override
+  String userMessage() => t.apiError.serverError(message: 'HTTP $statusCode');
+
+  @override
   String toString() {
     return 'HttpApiError for $method $path $statusCode: $body';
   }
@@ -98,6 +112,9 @@ final class KnownServerApiError extends HttpApiError {
   });
 
   @override
+  String userMessage() => t.apiError.serverError(message: model.message);
+
+  @override
   String toString() {
     return 'KnownServerApiError for $method $path $statusCode [${model.code}]: ${model.message}';
   }
@@ -110,19 +127,16 @@ final class InvalidJsonApiError extends ApiError {
   /// Raw response body that failed to decode.
   final String body;
 
-  /// Decoder exception, usually [FormatException].
-  final Object cause;
-
-  /// Optional stack trace from decoder.
-  final StackTrace? stackTrace;
-
   const InvalidJsonApiError({
     required super.method,
     required super.path,
     required this.body,
-    required this.cause,
-    this.stackTrace,
+    required super.cause,
+    super.stackTrace,
   });
+
+  @override
+  String userMessage() => t.apiError.invalidResponse;
 
   @override
   String toString() => 'InvalidJsonApiError for $method $path: $cause';
@@ -136,19 +150,16 @@ final class InvalidPayloadApiError extends ApiError {
   /// Decoded JSON body that failed model parsing.
   final Object? decodedBody;
 
-  /// Parser exception from model conversion.
-  final Object cause;
-
-  /// Optional stack trace from parser.
-  final StackTrace? stackTrace;
-
   const InvalidPayloadApiError({
     required super.method,
     required super.path,
     required this.decodedBody,
-    required this.cause,
-    this.stackTrace,
+    required super.cause,
+    super.stackTrace,
   });
+
+  @override
+  String userMessage() => t.apiError.invalidResponse;
 
   @override
   String toString() => 'InvalidPayloadApiError for $method $path: $cause';
@@ -156,18 +167,15 @@ final class InvalidPayloadApiError extends ApiError {
 
 /// Fallback error when a failure does not match any specific [ApiError] type.
 final class UnknownApiError extends ApiError {
-  /// Original exception.
-  final Object cause;
-
-  /// Optional stack trace for diagnostics.
-  final StackTrace? stackTrace;
-
   const UnknownApiError({
     required super.method,
     required super.path,
-    required this.cause,
-    this.stackTrace,
+    required super.cause,
+    super.stackTrace,
   });
+
+  @override
+  String userMessage() => t.apiError.unknown;
 
   @override
   String toString() => 'UnknownApiError for $method $path: $cause';

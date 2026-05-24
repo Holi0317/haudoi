@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 
 import '../components/tag_chip.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
+import '../repositories/api_error.dart';
 import '../utils.dart';
+
+final _logger = Logger('TagsPage');
 
 class _TagContent extends HookConsumerWidget {
   const _TagContent({required this.tags});
@@ -142,12 +146,17 @@ class _TagContent extends HookConsumerWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(t.tags.toast.deleted)));
     } catch (error) {
+      if (error is CancelledApiError) return;
+
+      _logger.warning("Failed to delete tag ${tag.id}", error);
+
       if (!context.mounted) {
         return;
       }
 
+      final message = error is ApiError ? error.userMessage() : '$error';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.tags.toast.deleteFailed(error: '$error'))),
+        SnackBar(content: Text(t.tags.toast.deleteFailed(error: message))),
       );
     } finally {
       if (context.mounted) {
