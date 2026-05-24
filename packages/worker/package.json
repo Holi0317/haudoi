@@ -23,7 +23,7 @@
     "@haudoi/dsl": "workspace:*",
     "@hono/zod-validator": "^0.8.0",
     "@std/csv": "jsr:^1.0.6",
-    "@std/html": "jsr:^1.0.4",
+    "@std/html": "jsr:^1.0.6",
     "@truto/sqlite-builder": "^1.0.4",
     "dayjs": "^1.11.20",
     "es-toolkit": "^1.46.1",

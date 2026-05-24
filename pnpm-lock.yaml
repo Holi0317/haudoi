@@ -128,8 +128,8 @@ importers:
         specifier: jsr:^1.0.6
         version: '@jsr/std__csv@1.0.6'
       '@std/html':
-        specifier: jsr:^1.0.4
-        version: '@jsr/std__html@1.0.5'
+        specifier: jsr:^1.0.6
+        version: '@jsr/std__html@1.0.6'
       '@truto/sqlite-builder':
         specifier: ^1.0.4
         version: 1.0.4(patch_hash=af901e0121fc3158ae48b13259e17e643d2a982814275845a8fe0cbd79805085)
@@ -915,11 +915,11 @@ packages:
   '@jsr/std__csv@1.0.6':
     resolution: {integrity: sha512-9n/SZzjolPQ907gUPksQU3EFURwRl4GA9V6MylA8hpSkpxhcj6J98zDpn9EmDqgE2A4L9MnlUvFhRpeWl+Y/ZQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__csv/1.0.6.tgz}
 
-  '@jsr/std__html@1.0.5':
-    resolution: {integrity: sha512-8ypLaw6ORY7jisEvsXOS/D631/pMCX78mV7fyromfzJXxqb35OUNCBC2E4Ca0goKQJW8I2XhEgoFu0ZXaIiGvA==, tarball: https://npm.jsr.io/~/11/@jsr/std__html/1.0.5.tgz}
+  '@jsr/std__html@1.0.6':
+    resolution: {integrity: sha512-okF5FAJ/erV1np18z5BHKyfxBFf9QiXqRAg4829Sn0VzqiGSfbXcNld3dXYnGV0jooXawngyemDHvqJnp+rhpQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__html/1.0.6.tgz}
 
-  '@jsr/std__streams@1.0.17':
-    resolution: {integrity: sha512-LnPlWk20mDIV5/nqoUomAB8umOimfGEyWRApxLgekXFuqKGDsGpUAi58amieVU2XAGNclmUOtQOcQ/qOl3PNFg==, tarball: https://npm.jsr.io/~/11/@jsr/std__streams/1.0.17.tgz}
+  '@jsr/std__streams@1.1.0':
+    resolution: {integrity: sha512-0yP/bIRAgcpdIg1o/XSYnVmCs3a7rtfKfhPPiKo7GFEtvF2qngWKJ80u8xN+D8o3otsrf/Ta90XiNj5WZJfFgg==, tarball: https://npm.jsr.io/~/11/@jsr/std__streams/1.1.0.tgz}
 
   '@mswjs/interceptors@0.41.9':
     resolution: {integrity: sha512-VVPPgHyQ6ShqnrmDWuxjmUIsO9gWyOZFmuOfLd9LfBGQJwZfy0gvv9pbHSJuoFNIYC7ZDX9aoFwowjcdSC4E8w==, tarball: https://registry.npmjs.org/@mswjs/interceptors/-/interceptors-0.41.9.tgz}
@@ -4605,11 +4605,11 @@ snapshots:
 
   '@jsr/std__csv@1.0.6':
     dependencies:
-      '@jsr/std__streams': 1.0.17
+      '@jsr/std__streams': 1.1.0
 
-  '@jsr/std__html@1.0.5': {}
+  '@jsr/std__html@1.0.6': {}
 
-  '@jsr/std__streams@1.0.17':
+  '@jsr/std__streams@1.1.0':
     dependencies:
       '@jsr/std__bytes': 1.0.6
 
