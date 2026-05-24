@@ -130,6 +130,10 @@ class _LoginAction {
       ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
+}
+
+class LoginPage extends HookConsumerWidget {
+  const LoginPage({super.key});
 
   Future<void> openGithub() async {
     final uri = Uri.parse(_githubUrl);
@@ -137,10 +141,6 @@ class _LoginAction {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
-}
-
-class LoginPage extends HookConsumerWidget {
-  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -190,7 +190,7 @@ class LoginPage extends HookConsumerWidget {
             ),
             const SizedBox(height: 24),
             OutlinedButton.icon(
-              onPressed: actions.openGithub,
+              onPressed: openGithub,
               icon: const Icon(Icons.open_in_new),
               label: Text(t.login.viewOnGithub),
             ),
@@ -216,7 +216,8 @@ class LoginPage extends HookConsumerWidget {
                       FormBuilderValidators.required(),
                       FormBuilderValidators.url(
                         protocols: ["http", "https"],
-                        requireTld: true,
+                        // Allow Tailscale MagicDNS and localhost domains
+                        requireTld: false,
                       ),
                     ]),
                   ),

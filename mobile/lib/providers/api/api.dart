@@ -69,8 +69,6 @@ class AuthState extends _$AuthState {
       return;
     }
 
-    await _probe();
-
     final subscription1 = client.eventBus.on<KnownServerApiError>().listen((
       event,
     ) {
@@ -81,8 +79,6 @@ class AuthState extends _$AuthState {
         _setState(AuthStateEnum.unauthenticated);
       }
     });
-
-    ref.onDispose(subscription1.cancel);
 
     final subscription2 = client.eventBus.on<TransportApiError>().listen((
       event,
@@ -96,10 +92,15 @@ class AuthState extends _$AuthState {
       _setState(AuthStateEnum.networkErr);
     });
 
+    ref.onDispose(subscription1.cancel);
     ref.onDispose(subscription2.cancel);
+
+    await _probe();
   }
 
   Future<void> _probe() async {
+    if (!ref.mounted) return;
+
     try {
       final serverInfoData = await ref.watch(serverInfoProvider.future);
 
