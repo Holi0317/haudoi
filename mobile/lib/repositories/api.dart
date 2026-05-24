@@ -5,46 +5,28 @@ import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/api_error.dart';
 import '../models/edit_op.dart';
 import '../models/link.dart';
 import '../models/search_query.dart';
 import '../models/search_response.dart';
 import '../models/server_info.dart';
 import '../models/tag.dart';
+import 'api_error.dart';
 
-class RequestException implements Exception {
-  final String path;
-  final String method;
-  final int statusCode;
-  final String body;
-
-  const RequestException({
-    required this.path,
-    required this.method,
-    required this.statusCode,
-    required this.body,
-  });
-
-  @override
-  String toString() {
-    return "RequestException for $method $path $statusCode: $body";
-  }
-}
-
-/// Binding for server API.
-class ApiRepository {
+class _ApiClient {
   final http.Client _client;
   final String baseUrl;
   final String _authToken;
 
-  /// Event bus for emitting failed request.
-  ///
-  /// For use of global event handling, e.g. logging out user on 401 Unauthorized.
-  ///
-  /// For http level error (by status code), [RequestException] will be emitted.
-  /// For transport level error (eg server unreachable), [http.ClientException] will be emitted.
-  /// JSON parsing error will not be emitted.
   final eventBus = EventBus();
+
+  _ApiClient({
+    required http.Client transport,
+    required this.baseUrl,
+    required String authToken,
+  }) : _authToken = authToken,
+       _client = transport;
 
   /// HTTP headers for requests.
   late final Map<String, String> headers = Map.unmodifiable({
@@ -54,33 +36,123 @@ class ApiRepository {
     'user-agent': 'haudoi-mobile',
   });
 
-  ApiRepository({
-    required http.Client transport,
-    required this.baseUrl,
-    required String authToken,
-  }) : _authToken = authToken,
-       _client = transport;
+  /// Send a request to the server and parse response body as JSON.
+  ///
+  /// Use [requestRaw] for endpoints with non-JSON response body or empty response.
+  Future<T> requestJson<T>(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String>? queryParameters,
+    Future<void>? abortTrigger,
+    required T Function(Map<String, dynamic>) fromJson,
+  }) async {
+    return _wrapError(
+      method,
+      path,
+      () => _requestJson(
+        method,
+        path,
+        body: body,
+        queryParameters: queryParameters,
+        abortTrigger: abortTrigger,
+        fromJson: fromJson,
+      ),
+    );
+  }
+
+  Future<T> _requestJson<T>(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String>? queryParameters,
+    Future<void>? abortTrigger,
+    required T Function(Map<String, dynamic>) fromJson,
+  }) async {
+    final resp = await requestRaw(
+      method,
+      path,
+      body: body,
+      queryParameters: queryParameters,
+      abortTrigger: abortTrigger,
+    );
+
+    final responseBodyString = await resp.stream.bytesToString();
+
+    final dynamic jsonResponse;
+    try {
+      jsonResponse = jsonDecode(responseBodyString);
+    } catch (err, st) {
+      throw InvalidJsonApiError(
+        method: method,
+        path: path,
+        body: responseBodyString,
+        cause: err,
+        stackTrace: st,
+      );
+    }
+
+    try {
+      return fromJson(jsonResponse as Map<String, dynamic>);
+    } catch (err, st) {
+      throw InvalidPayloadApiError(
+        method: method,
+        path: path,
+        decodedBody: jsonResponse,
+        cause: err,
+        stackTrace: st,
+      );
+    }
+  }
 
   /// Send a request to the server.
   ///
-  /// This will emit a [http.ClientException] if there is a transport-level
-  /// failure when communication with the server. For example, if the server could
-  /// not be reached.
+  /// This is a low-level method for getting raw response stream, suitable for endpoints
+  /// where the response body is not JSON, or is empty.
+  /// Use [requestJson] for endpoint with JSON response body instead.
   ///
-  /// Throws a [RequestException] if the response got a non-success (>= 400) status code.
+  /// Throws [ApiError] and emit into [eventBus] for error from the server. See [ApiError] for details on error types.
+  ///
+  /// [method] should be a valid HTTP method, e.g. 'GET', 'POST', etc.
+  /// Internally this will get converted to uppercase, but still recommend passing in uppercase for readability.
   ///
   /// [path] should begin with a `/`.
   ///
   /// If [body] is provided, request will be sent as json. Do not provide [body]
   /// on GET request.
-  Future<http.StreamedResponse> _request(
+  Future<http.StreamedResponse> requestRaw(
     String method,
     String path, {
     Object? body,
     Map<String, String>? queryParameters,
     Future<void>? abortTrigger,
   }) async {
-    assert(path.startsWith('/'));
+    return _wrapError(
+      method,
+      path,
+      () => _requestRaw(
+        method,
+        path,
+        body: body,
+        queryParameters: queryParameters,
+        abortTrigger: abortTrigger,
+      ),
+    );
+  }
+
+  Future<http.StreamedResponse> _requestRaw(
+    String method,
+    String path, {
+    Object? body,
+    Map<String, String>? queryParameters,
+    Future<void>? abortTrigger,
+  }) async {
+    method = method.toUpperCase();
+
+    assert(
+      path.startsWith('/'),
+      'Path should start with a slash, this is a configuration error',
+    );
 
     final url = Uri.parse(
       '$baseUrl$path',
@@ -90,106 +162,181 @@ class ApiRepository {
     req.headers.addAll(headers);
 
     if (body != null) {
-      assert(method.toLowerCase() != 'get', 'Get request cannot contain body');
+      assert(method != 'GET', 'GET request cannot contain body');
 
       req.headers['content-type'] = 'application/json';
       req.body = jsonEncode(body);
     }
 
-    try {
-      final resp = await _client.send(req);
+    final resp = await _client.send(req);
 
-      if (resp.statusCode >= 400) {
-        final respBody = await resp.stream.bytesToString();
-        throw RequestException(
-          method: method,
-          path: path,
-          body: respBody,
-          statusCode: resp.statusCode,
-        );
-      }
-
+    if (resp.statusCode < 400) {
       return resp;
-    } catch (err) {
-      eventBus.fire(err);
+    }
+
+    // Error response. First try to parse as known error format
+    final respBody = await resp.stream.bytesToString();
+
+    try {
+      final json = jsonDecode(respBody) as Map<String, dynamic>;
+      final model = ApiErrorModel.fromJson(json);
+      throw KnownServerApiError(
+        method: method,
+        path: path,
+        statusCode: resp.statusCode,
+        body: respBody,
+        model: model,
+      );
+    } on KnownServerApiError {
       rethrow;
+    } catch (err) {
+      // Cannot parse error response, throw generic exception with raw body.
+      throw HttpApiError(
+        method: method,
+        path: path,
+        body: respBody,
+        statusCode: resp.statusCode,
+      );
     }
   }
 
-  Future<ServerInfo> info({Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/', abortTrigger: abortTrigger);
+  Future<T> _wrapError<T>(
+    String method,
+    String path,
+    Future<T> Function() fn,
+  ) async {
+    try {
+      return await fn();
+    } on ApiError catch (err) {
+      eventBus.fire(err);
+      rethrow;
+    } on http.AbortableStreamedRequest catch (err, st) {
+      final e2 = CancelledApiError(
+        method: method,
+        path: path,
+        cause: err,
+        stackTrace: st,
+      );
+      eventBus.fire(e2);
+      throw e2;
+    } on http.ClientException catch (err, st) {
+      final e2 = TransportApiError(
+        method: method,
+        path: path,
+        cause: err,
+        stackTrace: st,
+      );
+      eventBus.fire(e2);
+      throw e2;
+    } catch (err, st) {
+      final e2 = UnknownApiError(
+        method: method,
+        path: path,
+        cause: err,
+        stackTrace: st,
+      );
+      eventBus.fire(e2);
+      throw e2;
+    }
+  }
+}
 
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return ServerInfo.fromJson(jsonResponse as Map<String, dynamic>);
+/// Binding for server API.
+class ApiRepository {
+  final _ApiClient _client;
+
+  ApiRepository({
+    required http.Client transport,
+    required String baseUrl,
+    required String authToken,
+  }) : _client = _ApiClient(
+         transport: transport,
+         baseUrl: baseUrl,
+         authToken: authToken,
+       );
+
+  String get baseUrl => _client.baseUrl;
+
+  Map<String, String> get headers => _client.headers;
+
+  /// Event bus for emitting failed request.
+  ///
+  /// For use of global event handling, e.g. logging out user on 401 Unauthorized.
+  ///
+  /// Emits [ApiError] variants for all error types. See child classes of [ApiError] for details on error types.
+  EventBus get eventBus => _client.eventBus;
+
+  Future<ServerInfo> info({Future<void>? abortTrigger}) {
+    return _client.requestJson(
+      'GET',
+      '/',
+      abortTrigger: abortTrigger,
+      fromJson: ServerInfo.fromJson,
+    );
   }
 
   /// Search (or list) links from server.
   Future<SearchResponse> search(
     SearchQuery query, {
     Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  }) {
+    return _client.requestJson(
       'GET',
       '/search',
       queryParameters: query.toMap(),
       abortTrigger: abortTrigger,
+      fromJson: SearchResponse.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return SearchResponse.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Get a single link from server.
   ///
-  /// If the item ID is not found, a [RequestException] with `statusCode == 404`
-  /// will be thrown.
-  Future<Link> getItem(int id, {Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/item/$id', abortTrigger: abortTrigger);
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Link.fromJson(jsonResponse as Map<String, dynamic>);
+  /// If the item ID is not found, throws [KnownServerApiError] with status code 404
+  /// (or [HttpApiError] if the error response format is unrecognized).
+  Future<Link> getItem(int id, {Future<void>? abortTrigger}) {
+    return _client.requestJson(
+      'GET',
+      '/item/$id',
+      abortTrigger: abortTrigger,
+      fromJson: Link.fromJson,
+    );
   }
 
   /// Edit or insert links.
   Future<void> edit(List<EditOp> op, {Future<void>? abortTrigger}) async {
     // Each batch only supports at most 30 items
     for (final chunk in op.slices(30)) {
-      await _request(
+      final resp = await _client.requestRaw(
         'POST',
         '/edit',
         body: {'op': chunk},
         abortTrigger: abortTrigger,
       );
+
+      // Drain the response stream to prevent resource leak.
+      resp.stream.drain().ignore();
     }
   }
 
   /// List all tags.
-  Future<TagListResponse> listTags({Future<void>? abortTrigger}) async {
-    final resp = await _request('GET', '/tag', abortTrigger: abortTrigger);
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return TagListResponse.fromJson(jsonResponse as Map<String, dynamic>);
+  Future<TagListResponse> listTags({Future<void>? abortTrigger}) {
+    return _client.requestJson(
+      'GET',
+      '/tag',
+      abortTrigger: abortTrigger,
+      fromJson: TagListResponse.fromJson,
+    );
   }
 
   /// Create a new tag.
-  Future<Tag> createTag(
-    TagCreateBody body, {
-    Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  Future<Tag> createTag(TagCreateBody body, {Future<void>? abortTrigger}) {
+    return _client.requestJson(
       'POST',
       '/tag',
       body: body.toJson(),
       abortTrigger: abortTrigger,
+      fromJson: Tag.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Update an existing tag.
@@ -197,22 +344,26 @@ class ApiRepository {
     int id,
     TagUpdateBody body, {
     Future<void>? abortTrigger,
-  }) async {
-    final resp = await _request(
+  }) {
+    return _client.requestJson(
       'PATCH',
       '/tag/$id',
       body: body.toJson(),
       abortTrigger: abortTrigger,
+      fromJson: Tag.fromJson,
     );
-
-    final responseBodyString = await resp.stream.bytesToString();
-    final jsonResponse = jsonDecode(responseBodyString);
-    return Tag.fromJson(jsonResponse as Map<String, dynamic>);
   }
 
   /// Delete a tag by ID.
   Future<void> deleteTag(int id, {Future<void>? abortTrigger}) async {
-    await _request('DELETE', '/tag/$id', abortTrigger: abortTrigger);
+    final resp = await _client.requestRaw(
+      'DELETE',
+      '/tag/$id',
+      abortTrigger: abortTrigger,
+    );
+
+    // Drain the response stream to prevent resource leak.
+    resp.stream.drain().ignore();
   }
 
   /// Get url for requesting image preview for a link.

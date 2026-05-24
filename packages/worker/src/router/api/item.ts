@@ -1,4 +1,5 @@
 import { getStorageStub } from "../../composable/do";
+import { ResourceNotFoundError } from "../../error/resource";
 import { zv } from "../../composable/validator";
 import { IDStringSchema } from "../../schemas";
 import { factory } from "../factory";
@@ -12,12 +13,10 @@ export default factory
     const item = await stub.get(id);
 
     if (item == null) {
-      return c.json(
-        {
-          message: "not found",
-        },
-        404,
-      );
+      throw new ResourceNotFoundError("Item not found", {
+        resource: "item",
+        id,
+      });
     }
 
     return c.json(item);

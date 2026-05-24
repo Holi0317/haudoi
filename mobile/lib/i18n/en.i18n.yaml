@@ -9,6 +9,10 @@ dialogs:
 formErr:
   emptyValue: This field cannot be empty.
   invalidUrl: Please enter a valid URL.
+retry: "Retry"
+errorState:
+  details: Details
+  errorDetails: Error details
 
 # ==== Screen/page specific ====
 nav:
@@ -45,16 +49,25 @@ settings:
   copyApiUrl: "Copy API URL to Clipboard"
   userLine: "@${login} (${source}) on ${host}"
   unauthenticated: Not authenticated
+apiError:
+  network: "Network error. Please check your connection."
+  cancelled: "Request was cancelled."
+  serverError: "$message"
+  invalidResponse: "Unexpected server response."
+  unknown: "An unexpected error occurred."
 login:
   title: Login
   apiUrlLabel: "API URL"
   loginButton: Login
   authFailedNoToken: "Authentication failed: No token received"
   authFailedMessage: "Authentication failed: $error"
+  serverUnreachable: "Cannot reach server. Is the URL correct?"
+  serverInvalidResponse:
+    "URL does not appear to point to a valid Haudoi server."
+  serverError: "Server error: $message"
 edit:
   save: Save
   toast: Changes saved
-  retry: Retry
   title: Edit Link
   fields:
     title: Title
@@ -138,6 +151,10 @@ colorPicker:
   randomize: Randomize
   preset: Preset
   custom: Custom
+
+unauthRedirect:
+  logout: "Logout"
+  networkErr: "Network error. Log out and reconfigure?"
 
 # See link_action enum. Must match the enum's key.
 "linkAction(map)":

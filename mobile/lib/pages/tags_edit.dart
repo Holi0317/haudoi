@@ -2,11 +2,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 
+import '../components/error_state.dart';
 import '../components/edit_tag_form.dart';
 import '../i18n/strings.g.dart';
 import '../models/tag.dart';
 import '../providers/api/api.dart';
+import '../repositories/api_error.dart';
+
+final _logger = Logger('EditTagPage');
 
 class EditTagPage extends HookConsumerWidget {
   const EditTagPage({super.key, required this.id});
@@ -21,11 +26,9 @@ class EditTagPage extends HookConsumerWidget {
     return switch (tagsAsync) {
       AsyncError(error: final error) => Scaffold(
         appBar: AppBar(title: Text(t.tagEdit.title)),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(t.tagEdit.loadingError(error: '$error')),
-          ),
+        body: ErrorState(
+          error: error,
+          onRetry: () => ref.invalidate(tagsProvider),
         ),
       ),
       AsyncData(value: final tags) => _buildLoaded(
@@ -105,12 +108,17 @@ class EditTagPage extends HookConsumerWidget {
       ).showSnackBar(SnackBar(content: Text(t.tagEdit.toast.updated)));
       Navigator.of(context).pop();
     } catch (error) {
+      if (error is CancelledApiError) return;
+
+      _logger.warning("Failed to update tag $id", error);
+
       if (!context.mounted) {
         return;
       }
 
+      final message = error is ApiError ? error.userMessage() : '$error';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.tagEdit.toast.updateFailed(error: '$error'))),
+        SnackBar(content: Text(t.tagEdit.toast.updateFailed(error: message))),
       );
     }
   }

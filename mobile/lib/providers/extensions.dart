@@ -5,10 +5,28 @@ import 'package:flutter_riverpod/misc.dart';
 
 extension RefAbortTrigger on Ref {
   /// Create an abortTrigger for http library from riverpod [Ref].
-  /// The returned future will be resolved when the ref is disposed.
-  Future<void> abortTrigger() {
+  ///
+  /// The returned future will be resolved when either:
+  /// - The [timeout] duration expires (default 10 seconds)
+  /// - The ref is disposed
+  ///
+  /// Whichever happens first will complete the abort trigger.
+  /// You can customize the timeout by passing a [Duration], or disable it by passing [Duration.zero].
+  Future<void> abortTrigger({Duration timeout = const Duration(seconds: 10)}) {
     final completer = Completer<void>();
-    onDispose(completer.complete);
+
+    Timer? timer;
+    if (timeout > Duration.zero) {
+      timer = Timer(timeout, completer.complete);
+    }
+
+    onDispose(() {
+      timer?.cancel();
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    });
+
     return completer.future;
   }
 }

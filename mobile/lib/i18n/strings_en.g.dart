@@ -42,11 +42,17 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	// Translations
 	late final TranslationsDialogsEn dialogs = TranslationsDialogsEn.internal(_root);
 	late final TranslationsFormErrEn formErr = TranslationsFormErrEn.internal(_root);
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	late final TranslationsErrorStateEn errorState = TranslationsErrorStateEn.internal(_root);
 	late final TranslationsNavEn nav = TranslationsNavEn.internal(_root);
 	late final TranslationsUnreadEn unread = TranslationsUnreadEn.internal(_root);
 	late final TranslationsSearchEn search = TranslationsSearchEn.internal(_root);
 	late final TranslationsShareEn share = TranslationsShareEn.internal(_root);
 	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
+	late final TranslationsApiErrorEn apiError = TranslationsApiErrorEn.internal(_root);
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
 	late final TranslationsTagEditEn tagEdit = TranslationsTagEditEn.internal(_root);
@@ -55,6 +61,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
 	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
 	late final TranslationsColorPickerEn colorPicker = TranslationsColorPickerEn.internal(_root);
+	late final TranslationsUnauthRedirectEn unauthRedirect = TranslationsUnauthRedirectEn.internal(_root);
 	Map<String, String> get linkAction => {
 		'archive': 'Archive',
 		'unarchive': 'Unarchive',
@@ -108,6 +115,21 @@ class TranslationsFormErrEn {
 
 	/// en: 'Please enter a valid URL.'
 	String get invalidUrl => 'Please enter a valid URL.';
+}
+
+// Path: errorState
+class TranslationsErrorStateEn {
+	TranslationsErrorStateEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Details'
+	String get details => 'Details';
+
+	/// en: 'Error details'
+	String get errorDetails => 'Error details';
 }
 
 // Path: nav
@@ -215,6 +237,30 @@ class TranslationsSettingsEn {
 	String get unauthenticated => 'Not authenticated';
 }
 
+// Path: apiError
+class TranslationsApiErrorEn {
+	TranslationsApiErrorEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Network error. Please check your connection.'
+	String get network => 'Network error. Please check your connection.';
+
+	/// en: 'Request was cancelled.'
+	String get cancelled => 'Request was cancelled.';
+
+	/// en: '$message'
+	String serverError({required Object message}) => '${message}';
+
+	/// en: 'Unexpected server response.'
+	String get invalidResponse => 'Unexpected server response.';
+
+	/// en: 'An unexpected error occurred.'
+	String get unknown => 'An unexpected error occurred.';
+}
+
 // Path: login
 class TranslationsLoginEn {
 	TranslationsLoginEn.internal(this._root);
@@ -237,6 +283,15 @@ class TranslationsLoginEn {
 
 	/// en: 'Authentication failed: $error'
 	String authFailedMessage({required Object error}) => 'Authentication failed: ${error}';
+
+	/// en: 'Cannot reach server. Is the URL correct?'
+	String get serverUnreachable => 'Cannot reach server. Is the URL correct?';
+
+	/// en: 'URL does not appear to point to a valid Haudoi server.'
+	String get serverInvalidResponse => 'URL does not appear to point to a valid Haudoi server.';
+
+	/// en: 'Server error: $message'
+	String serverError({required Object message}) => 'Server error: ${message}';
 }
 
 // Path: edit
@@ -252,9 +307,6 @@ class TranslationsEditEn {
 
 	/// en: 'Changes saved'
 	String get toast => 'Changes saved';
-
-	/// en: 'Retry'
-	String get retry => 'Retry';
 
 	/// en: 'Edit Link'
 	String get title => 'Edit Link';
@@ -408,6 +460,21 @@ class TranslationsColorPickerEn {
 
 	/// en: 'Custom'
 	String get custom => 'Custom';
+}
+
+// Path: unauthRedirect
+class TranslationsUnauthRedirectEn {
+	TranslationsUnauthRedirectEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Logout'
+	String get logout => 'Logout';
+
+	/// en: 'Network error. Log out and reconfigure?'
+	String get networkErr => 'Network error. Log out and reconfigure?';
 }
 
 // Path: settings.theme
@@ -680,6 +747,9 @@ extension on Translations {
 			'dialogs.loading' => 'Loading...',
 			'formErr.emptyValue' => 'This field cannot be empty.',
 			'formErr.invalidUrl' => 'Please enter a valid URL.',
+			'retry' => 'Retry',
+			'errorState.details' => 'Details',
+			'errorState.errorDetails' => 'Error details',
 			'nav.unread' => 'Unread',
 			'nav.search' => 'Search',
 			'nav.settings' => 'Settings',
@@ -707,14 +777,21 @@ extension on Translations {
 			'settings.copyApiUrl' => 'Copy API URL to Clipboard',
 			'settings.userLine' => ({required Object login, required Object source, required Object host}) => '@${login} (${source}) on ${host}',
 			'settings.unauthenticated' => 'Not authenticated',
+			'apiError.network' => 'Network error. Please check your connection.',
+			'apiError.cancelled' => 'Request was cancelled.',
+			'apiError.serverError' => ({required Object message}) => '${message}',
+			'apiError.invalidResponse' => 'Unexpected server response.',
+			'apiError.unknown' => 'An unexpected error occurred.',
 			'login.title' => 'Login',
 			'login.apiUrlLabel' => 'API URL',
 			'login.loginButton' => 'Login',
 			'login.authFailedNoToken' => 'Authentication failed: No token received',
 			'login.authFailedMessage' => ({required Object error}) => 'Authentication failed: ${error}',
+			'login.serverUnreachable' => 'Cannot reach server. Is the URL correct?',
+			'login.serverInvalidResponse' => 'URL does not appear to point to a valid Haudoi server.',
+			'login.serverError' => ({required Object message}) => 'Server error: ${message}',
 			'edit.save' => 'Save',
 			'edit.toast' => 'Changes saved',
-			'edit.retry' => 'Retry',
 			'edit.title' => 'Edit Link',
 			'edit.fields.title' => 'Title',
 			'edit.fields.url' => 'URL',
@@ -776,6 +853,8 @@ extension on Translations {
 			'colorPicker.randomize' => 'Randomize',
 			'colorPicker.preset' => 'Preset',
 			'colorPicker.custom' => 'Custom',
+			'unauthRedirect.logout' => 'Logout',
+			'unauthRedirect.networkErr' => 'Network error. Log out and reconfigure?',
 			'linkAction.archive' => 'Archive',
 			'linkAction.unarchive' => 'Unarchive',
 			'linkAction.favorite' => 'Favorite',

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../providers/api/version.dart';
+import '../error_state.dart';
 
 class AppVersionDialog extends ConsumerWidget {
   const AppVersionDialog({super.key});
@@ -23,7 +24,11 @@ class AppVersionDialog extends ConsumerWidget {
           ).showSnackBar(SnackBar(content: Text(t.dialogs.copiedToClipboard)));
         },
       ),
-      AsyncValue(:final error?) => Text('Error: $error'),
+      AsyncValue(:final error?) => ErrorState(
+        error: error,
+        compact: true,
+        onRetry: () => ref.invalidate(appVersionLineProvider),
+      ),
       AsyncValue() => const CircularProgressIndicator(),
     };
   }

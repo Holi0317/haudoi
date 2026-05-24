@@ -1,4 +1,5 @@
 import { getStorageStub } from "../../composable/do";
+import { ResourceNotFoundError } from "../../error/resource";
 import { zv } from "../../composable/validator";
 import {
   IDStringSchema,
@@ -38,7 +39,10 @@ export default factory
       const result = await stub.updateTag(id, body);
 
       if (result == null) {
-        return c.json({ message: "not found" }, 404);
+        throw new ResourceNotFoundError("Tag not found", {
+          resource: "tag",
+          id,
+        });
       }
 
       return c.json(result);
