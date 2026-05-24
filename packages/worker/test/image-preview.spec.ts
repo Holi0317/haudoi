@@ -1,6 +1,12 @@
-import { fetchMock } from "cloudflare:test";
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { fetchMock } from "./fetch-mock";
 import { createTestClient } from "./client";
+
+function makeTestUrl(path: string) {
+  const name = expect.getState().currentTestName ?? "unknown";
+  const query = new URLSearchParams({ test: name }).toString();
+  return `https://example.com${path}?${query}`;
+}
 
 describe("Image preview API", () => {
   beforeAll(() => {
@@ -37,7 +43,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page" },
+        query: { url: makeTestUrl("/page") },
       });
 
       expect(resp.status).toEqual(200);
@@ -71,7 +77,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page" },
+        query: { url: makeTestUrl("/page") },
       });
 
       expect(resp.status).toEqual(200);
@@ -106,7 +112,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page" },
+        query: { url: makeTestUrl("/page") },
       });
 
       expect(resp.status).toEqual(200);
@@ -132,7 +138,7 @@ describe("Image preview API", () => {
         );
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/no-image" },
+        query: { url: makeTestUrl("/no-image") },
       });
 
       expect(resp.status).toEqual(404);
@@ -142,8 +148,13 @@ describe("Image preview API", () => {
     it("should return 404 when the page cannot be fetched", async () => {
       const client = await createTestClient();
 
+      fetchMock
+        .get("https://example.com")
+        .intercept({ path: "/nonexistent", method: "get" })
+        .reply(500, "boom");
+
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/nonexistent" },
+        query: { url: makeTestUrl("/nonexistent") },
       });
 
       expect(resp.status).toEqual(404);
@@ -168,7 +179,7 @@ describe("Image preview API", () => {
         );
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page" },
+        query: { url: makeTestUrl("/page") },
       });
 
       expect(resp.status).toEqual(404);
@@ -227,7 +238,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -261,7 +272,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -295,7 +306,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -329,7 +340,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page" },
+        query: { url: makeTestUrl("/page") },
       });
 
       expect(resp.status).toEqual(200);
@@ -362,7 +373,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -396,7 +407,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -431,7 +442,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -465,7 +476,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -498,7 +509,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);
@@ -532,7 +543,7 @@ describe("Image preview API", () => {
         });
 
       const resp = await client.api.image.$get({
-        query: { url: "https://example.com/page", type: "favicon" },
+        query: { url: makeTestUrl("/page"), type: "favicon" },
       });
 
       expect(resp.status).toEqual(200);

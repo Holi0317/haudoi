@@ -36,31 +36,27 @@ export default factory
     // Abuse useCache for caching extracted image URL
     // Use different cache namespace for social vs favicon
     const cacheNamespace = type === "favicon" ? "favicon_url" : "image_url";
-    const imageUrlResp = await useCache(
-      cacheNamespace,
-      new URL(url),
-      async () => {
-        // Fetch and extract image URL from the page based on type
-        let imageUrl: URL | null;
+    const imageUrlResp = await useCache(cacheNamespace, cacheKey, async () => {
+      // Fetch and extract image URL from the page based on type
+      let imageUrl: URL | null;
 
-        if (type === "favicon") {
-          imageUrl = await getFaviconUrl(ky, url);
-        } else {
-          imageUrl = await getSocialImageUrl(ky, url);
-        }
+      if (type === "favicon") {
+        imageUrl = await getFaviconUrl(ky, url);
+      } else {
+        imageUrl = await getSocialImageUrl(ky, url);
+      }
 
-        const body = imageUrl == null ? "" : imageUrl.toString();
+      const body = imageUrl == null ? "" : imageUrl.toString();
 
-        return new Response(body, {
-          status: 200,
-          headers: {
-            "content-type": "text/plain",
-            // Cache for 24 hours. Maybe I should respect Cache-Control from origin instead?
-            "cache-control": "public, max-age=86400",
-          },
-        });
-      },
-    );
+      return new Response(body, {
+        status: 200,
+        headers: {
+          "content-type": "text/plain",
+          // Cache for 24 hours. Maybe I should respect Cache-Control from origin instead?
+          "cache-control": "public, max-age=86400",
+        },
+      });
+    });
 
     const imageUrl = await imageUrlResp.text();
     if (imageUrl === "") {

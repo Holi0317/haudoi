@@ -1,6 +1,6 @@
-import { fetchMock } from "cloudflare:test";
 import type * as z from "zod";
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { fetchMock } from "./fetch-mock";
 import type { InferRequestType, InferResponseType } from "hono/client";
 import type { CursorPayload } from "../src/composable/cursor";
 import { decodeCursor, encodeCursor } from "../src/composable/cursor";

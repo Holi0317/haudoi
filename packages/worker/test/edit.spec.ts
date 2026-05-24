@@ -1,5 +1,5 @@
-import { fetchMock } from "cloudflare:test";
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { fetchMock } from "./fetch-mock";
 import type { InferRequestType, InferResponseType } from "hono/client";
 import type { ClientType } from "../src/client";
 import { createTestClient } from "./client";

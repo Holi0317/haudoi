@@ -11,8 +11,8 @@ describe("Test client", () => {
     expect(response.status).toEqual(200);
     expect(json.session).toEqual({
       avatarUrl: "",
-      login: "testing",
-      name: "testing user",
+      login: expect.stringMatching(/^testing-\d+$/),
+      name: expect.stringMatching(/^testing user \d+$/),
       source: "github",
       banned: false,
     });

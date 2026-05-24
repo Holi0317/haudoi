@@ -1,6 +1,6 @@
 import type * as z from "zod";
-import { fetchMock } from "cloudflare:test";
 import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { fetchMock } from "./fetch-mock";
 import { createTestClient } from "./client";
 import type { InsertSchema, LinkItemWithTags } from "../src/schemas";
 
@@ -80,6 +80,11 @@ describe("Link insert", () => {
   });
 
   it("should use empty string as title if document fetch failed", async () => {
+    fetchMock
+      .get("https://google.com")
+      .intercept({ path: "/", method: "get" })
+      .reply(500, "boom");
+
     await testInsert({
       insert: [{ title: "", url: "https://google.com" }],
       insertResponse: [
