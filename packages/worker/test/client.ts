@@ -1,4 +1,4 @@
-import { env, SELF } from "cloudflare:test";
+import { env, exports } from "cloudflare:workers";
 import dayjs from "dayjs";
 import { __test__storeSession } from "../src/composable/session/cookie";
 import { COOKIE_NAME } from "../src/composable/session/constants";
@@ -31,7 +31,7 @@ export async function createTestClient() {
   );
 
   return createClient("http://example.com", {
-    fetch: SELF.fetch.bind(SELF),
+    fetch: exports.default.fetch.bind(exports.default),
     headers: {
       cookie: `__Host-${COOKIE_NAME}=${sessID}`,
       accept: "application/json",
