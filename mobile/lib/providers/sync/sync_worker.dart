@@ -71,7 +71,11 @@ class SyncWorker extends _$SyncWorker {
       if (e is CancelledApiError) {
         log.fine('EditOp processing was cancelled (aborted): $e');
       } else if (e is TransportApiError) {
-        log.warning('Network error while processing EditOp — will retry on next trigger', e, st);
+        log.warning(
+          'Network error while processing EditOp — will retry on next trigger',
+          e,
+          st,
+        );
       } else {
         log.severe('Failed to process EditOp', e, st);
       }

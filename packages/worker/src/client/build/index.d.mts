@@ -109,17 +109,6 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types0.BlankSchema | hono_
         };
       };
       output: {
-        message: string;
-      };
-      outputFormat: "json";
-      status: 404;
-    } | {
-      input: {
-        param: {
-          id: string;
-        };
-      };
-      output: {
         id: number;
         title: string;
         url: string;
@@ -180,23 +169,6 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types0.BlankSchema | hono_
 } & {
   "/:id": {
     $patch: {
-      input: {
-        param: {
-          id: string;
-        };
-      } & {
-        json: {
-          name?: string | undefined;
-          color?: string | undefined;
-          emoji?: string | undefined;
-        };
-      };
-      output: {
-        message: string;
-      };
-      outputFormat: "json";
-      status: 404;
-    } | {
       input: {
         param: {
           id: string;
@@ -584,8 +556,6 @@ declare const app: hono_hono_base0.HonoBase<Env, hono_types0.BlankSchema | hono_
         color: string;
         emoji: string;
         created_at: number;
-      } | {
-        message: string;
       };
       outputFormat: "json";
       status: 100 | 102 | 103 | 200 | 201 | 202 | 203 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 305 | 306 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511 | -1;
@@ -861,17 +831,6 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             };
           };
           output: {
-            message: string;
-          };
-          outputFormat: "json";
-          status: 404;
-        } | {
-          input: {
-            param: {
-              id: string;
-            };
-          };
-          output: {
             id: number;
             title: string;
             url: string;
@@ -935,23 +894,6 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
     tag: {
       ":id": hono_client0.ClientRequest<string, "/api/tag/:id", {
         $patch: {
-          input: {
-            param: {
-              id: string;
-            };
-          } & {
-            json: {
-              name?: string | undefined;
-              color?: string | undefined;
-              emoji?: string | undefined;
-            };
-          };
-          output: {
-            message: string;
-          };
-          outputFormat: "json";
-          status: 404;
-        } | {
           input: {
             param: {
               id: string;
@@ -1355,8 +1297,6 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             color: string;
             emoji: string;
             created_at: number;
-          } | {
-            message: string;
           };
           outputFormat: "json";
           status: 100 | 102 | 103 | 200 | 201 | 202 | 203 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 305 | 306 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511 | -1;
