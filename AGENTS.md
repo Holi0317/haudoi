@@ -115,6 +115,8 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Generated files must be regenerated and committed after model changes
 - Never edit `*.g.dart` or `*.freezed.dart` manually; change source files only
 - Keep JSON parsing at model boundary; work with typed objects elsewhere
+- i18n: hard-code strings during development; move to `.i18n.yaml` when asked
+- Translation scope: per-page or per-component (duplicates expected)
 
 **Formatting:**
 
