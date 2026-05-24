@@ -3,15 +3,16 @@ packages:
   - packages/dsl
   - packages/extension
 
-lockfileIncludeTarballUrl: true
+allowBuilds:
+  esbuild: true
+  msw: true
+  sharp: true
+  spawn-sync: true
+  unrs-resolver: true
+  vue-demi: true
+  workerd: true
 
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-  - spawn-sync
-  - unrs-resolver
-  - vue-demi
-  - workerd
+lockfileIncludeTarballUrl: true
 
 patchedDependencies:
   "@truto/sqlite-builder@1.0.4": patches/@truto__sqlite-builder@1.0.4.patch

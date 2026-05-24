@@ -1,6 +1,5 @@
-import { fetchMock } from "cloudflare:test";
 import type * as z from "zod";
-import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import type { InferRequestType, InferResponseType } from "hono/client";
 import type { CursorPayload } from "../src/composable/cursor";
 import { decodeCursor, encodeCursor } from "../src/composable/cursor";
@@ -60,13 +59,6 @@ async function testInsert(tc: TestCase) {
 }
 
 describe("Link search", () => {
-  beforeAll(() => {
-    fetchMock.activate();
-    fetchMock.disableNetConnect();
-  });
-
-  afterEach(() => fetchMock.assertNoPendingInterceptors());
-
   it("should return nothing on empty db", async () => {
     await testInsert({
       insert: [],

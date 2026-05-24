@@ -18,21 +18,21 @@
   "dependencies": {
     "@haudoi/worker": "link:../worker",
     "@primeuix/themes": "^2.0.3",
-    "@tailwindcss/vite": "^4.2.1",
-    "@tanstack/vue-form": "^1.28.4",
-    "@tanstack/vue-query": "^5.92.9",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/vue-form": "^1.32.0",
+    "@tanstack/vue-query": "^5.100.14",
     "primeicons": "^7.0.0",
-    "primevue": "^4.5.4",
-    "tailwindcss": "^4.2.1",
+    "primevue": "^4.5.5",
+    "tailwindcss": "^4.3.0",
     "tailwindcss-primeui": "^0.6.1",
-    "vue": "^3.5.29",
-    "vue-router": "^5.0.3"
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
     "@wxt-dev/module-vue": "^1.0.3",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vue-tsc": "^3.2.5",
-    "wxt": "^0.20.18"
+    "typescript": "^6.0.3",
+    "vite": "^7.3.3",
+    "vue-tsc": "^3.3.1",
+    "wxt": "^0.21.0"
   }
 }
