@@ -38,6 +38,10 @@ Standard groups typically include:
 - **wrangler**: wrangler, @cloudflare/\*
 - **hono**: hono, @hono/\*, zod
 
+Put ungrouped dependencies into their own commit. If the upgrade is major and
+significant (involves multiple files change), move that dependency upgrade to
+it's own commit.
+
 ### 2. Check Outdated Dependencies
 
 ```bash
@@ -155,3 +159,23 @@ When upgrading pnpm itself:
 
 This skill lives in `.opencode/skills/dep-upgrade/SKILL.md` relative to the repo
 root.
+
+### Wrangler Types
+
+After upgrading wrangler, regenerate types in `worker-configuration.d.ts` by
+running:
+
+```bash
+pnpm run --filter @haudoi/worker cf-typegen
+```
+
+### Rolldown Client Types
+
+After upgrading rolldown / hono / zod, and possibly more packages, regenerate
+types in `client/build/index.d.mts` by running:
+
+```bash
+pnpm run --filter @haudoi/worker build-client
+```
+
+Just run this after finish upgrading all dependencies.
