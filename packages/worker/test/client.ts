@@ -7,6 +7,9 @@ import { useUserRegistry } from "../src/composable/user/registry";
 import { createClient } from "../src/client";
 
 let nextUserId = 0;
+// Vitest pool storage is isolated per file, not per test. Keep a stable
+// user identity per test case so multiple createTestClient() calls in one
+// test share the same user/DO state, while different tests stay isolated.
 const userIdByScope = new Map<string, string>();
 
 function getTestScope() {
@@ -15,6 +18,7 @@ function getTestScope() {
 }
 
 function getScopedUserId() {
+  // Scope key is "file + test name".
   const scope = getTestScope();
   const existing = userIdByScope.get(scope);
 

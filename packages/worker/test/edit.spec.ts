@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeAll, afterEach } from "vitest";
-import { fetchMock } from "./fetch-mock";
+import { describe, it, expect } from "vitest";
 import type { InferRequestType, InferResponseType } from "hono/client";
 import type { ClientType } from "../src/client";
 import { createTestClient } from "./client";
@@ -47,13 +46,6 @@ async function testEdit(tc: TestCase) {
 }
 
 describe("Link edit", () => {
-  beforeAll(() => {
-    fetchMock.activate();
-    fetchMock.disableNetConnect();
-  });
-
-  afterEach(() => fetchMock.assertNoPendingInterceptors());
-
   it("should edit link properly", async () => {
     const client = await createTestClient();
 

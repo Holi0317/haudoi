@@ -1,10 +1,13 @@
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { server } from "./server";
+import { assertNoPendingInterceptors, server } from "./server";
 
 beforeAll(() =>
   server.listen({
     onUnhandledRequest: "error",
   }),
 );
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+  assertNoPendingInterceptors();
+  server.resetHandlers();
+});
 afterAll(() => server.close());

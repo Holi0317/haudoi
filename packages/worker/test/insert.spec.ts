@@ -1,8 +1,26 @@
 import type * as z from "zod";
-import { describe, it, expect, beforeAll, afterEach } from "vitest";
-import { fetchMock } from "./fetch-mock";
+import { describe, it, expect } from "vitest";
+import { HttpResponse, http } from "msw";
+import { server, trackOneOffInterceptor } from "./server";
 import { createTestClient } from "./client";
 import type { InsertSchema, LinkItemWithTags } from "../src/schemas";
+
+function mockGoogleGet(
+  path: string,
+  status: number,
+  body?: BodyInit | null,
+  headers?: HeadersInit,
+) {
+  server.use(
+    http.get(
+      `https://google.com${path}`,
+      trackOneOffInterceptor(() => {
+        return new HttpResponse(body ?? null, { status, headers });
+      }),
+      { once: true },
+    ),
+  );
+}
 
 describe("Link insert", () => {
   interface TestCase {
@@ -28,13 +46,6 @@ describe("Link insert", () => {
     expect(j.items).toEqual(tc.insertResponse);
   }
 
-  beforeAll(() => {
-    fetchMock.activate();
-    fetchMock.disableNetConnect();
-  });
-
-  afterEach(() => fetchMock.assertNoPendingInterceptors());
-
   it("should insert link and store it", async () => {
     await testInsert({
       insert: [{ title: "asdf", url: "https://google.com" }],
@@ -54,13 +65,11 @@ describe("Link insert", () => {
   });
 
   it("should use document title when http response isn't ok", async () => {
-    fetchMock
-      .get("https://google.com")
-      .intercept({ path: "/", method: "get" })
-      .reply(
-        404,
-        `<!doctype html><html><head><title>You should still use this 404 title</title></head></html>`,
-      );
+    mockGoogleGet(
+      "/",
+      404,
+      `<!doctype html><html><head><title>You should still use this 404 title</title></head></html>`,
+    );
 
     await testInsert({
       insert: [{ title: "", url: "https://google.com" }],
@@ -80,10 +89,7 @@ describe("Link insert", () => {
   });
 
   it("should use empty string as title if document fetch failed", async () => {
-    fetchMock
-      .get("https://google.com")
-      .intercept({ path: "/", method: "get" })
-      .reply(500, "boom");
+    mockGoogleGet("/", 500, "boom");
 
     await testInsert({
       insert: [{ title: "", url: "https://google.com" }],
@@ -267,10 +273,7 @@ describe("HTML title scraping", () => {
       tc.document ??
       `<!doctype html><html><head><title>${tc.title}</title></head></html>`;
 
-    fetchMock
-      .get("https://google.com")
-      .intercept({ path: "/", method: "get" })
-      .reply(200, doc);
+    mockGoogleGet("/", 200, doc);
 
     const client = await createTestClient();
 
@@ -299,13 +302,6 @@ describe("HTML title scraping", () => {
       },
     ]);
   }
-
-  beforeAll(() => {
-    fetchMock.activate();
-    fetchMock.disableNetConnect();
-  });
-
-  afterEach(() => fetchMock.assertNoPendingInterceptors());
 
   it("should fetch title from document", async () => {
     await testInsert({
