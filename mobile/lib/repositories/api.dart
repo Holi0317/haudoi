@@ -263,9 +263,7 @@ class ApiRepository {
   ///
   /// For use of global event handling, e.g. logging out user on 401 Unauthorized.
   ///
-  /// For http level error (by status code), [RequestException] will be emitted.
-  /// For transport level error (eg server unreachable), [http.ClientException] will be emitted.
-  /// JSON parsing error will not be emitted.
+  /// Emits [ApiError] variants for all error types. See child classes of [ApiError] for details on error types.
   EventBus get eventBus => _client.eventBus;
 
   Future<ServerInfo> info({Future<void>? abortTrigger}) {
@@ -293,8 +291,8 @@ class ApiRepository {
 
   /// Get a single link from server.
   ///
-  /// If the item ID is not found, a [RequestException] with `statusCode == 404`
-  /// will be thrown.
+  /// If the item ID is not found, throws [KnownServerApiError] with status code 404
+  /// (or [HttpApiError] if the error response format is unrecognized).
   Future<Link> getItem(int id, {Future<void>? abortTrigger}) {
     return _client.requestJson(
       'GET',

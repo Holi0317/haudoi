@@ -32,7 +32,7 @@ class UnauthRedirect extends ConsumerWidget {
           SnackBar(
             content: Text(t.unauthRedirect.networkErr),
             action: SnackBarAction(
-              label: 'Log out',
+              label: t.unauthRedirect.logout,
               onPressed: () => _logout(context, ref),
             ),
           ),

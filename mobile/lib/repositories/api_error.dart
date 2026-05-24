@@ -92,7 +92,10 @@ class HttpApiError extends ApiError {
 
   @override
   String toString() {
-    return 'HttpApiError for $method $path $statusCode: $body';
+    final truncatedBody = body.length > 200
+        ? '${body.substring(0, 200)}...'
+        : body;
+    return 'HttpApiError for $method $path $statusCode: $truncatedBody';
   }
 }
 

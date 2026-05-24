@@ -79,7 +79,7 @@ class ErrorState extends StatelessWidget {
             TextButton.icon(
               onPressed: () => _showErrorDetailsDialog(context, error),
               icon: const Icon(Icons.info_outline),
-              label: const Text('Details'),
+              label: Text(t.errorState.details),
             ),
             if (buttons.isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -108,7 +108,7 @@ class ErrorState extends StatelessWidget {
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Error details'),
+        title: Text(t.errorState.errorDetails),
         content: SingleChildScrollView(
           child: SelectableText(
             'Type: ${error.runtimeType}\n\n$error',

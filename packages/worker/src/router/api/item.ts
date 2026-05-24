@@ -13,7 +13,7 @@ export default factory
     const item = await stub.get(id);
 
     if (item == null) {
-      throw new ResourceNotFoundError("Link not found", {
+      throw new ResourceNotFoundError("Item not found", {
         resource: "item",
         id,
       });

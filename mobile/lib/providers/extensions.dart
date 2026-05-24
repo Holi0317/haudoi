@@ -7,7 +7,7 @@ extension RefAbortTrigger on Ref {
   /// Create an abortTrigger for http library from riverpod [Ref].
   ///
   /// The returned future will be resolved when either:
-  /// - The [timeout] duration expires (default 30 seconds)
+  /// - The [timeout] duration expires (default 10 seconds)
   /// - The ref is disposed
   ///
   /// Whichever happens first will complete the abort trigger.

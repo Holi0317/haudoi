@@ -46,6 +46,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	/// en: 'Retry'
 	String get retry => 'Retry';
 
+	late final TranslationsErrorStateEn errorState = TranslationsErrorStateEn.internal(_root);
 	late final TranslationsNavEn nav = TranslationsNavEn.internal(_root);
 	late final TranslationsUnreadEn unread = TranslationsUnreadEn.internal(_root);
 	late final TranslationsSearchEn search = TranslationsSearchEn.internal(_root);
@@ -114,6 +115,21 @@ class TranslationsFormErrEn {
 
 	/// en: 'Please enter a valid URL.'
 	String get invalidUrl => 'Please enter a valid URL.';
+}
+
+// Path: errorState
+class TranslationsErrorStateEn {
+	TranslationsErrorStateEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Details'
+	String get details => 'Details';
+
+	/// en: 'Error details'
+	String get errorDetails => 'Error details';
 }
 
 // Path: nav
@@ -454,6 +470,9 @@ class TranslationsUnauthRedirectEn {
 
 	// Translations
 
+	/// en: 'Logout'
+	String get logout => 'Logout';
+
 	/// en: 'Network error. Log out and reconfigure?'
 	String get networkErr => 'Network error. Log out and reconfigure?';
 }
@@ -729,6 +748,8 @@ extension on Translations {
 			'formErr.emptyValue' => 'This field cannot be empty.',
 			'formErr.invalidUrl' => 'Please enter a valid URL.',
 			'retry' => 'Retry',
+			'errorState.details' => 'Details',
+			'errorState.errorDetails' => 'Error details',
 			'nav.unread' => 'Unread',
 			'nav.search' => 'Search',
 			'nav.settings' => 'Settings',
@@ -832,6 +853,7 @@ extension on Translations {
 			'colorPicker.randomize' => 'Randomize',
 			'colorPicker.preset' => 'Preset',
 			'colorPicker.custom' => 'Custom',
+			'unauthRedirect.logout' => 'Logout',
 			'unauthRedirect.networkErr' => 'Network error. Log out and reconfigure?',
 			'linkAction.archive' => 'Archive',
 			'linkAction.unarchive' => 'Unarchive',
