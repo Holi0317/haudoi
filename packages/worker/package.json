@@ -37,7 +37,7 @@
     "@cloudflare/vitest-pool-workers": "^0.16.9",
     "msw": "^2.14.6",
     "tsdown": "0.21.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.7",
     "wrangler": "^4.94.0"
   }
