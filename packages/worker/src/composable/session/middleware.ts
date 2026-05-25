@@ -1,9 +1,5 @@
 import { createMiddleware } from "hono/factory";
-import {
-  InternalServerError,
-  UnauthenticatedError,
-  UserBannedError,
-} from "../../error/auth";
+import { UnauthenticatedError, UserBannedError } from "../../error/auth";
 import { every } from "hono/combine";
 import type { RedirectDestination } from "../oauth_state";
 import { isAdmin } from "../user/admin";
@@ -58,7 +54,7 @@ function _requireUser() {
       "User not found in requireUser middleware despite having a valid session",
     );
 
-    throw new InternalServerError();
+    throw new UnauthenticatedError();
   });
 }
 

@@ -3,6 +3,7 @@ import { bodyLimit } from "hono/body-limit";
 import { clientInject } from "../middleware/client";
 import { renderer } from "../middleware/renderer";
 import { blockRequestLoop } from "../middleware/loop";
+import { errorHandler } from "../middleware/error";
 import apiRouter from "./api";
 import authRouter from "./auth";
 import basicRouter from "./basic";
@@ -16,6 +17,7 @@ const app = factory
   .use(renderer())
   .use(blockRequestLoop())
   .use(bodyLimit({ maxSize: MAX_BODY_SIZE }))
+  .onError(errorHandler)
   .route("/", landingRouter)
   .route("/auth", authRouter)
   .route("/api", apiRouter)
