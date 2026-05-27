@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/search_query.dart';
@@ -9,7 +8,6 @@ import '../../models/server_info.dart';
 import '../../models/tag.dart';
 import '../../models/with_timestamp.dart';
 import '../../repositories/api.dart';
-import '../../repositories/api_error.dart';
 import '../bindings/http.dart';
 import '../extensions.dart';
 import './../bindings/shared_preferences.dart';
@@ -34,90 +32,6 @@ Future<ApiRepository> apiRepository(Ref ref) async {
   );
 
   return client;
-}
-
-enum AuthStateEnum {
-  authenticated,
-  notConfig,
-  unauthenticated,
-  networkErr,
-  loading,
-}
-
-@riverpod
-class AuthState extends _$AuthState {
-  final _logger = Logger('AuthStateProvider');
-
-  @override
-  AuthStateEnum build() {
-    _watchUnauth();
-
-    return AuthStateEnum.loading;
-  }
-
-  Future<void> _watchUnauth() async {
-    final client = await ref.watch(apiRepositoryProvider.future);
-
-    if (client.baseUrl.isEmpty) {
-      state = AuthStateEnum.notConfig;
-      return;
-    }
-
-    await _probe();
-
-    final subscription1 = client.eventBus.on<KnownServerApiError>().listen((
-      event,
-    ) {
-      if (event.model.code == "unauthenticated") {
-        _logger.info(
-          "Received 401 Unauthorized response on ${event.method} ${event.path}, marking authState unauthenticated. Body = ${event.body}",
-        );
-        state = AuthStateEnum.unauthenticated;
-      }
-    });
-
-    ref.onDispose(subscription1.cancel);
-
-    final subscription2 = client.eventBus.on<TransportApiError>().listen((
-      event,
-    ) {
-      _logger.warning(
-        "Received transport error on ${event.method} ${event.path}: ${event.cause}",
-        event.cause,
-        event.stackTrace,
-      );
-
-      state = AuthStateEnum.networkErr;
-    });
-
-    ref.onDispose(subscription2.cancel);
-  }
-
-  Future<void> _probe() async {
-    try {
-      final info = await ref.watch(serverInfoProvider.future);
-
-      state = info.session != null
-          ? AuthStateEnum.authenticated
-          : AuthStateEnum.unauthenticated;
-    } on CancelledApiError catch (err) {
-      _logger.warning("Probe was cancelled", err);
-    } on TransportApiError catch (err) {
-      _logger.warning("Network error while probing server", err);
-      state = AuthStateEnum.networkErr;
-    } on KnownServerApiError catch (err) {
-      _logger.warning(
-        "Server error while probing: [${err.model.code}] ${err.model.message}",
-      );
-      state = AuthStateEnum.unauthenticated;
-    } on ApiError catch (err) {
-      _logger.warning("API error while probing server: $err");
-      state = AuthStateEnum.networkErr;
-    } catch (err) {
-      _logger.warning("Unexpected error while probing server: $err");
-      state = AuthStateEnum.networkErr;
-    }
-  }
 }
 
 @riverpod

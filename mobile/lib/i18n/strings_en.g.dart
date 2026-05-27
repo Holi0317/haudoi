@@ -272,11 +272,23 @@ class TranslationsLoginEn {
 	/// en: 'Login'
 	String get title => 'Login';
 
+	/// en: 'Haudoi is a bookmark management app that helps you save, organize, and access your links across all your devices.'
+	String get description => 'Haudoi is a bookmark management app that helps you save, organize, and access your links across all your devices.';
+
+	/// en: 'Enter the API URL of your self-hosted Haudoi server. If you don't have one, see the GitHub repository below for setup instructions.'
+	String get apiUrlInstructions => 'Enter the API URL of your self-hosted Haudoi server. If you don\'t have one, see the GitHub repository below for setup instructions.';
+
 	/// en: 'API URL'
 	String get apiUrlLabel => 'API URL';
 
+	/// en: 'https://your-haudoi-server.com'
+	String get apiUrlHint => 'https://your-haudoi-server.com';
+
 	/// en: 'Login'
 	String get loginButton => 'Login';
+
+	/// en: 'View on GitHub'
+	String get viewOnGithub => 'View on GitHub';
 
 	/// en: 'Authentication failed: No token received'
 	String get authFailedNoToken => 'Authentication failed: No token received';
@@ -783,8 +795,12 @@ extension on Translations {
 			'apiError.invalidResponse' => 'Unexpected server response.',
 			'apiError.unknown' => 'An unexpected error occurred.',
 			'login.title' => 'Login',
+			'login.description' => 'Haudoi is a bookmark management app that helps you save, organize, and access your links across all your devices.',
+			'login.apiUrlInstructions' => 'Enter the API URL of your self-hosted Haudoi server. If you don\'t have one, see the GitHub repository below for setup instructions.',
 			'login.apiUrlLabel' => 'API URL',
+			'login.apiUrlHint' => 'https://your-haudoi-server.com',
 			'login.loginButton' => 'Login',
+			'login.viewOnGithub' => 'View on GitHub',
 			'login.authFailedNoToken' => 'Authentication failed: No token received',
 			'login.authFailedMessage' => ({required Object error}) => 'Authentication failed: ${error}',
 			'login.serverUnreachable' => 'Cannot reach server. Is the URL correct?',

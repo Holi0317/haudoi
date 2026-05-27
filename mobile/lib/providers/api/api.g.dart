@@ -48,58 +48,6 @@ final class ApiRepositoryProvider
 
 String _$apiRepositoryHash() => r'21919f719df517746b7d37a268d7045d48eb84dd';
 
-@ProviderFor(AuthState)
-final authStateProvider = AuthStateProvider._();
-
-final class AuthStateProvider
-    extends $NotifierProvider<AuthState, AuthStateEnum> {
-  AuthStateProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authStateProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$authStateHash();
-
-  @$internal
-  @override
-  AuthState create() => AuthState();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthStateEnum value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AuthStateEnum>(value),
-    );
-  }
-}
-
-String _$authStateHash() => r'4de8920115d3820a8fabcea0d33c181141adc8c0';
-
-abstract class _$AuthState extends $Notifier<AuthStateEnum> {
-  AuthStateEnum build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final ref = this.ref as $Ref<AuthStateEnum, AuthStateEnum>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AuthStateEnum, AuthStateEnum>,
-              AuthStateEnum,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, build);
-  }
-}
-
 @ProviderFor(serverInfo)
 final serverInfoProvider = ServerInfoProvider._();
 
