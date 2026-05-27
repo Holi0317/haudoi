@@ -117,6 +117,7 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Keep JSON parsing at model boundary; work with typed objects elsewhere
 - i18n: hard-code strings during development; move to `.i18n.yaml` when asked
 - Translation scope: per-page or per-component (duplicates expected)
+- **Never remove comments from existing code** unless explicitly asked to refactor
 
 **Formatting:**
 
