@@ -2,16 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../models/server_info.dart';
 import '../../providers/api/api.dart';
+import '../../providers/api/auth.dart';
 import '../../providers/bindings/shared_preferences.dart';
 import '../../providers/extensions.dart';
-import '../../providers/sync/queue.dart';
 import '../error_state.dart';
 
 class Whoami extends ConsumerWidget {
@@ -44,9 +43,8 @@ class Whoami extends ConsumerWidget {
         AsyncValue(:final error?) => ErrorState(
           error: error,
           onRetry: () => ref.invalidate(serverInfoProvider),
-          onSecondaryAction: () {
-            _logout(context, ref);
-          },
+          onSecondaryAction: () =>
+              ref.read(authProvider.notifier).logout(context),
           secondaryActionLabel: t.settings.logout.title,
         ),
         AsyncValue() => _buildLoading(context),
@@ -194,22 +192,6 @@ class Whoami extends ConsumerWidget {
       return;
     }
 
-    await _logout(context, ref);
-  }
-
-  Future<void> _logout(BuildContext context, WidgetRef ref) async {
-    await ref
-        .read(preferenceProvider(SharedPreferenceKey.apiToken).notifier)
-        .reset();
-
-    // Reset edit queue
-    ref.read(editQueueProvider.notifier).reset();
-
-    if (!context.mounted) {
-      _logger.warning('Context not mounted after clearing preferences');
-      return;
-    }
-
-    context.go('/login');
+    await ref.read(authProvider.notifier).logout(context);
   }
 }

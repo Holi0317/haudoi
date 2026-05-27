@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../hooks/globalkey.dart';
 import '../i18n/strings.g.dart';
+import '../providers/api/auth.dart';
 import '../providers/bindings/shared_preferences.dart';
 import '../repositories/api.dart';
 import '../repositories/api_error.dart';
@@ -63,12 +64,7 @@ class _LoginAction {
         return;
       }
 
-      await ref
-          .read(preferenceProvider(SharedPreferenceKey.apiToken).notifier)
-          .set(token);
-      await ref
-          .read(preferenceProvider(SharedPreferenceKey.apiUrl).notifier)
-          .set(apiUrl);
+      await ref.read(authProvider.notifier).login(apiUrl: apiUrl, token: token);
 
       if (context.mounted) {
         context.go('/unread');

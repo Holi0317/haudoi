@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../i18n/strings.g.dart';
-import '../../providers/api/api.dart';
-import '../../providers/bindings/shared_preferences.dart';
-import '../../providers/sync/queue.dart';
+import '../../providers/api/auth.dart';
 
 class UnauthRedirect extends ConsumerWidget {
   const UnauthRedirect({super.key, this.child});
@@ -33,7 +31,7 @@ class UnauthRedirect extends ConsumerWidget {
             content: Text(t.unauthRedirect.networkErr),
             action: SnackBarAction(
               label: t.unauthRedirect.logout,
-              onPressed: () => _logout(context, ref),
+              onPressed: () => ref.read(authProvider.notifier).logout(context),
             ),
           ),
         );
@@ -51,19 +49,5 @@ class UnauthRedirect extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
     };
-  }
-
-  Future<void> _logout(BuildContext context, WidgetRef ref) async {
-    await ref
-        .read(preferenceProvider(SharedPreferenceKey.apiToken).notifier)
-        .reset();
-
-    ref.read(editQueueProvider.notifier).reset();
-
-    if (!context.mounted) {
-      return;
-    }
-
-    context.go('/login');
   }
 }

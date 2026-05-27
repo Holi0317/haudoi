@@ -24,9 +24,8 @@ class _ApiClient {
   _ApiClient({
     required http.Client transport,
     required this.baseUrl,
-    required String authToken,
-  }) : _authToken = authToken,
-       _client = transport;
+    required this._authToken,
+  }) : _client = transport;
 
   /// HTTP headers for requests.
   late final Map<String, String> headers = Map.unmodifiable({
