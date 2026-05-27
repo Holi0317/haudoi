@@ -18,7 +18,7 @@ import '../repositories/api_error.dart';
 
 final _logger = Logger('LoginPage');
 
-const _githubUrl = 'https://github.com/anomalyco/haudoi';
+const _githubUrl = 'https://github.com/Holi0317/haudoi';
 
 class _LoginAction {
   _LoginAction(this.context, this.ref)
