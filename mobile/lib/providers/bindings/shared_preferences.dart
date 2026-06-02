@@ -15,7 +15,8 @@ Future<SharedPreferences> _sharedPreferences(Ref ref) async {
 enum SharedPreferenceKey {
   apiUrl('api_url', ''),
   apiToken('api_token', ''),
-  theme('theme', 'system'); // light, dark, system
+  theme('theme', 'system'),
+  recentServers('recent_servers', '[]');
 
   final String key;
   final String defaultValue;
@@ -43,5 +44,50 @@ class Preference extends _$Preference {
     await prefs.setString(key.key, key.defaultValue);
     // Update the state to notify listeners
     state = AsyncValue.data(key.defaultValue);
+  }
+}
+
+@Riverpod(keepAlive: true)
+class RecentServers extends _$RecentServers {
+  static final _key = "recent_servers";
+
+  @override
+  Future<List<String>> build() async {
+    final prefs = await ref.watch(_sharedPreferencesProvider.future);
+    return prefs.getStringList(_key) ?? [];
+  }
+
+  Future<void> add(String value) async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+
+    final current = prefs.getStringList(_key) ?? [];
+
+    current.add(value);
+    current.toSet().toList();
+
+    await prefs.setStringList(_key, current);
+
+    // Update the state to notify listeners
+    state = AsyncValue.data(current);
+  }
+
+  Future<void> remove(String value) async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+    final current = prefs.getStringList(_key) ?? [];
+
+    current.remove(value);
+
+    await prefs.setStringList(_key, current);
+
+    // Update the state to notify listeners
+    state = AsyncValue.data(current);
+  }
+
+  Future<void> reset() async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+    await prefs.setStringList(_key, []);
+
+    // Update the state to notify listeners
+    state = const AsyncValue.data([]);
   }
 }
