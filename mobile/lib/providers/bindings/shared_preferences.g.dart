@@ -143,3 +143,47 @@ abstract class _$Preference extends $AsyncNotifier<String> {
     element.handleCreate(ref, () => build(_$args));
   }
 }
+
+@ProviderFor(RecentServers)
+final recentServersProvider = RecentServersProvider._();
+
+final class RecentServersProvider
+    extends $AsyncNotifierProvider<RecentServers, List<String>> {
+  RecentServersProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'recentServersProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$recentServersHash();
+
+  @$internal
+  @override
+  RecentServers create() => RecentServers();
+}
+
+String _$recentServersHash() => r'e79682e23016c92cfda9e16e647bd17ce8bc1528';
+
+abstract class _$RecentServers extends $AsyncNotifier<List<String>> {
+  FutureOr<List<String>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<String>>, List<String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<String>>, List<String>>,
+              AsyncValue<List<String>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

@@ -128,21 +128,29 @@ class Auth extends _$Auth {
 
   /// Logs in the user by storing the API token and URL.
   Future<void> login({required String apiUrl, required String token}) async {
-    await ref
-        .read(preferenceProvider(SharedPreferenceKey.apiToken).notifier)
-        .set(token);
-    await ref
-        .read(preferenceProvider(SharedPreferenceKey.apiUrl).notifier)
-        .set(apiUrl);
+    final t = ref.read(
+      preferenceProvider(SharedPreferenceKey.apiToken).notifier,
+    );
+    final url = ref.read(
+      preferenceProvider(SharedPreferenceKey.apiUrl).notifier,
+    );
+    final recent = ref.read(recentServersProvider.notifier);
+
+    await t.set(token);
+    await url.set(apiUrl);
+    await recent.add(apiUrl);
   }
 
   /// Logs out the user from this app.
   /// Optionally takes a [BuildContext] to navigate to the login screen after logout.
   Future<void> logout([BuildContext? context]) async {
-    await ref
-        .read(preferenceProvider(SharedPreferenceKey.apiToken).notifier)
-        .reset();
-    ref.read(editQueueProvider.notifier).reset();
+    final apiToken = ref.read(
+      preferenceProvider(SharedPreferenceKey.apiToken).notifier,
+    );
+    final editQueue = ref.read(editQueueProvider.notifier);
+
+    await apiToken.reset();
+    editQueue.reset();
 
     if (context == null || !context.mounted) {
       return;

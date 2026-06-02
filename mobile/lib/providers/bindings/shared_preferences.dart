@@ -45,3 +45,47 @@ class Preference extends _$Preference {
     state = AsyncValue.data(key.defaultValue);
   }
 }
+
+@Riverpod(keepAlive: true)
+class RecentServers extends _$RecentServers {
+  static final _key = "recent_servers";
+
+  @override
+  Future<List<String>> build() async {
+    final prefs = await ref.watch(_sharedPreferencesProvider.future);
+    return prefs.getStringList(_key) ?? [];
+  }
+
+  Future<void> add(String value) async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+
+    final current = (prefs.getStringList(_key) ?? [])..add(value);
+
+    final next = current.toSet().toList();
+
+    await prefs.setStringList(_key, next);
+
+    // Update the state to notify listeners
+    state = AsyncValue.data(next);
+  }
+
+  Future<void> remove(String value) async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+    final current = (prefs.getStringList(_key) ?? []).toList();
+
+    current.remove(value);
+
+    await prefs.setStringList(_key, current);
+
+    // Update the state to notify listeners
+    state = AsyncValue.data(current);
+  }
+
+  Future<void> reset() async {
+    final prefs = await ref.read(_sharedPreferencesProvider.future);
+    await prefs.setStringList(_key, []);
+
+    // Update the state to notify listeners
+    state = const AsyncValue.data([]);
+  }
+}

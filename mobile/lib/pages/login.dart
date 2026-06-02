@@ -144,17 +144,7 @@ class LoginPage extends HookConsumerWidget {
     final formKey = actions.formKey;
     final isLoading = actions.isLoading;
 
-    final apiUrl = ref.watch(preferenceProvider(SharedPreferenceKey.apiUrl));
-
-    // Initialize form with saved API URL
-    useEffect(() {
-      final value = apiUrl.value;
-      if (value != null && formKey.currentState != null) {
-        formKey.currentState!.patchValue({'apiUrl': value});
-      }
-
-      return null;
-    }, [apiUrl, formKey.currentState]);
+    final recentServers = ref.watch(recentServersProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(t.login.title)),
@@ -196,53 +186,145 @@ class LoginPage extends HookConsumerWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
+
             FormBuilder(
               key: formKey,
-              enabled: !isLoading.value,
-              child: Column(
-                children: [
-                  FormBuilderTextField(
-                    name: 'apiUrl',
-                    decoration: InputDecoration(
-                      labelText: t.login.apiUrlLabel,
-                      hintText: t.login.apiUrlHint,
+              enabled: !recentServers.isLoading,
+              child: switch (recentServers) {
+                AsyncValue(hasError: true) => _ServerUrlField(
+                  formKey: formKey,
+                  isLoading: isLoading,
+                  recentServers: const [],
+                  initialValue: '',
+                  onRemove: (_) {},
+                ),
+                AsyncValue(:final value?, hasValue: true) => _ServerUrlField(
+                  formKey: formKey,
+                  isLoading: isLoading,
+                  recentServers: value,
+                  initialValue: value.isNotEmpty ? value.first : '',
+                  onRemove: (server) {
+                    ref.read(recentServersProvider.notifier).remove(server);
+                  },
+                ),
+                _ => const LinearProgressIndicator(),
+              },
+            ),
+
+            const SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (isLoading.value)
+                  const SizedBox(
+                    width: 48,
+                    height: 40,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else
+                  FilledButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
                     ),
-                    keyboardType: TextInputType.url,
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.url(
-                        protocols: ["http", "https"],
-                        // Allow Tailscale MagicDNS and localhost domains
-                        requireTld: false,
-                      ),
-                    ]),
+                    onPressed: actions.submit,
+                    child: Text(t.login.loginButton),
                   ),
-                  const SizedBox(height: 32),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (isLoading.value)
-                        const SizedBox(
-                          width: 48,
-                          height: 40,
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      else
-                        FilledButton(
-                          style: TextButton.styleFrom(
-                            textStyle: Theme.of(context).textTheme.labelLarge,
-                          ),
-                          onPressed: actions.submit,
-                          child: Text(t.login.loginButton),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ServerUrlField extends HookWidget {
+  const _ServerUrlField({
+    required this.formKey,
+    required this.isLoading,
+    required this.recentServers,
+    required this.initialValue,
+    required this.onRemove,
+  });
+
+  final GlobalKey<FormBuilderState> formKey;
+  final ValueNotifier<bool> isLoading;
+  final List<String> recentServers;
+  final String initialValue;
+  final void Function(String) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Autocomplete<String>(
+      // Invalidate the entire widget when recent servers list changes to update suggestions
+      key: ValueKey(Object.hashAll(recentServers)),
+      initialValue: TextEditingValue(text: initialValue),
+      optionsBuilder: (TextEditingValue textValue) {
+        if (textValue.text.isEmpty || recentServers.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        final lowerText = textValue.text.toLowerCase();
+        return recentServers.where(
+          (server) => server.toLowerCase().contains(lowerText),
+        );
+      },
+      onSelected: (String selection) {
+        formKey.currentState?.patchValue({'apiUrl': selection});
+      },
+      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        return FormBuilderTextField(
+          name: 'apiUrl',
+          controller: controller,
+          focusNode: focusNode,
+          enabled: !isLoading.value,
+          decoration: InputDecoration(
+            labelText: t.login.apiUrlLabel,
+            hintText: t.login.apiUrlHint,
+          ),
+          keyboardType: TextInputType.url,
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(),
+            FormBuilderValidators.url(
+              protocols: ["http", "https"],
+              requireTld: false,
+            ),
+          ]),
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 200,
+                maxWidth: MediaQuery.of(context).size.width - 48,
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                  final server = options.elementAt(index);
+                  return ListTile(
+                    dense: true,
+                    title: Text(server, overflow: TextOverflow.ellipsis),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, size: 18),
+                      onPressed: () {
+                        onRemove(server);
+                      },
+                      tooltip: t.dialogs.delete,
+                    ),
+                    onTap: () => onSelected(server),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
