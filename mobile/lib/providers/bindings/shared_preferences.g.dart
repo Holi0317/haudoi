@@ -168,7 +168,7 @@ final class RecentServersProvider
   RecentServers create() => RecentServers();
 }
 
-String _$recentServersHash() => r'b6f859f759ca4822eec20078ce92776a4fd6275b';
+String _$recentServersHash() => r'e79682e23016c92cfda9e16e647bd17ce8bc1528';
 
 abstract class _$RecentServers extends $AsyncNotifier<List<String>> {
   FutureOr<List<String>> build();

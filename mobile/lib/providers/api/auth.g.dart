@@ -108,7 +108,7 @@ final class AuthProvider extends $AsyncNotifierProvider<Auth, void> {
   Auth create() => Auth();
 }
 
-String _$authHash() => r'8ad30c3ccc93098f7ee12e6b0d7152779662184a';
+String _$authHash() => r'd354f91772ae739defa9776358a72461de638b34';
 
 /// A notifier for managing authentication actions.
 /// Return of this provider doesn't matter. Only use methods in the notifier instead.

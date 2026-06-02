@@ -255,12 +255,10 @@ class _ServerUrlField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController(text: initialValue);
-
     return Autocomplete<String>(
       // Invalidate the entire widget when recent servers list changes to update suggestions
-      key: ValueKey(recentServers),
-      initialValue: TextEditingValue(text: controller.text),
+      key: ValueKey(Object.hashAll(recentServers)),
+      initialValue: TextEditingValue(text: initialValue),
       optionsBuilder: (TextEditingValue textValue) {
         if (textValue.text.isEmpty || recentServers.isEmpty) {
           return const Iterable<String>.empty();
@@ -271,7 +269,6 @@ class _ServerUrlField extends HookWidget {
         );
       },
       onSelected: (String selection) {
-        controller.text = selection;
         formKey.currentState?.patchValue({'apiUrl': selection});
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {

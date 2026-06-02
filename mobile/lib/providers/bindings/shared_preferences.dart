@@ -15,8 +15,7 @@ Future<SharedPreferences> _sharedPreferences(Ref ref) async {
 enum SharedPreferenceKey {
   apiUrl('api_url', ''),
   apiToken('api_token', ''),
-  theme('theme', 'system'),
-  recentServers('recent_servers', '[]');
+  theme('theme', 'system'); // light, dark, system
 
   final String key;
   final String defaultValue;
@@ -60,20 +59,19 @@ class RecentServers extends _$RecentServers {
   Future<void> add(String value) async {
     final prefs = await ref.read(_sharedPreferencesProvider.future);
 
-    final current = prefs.getStringList(_key) ?? [];
+    final current = (prefs.getStringList(_key) ?? [])..add(value);
 
-    current.add(value);
-    current.toSet().toList();
+    final next = current.toSet().toList();
 
-    await prefs.setStringList(_key, current);
+    await prefs.setStringList(_key, next);
 
     // Update the state to notify listeners
-    state = AsyncValue.data(current);
+    state = AsyncValue.data(next);
   }
 
   Future<void> remove(String value) async {
     final prefs = await ref.read(_sharedPreferencesProvider.future);
-    final current = prefs.getStringList(_key) ?? [];
+    final current = (prefs.getStringList(_key) ?? []).toList();
 
     current.remove(value);
 
