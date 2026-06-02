@@ -22,9 +22,3 @@ export class UserBannedError extends AppError {
     this.bannedAt = bannedAt;
   }
 }
-
-export class InternalServerError extends AppError {
-  public constructor(message: string = "Internal server error") {
-    super(500, "internal_server_error", message);
-  }
-}
