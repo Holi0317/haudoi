@@ -5,9 +5,11 @@ import { createClient } from "@haudoi/worker/client";
 import { useRouter } from "vue-router";
 import { browser } from "#imports";
 
-export function useServerSetup() {
+export type AuthProvider = "github" | "google";
+
+export function useServerSetup(provider: AuthProvider = "github") {
   const config = useConfigMutation();
-  const { login } = useServerLogin();
+  const { login } = useServerLogin(provider);
   const router = useRouter();
 
   return useMutation({
@@ -91,7 +93,7 @@ export function useServerClient() {
   });
 }
 
-export function useServerLogin() {
+export function useServerLogin(provider: AuthProvider = "github") {
   const client = useServerClient();
 
   const login = () => {
@@ -99,7 +101,7 @@ export function useServerLogin() {
       throw new Error("Server URL is not configured");
     }
 
-    const loginUrl = client.value.auth.github.login.$url();
+    const loginUrl = client.value.auth[provider].login.$url();
 
     browser.tabs.create({
       url: loginUrl.toString(),

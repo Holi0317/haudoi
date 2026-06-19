@@ -56,7 +56,44 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
       status: 400;
     };
   };
-}, "/github">, "/auth"> | import("hono/types").MergeSchemaPath<{
+}, "/github"> | import("hono/types").MergeSchemaPath<{
+  "/login": {
+    $get: {
+      input: {
+        query: {
+          redirect?: "/" | "/basic" | "/admin" | "haudoi:" | undefined;
+        };
+      };
+      output: undefined;
+      outputFormat: "redirect";
+      status: 302;
+    };
+  };
+} & {
+  "/callback": {
+    $get: {
+      input: {
+        query: {
+          code: string;
+          state: string;
+        };
+      };
+      output: undefined;
+      outputFormat: "redirect";
+      status: 302;
+    } | {
+      input: {
+        query: {
+          code: string;
+          state: string;
+        };
+      };
+      output: "Invalid or expired state parameter";
+      outputFormat: "text";
+      status: 400;
+    };
+  };
+}, "/google">, "/auth"> | import("hono/types").MergeSchemaPath<{
   "/": {
     $get: {
       input: {};
@@ -68,7 +105,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
           timestamp: string;
         };
         session: {
-          source: "github";
+          source: "github" | "google";
           name: string;
           login: string;
           avatarUrl: string;
@@ -775,6 +812,51 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
     };
   };
 } & {
+  auth: {
+    google: {
+      login: import("hono/client").ClientRequest<string, "/auth/google/login", {
+        $get: {
+          input: {
+            query: {
+              redirect?: "/" | "/basic" | "/admin" | "haudoi:" | undefined;
+            };
+          };
+          output: undefined;
+          outputFormat: "redirect";
+          status: 302;
+        };
+      }>;
+    };
+  };
+} & {
+  auth: {
+    google: {
+      callback: import("hono/client").ClientRequest<string, "/auth/google/callback", {
+        $get: {
+          input: {
+            query: {
+              code: string;
+              state: string;
+            };
+          };
+          output: undefined;
+          outputFormat: "redirect";
+          status: 302;
+        } | {
+          input: {
+            query: {
+              code: string;
+              state: string;
+            };
+          };
+          output: "Invalid or expired state parameter";
+          outputFormat: "text";
+          status: 400;
+        };
+      }>;
+    };
+  };
+} & {
   api: import("hono/client").ClientRequest<string, "/api", {
     $get: {
       input: {};
@@ -786,7 +868,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           timestamp: string;
         };
         session: {
-          source: "github";
+          source: "github" | "google";
           name: string;
           login: string;
           avatarUrl: string;
