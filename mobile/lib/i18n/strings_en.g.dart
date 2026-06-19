@@ -40,28 +40,28 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
-	late final TranslationsDialogsEn dialogs = TranslationsDialogsEn.internal(_root);
-	late final TranslationsFormErrEn formErr = TranslationsFormErrEn.internal(_root);
+	late final Translations$dialogs$en dialogs = Translations$dialogs$en.internal(_root);
+	late final Translations$formErr$en formErr = Translations$formErr$en.internal(_root);
 
 	/// en: 'Retry'
 	String get retry => 'Retry';
 
-	late final TranslationsErrorStateEn errorState = TranslationsErrorStateEn.internal(_root);
-	late final TranslationsNavEn nav = TranslationsNavEn.internal(_root);
-	late final TranslationsUnreadEn unread = TranslationsUnreadEn.internal(_root);
-	late final TranslationsSearchEn search = TranslationsSearchEn.internal(_root);
-	late final TranslationsShareEn share = TranslationsShareEn.internal(_root);
-	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
-	late final TranslationsApiErrorEn apiError = TranslationsApiErrorEn.internal(_root);
-	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
-	late final TranslationsEditEn edit = TranslationsEditEn.internal(_root);
-	late final TranslationsTagEditEn tagEdit = TranslationsTagEditEn.internal(_root);
-	late final TranslationsTagNewEn tagNew = TranslationsTagNewEn.internal(_root);
-	late final TranslationsTagsEn tags = TranslationsTagsEn.internal(_root);
-	late final TranslationsEditBarEn editBar = TranslationsEditBarEn.internal(_root);
-	late final TranslationsFilterEn filter = TranslationsFilterEn.internal(_root);
-	late final TranslationsColorPickerEn colorPicker = TranslationsColorPickerEn.internal(_root);
-	late final TranslationsUnauthRedirectEn unauthRedirect = TranslationsUnauthRedirectEn.internal(_root);
+	late final Translations$errorState$en errorState = Translations$errorState$en.internal(_root);
+	late final Translations$nav$en nav = Translations$nav$en.internal(_root);
+	late final Translations$unread$en unread = Translations$unread$en.internal(_root);
+	late final Translations$search$en search = Translations$search$en.internal(_root);
+	late final Translations$share$en share = Translations$share$en.internal(_root);
+	late final Translations$settings$en settings = Translations$settings$en.internal(_root);
+	late final Translations$apiError$en apiError = Translations$apiError$en.internal(_root);
+	late final Translations$login$en login = Translations$login$en.internal(_root);
+	late final Translations$edit$en edit = Translations$edit$en.internal(_root);
+	late final Translations$tagEdit$en tagEdit = Translations$tagEdit$en.internal(_root);
+	late final Translations$tagNew$en tagNew = Translations$tagNew$en.internal(_root);
+	late final Translations$tags$en tags = Translations$tags$en.internal(_root);
+	late final Translations$editBar$en editBar = Translations$editBar$en.internal(_root);
+	late final Translations$filter$en filter = Translations$filter$en.internal(_root);
+	late final Translations$colorPicker$en colorPicker = Translations$colorPicker$en.internal(_root);
+	late final Translations$unauthRedirect$en unauthRedirect = Translations$unauthRedirect$en.internal(_root);
 	Map<String, String> get linkAction => {
 		'archive': 'Archive',
 		'unarchive': 'Unarchive',
@@ -76,8 +76,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 }
 
 // Path: dialogs
-class TranslationsDialogsEn {
-	TranslationsDialogsEn.internal(this._root);
+class Translations$dialogs$en {
+	Translations$dialogs$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -103,8 +103,8 @@ class TranslationsDialogsEn {
 }
 
 // Path: formErr
-class TranslationsFormErrEn {
-	TranslationsFormErrEn.internal(this._root);
+class Translations$formErr$en {
+	Translations$formErr$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -118,8 +118,8 @@ class TranslationsFormErrEn {
 }
 
 // Path: errorState
-class TranslationsErrorStateEn {
-	TranslationsErrorStateEn.internal(this._root);
+class Translations$errorState$en {
+	Translations$errorState$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -133,8 +133,8 @@ class TranslationsErrorStateEn {
 }
 
 // Path: nav
-class TranslationsNavEn {
-	TranslationsNavEn.internal(this._root);
+class Translations$nav$en {
+	Translations$nav$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -151,8 +151,8 @@ class TranslationsNavEn {
 }
 
 // Path: unread
-class TranslationsUnreadEn {
-	TranslationsUnreadEn.internal(this._root);
+class Translations$unread$en {
+	Translations$unread$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -169,8 +169,8 @@ class TranslationsUnreadEn {
 }
 
 // Path: search
-class TranslationsSearchEn {
-	TranslationsSearchEn.internal(this._root);
+class Translations$search$en {
+	Translations$search$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -184,8 +184,8 @@ class TranslationsSearchEn {
 }
 
 // Path: share
-class TranslationsShareEn {
-	TranslationsShareEn.internal(this._root);
+class Translations$share$en {
+	Translations$share$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -199,8 +199,8 @@ class TranslationsShareEn {
 }
 
 // Path: settings
-class TranslationsSettingsEn {
-	TranslationsSettingsEn.internal(this._root);
+class Translations$settings$en {
+	Translations$settings$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -224,8 +224,8 @@ class TranslationsSettingsEn {
 	/// en: 'App Version'
 	String get appVersion => 'App Version';
 
-	late final TranslationsSettingsThemeEn theme = TranslationsSettingsThemeEn.internal(_root);
-	late final TranslationsSettingsLogoutEn logout = TranslationsSettingsLogoutEn.internal(_root);
+	late final Translations$settings$theme$en theme = Translations$settings$theme$en.internal(_root);
+	late final Translations$settings$logout$en logout = Translations$settings$logout$en.internal(_root);
 
 	/// en: 'Copy API URL to Clipboard'
 	String get copyApiUrl => 'Copy API URL to Clipboard';
@@ -238,8 +238,8 @@ class TranslationsSettingsEn {
 }
 
 // Path: apiError
-class TranslationsApiErrorEn {
-	TranslationsApiErrorEn.internal(this._root);
+class Translations$apiError$en {
+	Translations$apiError$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -262,8 +262,8 @@ class TranslationsApiErrorEn {
 }
 
 // Path: login
-class TranslationsLoginEn {
-	TranslationsLoginEn.internal(this._root);
+class Translations$login$en {
+	Translations$login$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -290,6 +290,15 @@ class TranslationsLoginEn {
 	/// en: 'View on GitHub'
 	String get viewOnGithub => 'View on GitHub';
 
+	/// en: 'Login Provider'
+	String get loginProvider => 'Login Provider';
+
+	/// en: 'GitHub'
+	String get providerGithub => 'GitHub';
+
+	/// en: 'Google'
+	String get providerGoogle => 'Google';
+
 	/// en: 'Authentication failed: No token received'
 	String get authFailedNoToken => 'Authentication failed: No token received';
 
@@ -307,8 +316,8 @@ class TranslationsLoginEn {
 }
 
 // Path: edit
-class TranslationsEditEn {
-	TranslationsEditEn.internal(this._root);
+class Translations$edit$en {
+	Translations$edit$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -323,13 +332,13 @@ class TranslationsEditEn {
 	/// en: 'Edit Link'
 	String get title => 'Edit Link';
 
-	late final TranslationsEditFieldsEn fields = TranslationsEditFieldsEn.internal(_root);
-	late final TranslationsEditTagsEn tags = TranslationsEditTagsEn.internal(_root);
+	late final Translations$edit$fields$en fields = Translations$edit$fields$en.internal(_root);
+	late final Translations$edit$tags$en tags = Translations$edit$tags$en.internal(_root);
 }
 
 // Path: tagEdit
-class TranslationsTagEditEn {
-	TranslationsTagEditEn.internal(this._root);
+class Translations$tagEdit$en {
+	Translations$tagEdit$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -347,14 +356,14 @@ class TranslationsTagEditEn {
 	/// en: 'Tag $id not found'
 	String notFound({required Object id}) => 'Tag ${id} not found';
 
-	late final TranslationsTagEditFieldsEn fields = TranslationsTagEditFieldsEn.internal(_root);
-	late final TranslationsTagEditDiscardEn discard = TranslationsTagEditDiscardEn.internal(_root);
-	late final TranslationsTagEditToastEn toast = TranslationsTagEditToastEn.internal(_root);
+	late final Translations$tagEdit$fields$en fields = Translations$tagEdit$fields$en.internal(_root);
+	late final Translations$tagEdit$discard$en discard = Translations$tagEdit$discard$en.internal(_root);
+	late final Translations$tagEdit$toast$en toast = Translations$tagEdit$toast$en.internal(_root);
 }
 
 // Path: tagNew
-class TranslationsTagNewEn {
-	TranslationsTagNewEn.internal(this._root);
+class Translations$tagNew$en {
+	Translations$tagNew$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -372,12 +381,12 @@ class TranslationsTagNewEn {
 	/// en: 'Your unsaved tag draft will be lost.'
 	String get discardMessage => 'Your unsaved tag draft will be lost.';
 
-	late final TranslationsTagNewToastEn toast = TranslationsTagNewToastEn.internal(_root);
+	late final Translations$tagNew$toast$en toast = Translations$tagNew$toast$en.internal(_root);
 }
 
 // Path: tags
-class TranslationsTagsEn {
-	TranslationsTagsEn.internal(this._root);
+class Translations$tags$en {
+	Translations$tags$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -389,7 +398,7 @@ class TranslationsTagsEn {
 	/// en: 'Create Tag'
 	String get createTag => 'Create Tag';
 
-	late final TranslationsTagsEmptyEn empty = TranslationsTagsEmptyEn.internal(_root);
+	late final Translations$tags$empty$en empty = Translations$tags$empty$en.internal(_root);
 
 	/// en: 'Edit tag'
 	String get editTooltip => 'Edit tag';
@@ -397,17 +406,17 @@ class TranslationsTagsEn {
 	/// en: 'Delete tag'
 	String get deleteTooltip => 'Delete tag';
 
-	late final TranslationsTagsDeleteDialogEn deleteDialog = TranslationsTagsDeleteDialogEn.internal(_root);
+	late final Translations$tags$deleteDialog$en deleteDialog = Translations$tags$deleteDialog$en.internal(_root);
 
 	/// en: 'Created ${date}'
 	String createdLabel({required Object date}) => 'Created ${date}';
 
-	late final TranslationsTagsToastEn toast = TranslationsTagsToastEn.internal(_root);
+	late final Translations$tags$toast$en toast = Translations$tags$toast$en.internal(_root);
 }
 
 // Path: editBar
-class TranslationsEditBarEn {
-	TranslationsEditBarEn.internal(this._root);
+class Translations$editBar$en {
+	Translations$editBar$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -430,8 +439,8 @@ class TranslationsEditBarEn {
 }
 
 // Path: filter
-class TranslationsFilterEn {
-	TranslationsFilterEn.internal(this._root);
+class Translations$filter$en {
+	Translations$filter$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -443,13 +452,13 @@ class TranslationsFilterEn {
 	/// en: 'Common Queries'
 	String get common_query => 'Common Queries';
 
-	late final TranslationsFilterQueriesEn queries = TranslationsFilterQueriesEn.internal(_root);
-	late final TranslationsFilterOrderEn order = TranslationsFilterOrderEn.internal(_root);
+	late final Translations$filter$queries$en queries = Translations$filter$queries$en.internal(_root);
+	late final Translations$filter$order$en order = Translations$filter$order$en.internal(_root);
 }
 
 // Path: colorPicker
-class TranslationsColorPickerEn {
-	TranslationsColorPickerEn.internal(this._root);
+class Translations$colorPicker$en {
+	Translations$colorPicker$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -475,8 +484,8 @@ class TranslationsColorPickerEn {
 }
 
 // Path: unauthRedirect
-class TranslationsUnauthRedirectEn {
-	TranslationsUnauthRedirectEn.internal(this._root);
+class Translations$unauthRedirect$en {
+	Translations$unauthRedirect$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -490,8 +499,8 @@ class TranslationsUnauthRedirectEn {
 }
 
 // Path: settings.theme
-class TranslationsSettingsThemeEn {
-	TranslationsSettingsThemeEn.internal(this._root);
+class Translations$settings$theme$en {
+	Translations$settings$theme$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -514,8 +523,8 @@ class TranslationsSettingsThemeEn {
 }
 
 // Path: settings.logout
-class TranslationsSettingsLogoutEn {
-	TranslationsSettingsLogoutEn.internal(this._root);
+class Translations$settings$logout$en {
+	Translations$settings$logout$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -532,8 +541,8 @@ class TranslationsSettingsLogoutEn {
 }
 
 // Path: edit.fields
-class TranslationsEditFieldsEn {
-	TranslationsEditFieldsEn.internal(this._root);
+class Translations$edit$fields$en {
+	Translations$edit$fields$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -556,8 +565,8 @@ class TranslationsEditFieldsEn {
 }
 
 // Path: edit.tags
-class TranslationsEditTagsEn {
-	TranslationsEditTagsEn.internal(this._root);
+class Translations$edit$tags$en {
+	Translations$edit$tags$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -566,12 +575,12 @@ class TranslationsEditTagsEn {
 	/// en: 'Edit Tags'
 	String get title => 'Edit Tags';
 
-	late final TranslationsEditTagsEmptyEn empty = TranslationsEditTagsEmptyEn.internal(_root);
+	late final Translations$edit$tags$empty$en empty = Translations$edit$tags$empty$en.internal(_root);
 }
 
 // Path: tagEdit.fields
-class TranslationsTagEditFieldsEn {
-	TranslationsTagEditFieldsEn.internal(this._root);
+class Translations$tagEdit$fields$en {
+	Translations$tagEdit$fields$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -588,8 +597,8 @@ class TranslationsTagEditFieldsEn {
 }
 
 // Path: tagEdit.discard
-class TranslationsTagEditDiscardEn {
-	TranslationsTagEditDiscardEn.internal(this._root);
+class Translations$tagEdit$discard$en {
+	Translations$tagEdit$discard$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -609,8 +618,8 @@ class TranslationsTagEditDiscardEn {
 }
 
 // Path: tagEdit.toast
-class TranslationsTagEditToastEn {
-	TranslationsTagEditToastEn.internal(this._root);
+class Translations$tagEdit$toast$en {
+	Translations$tagEdit$toast$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -624,8 +633,8 @@ class TranslationsTagEditToastEn {
 }
 
 // Path: tagNew.toast
-class TranslationsTagNewToastEn {
-	TranslationsTagNewToastEn.internal(this._root);
+class Translations$tagNew$toast$en {
+	Translations$tagNew$toast$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -639,8 +648,8 @@ class TranslationsTagNewToastEn {
 }
 
 // Path: tags.empty
-class TranslationsTagsEmptyEn {
-	TranslationsTagsEmptyEn.internal(this._root);
+class Translations$tags$empty$en {
+	Translations$tags$empty$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -654,8 +663,8 @@ class TranslationsTagsEmptyEn {
 }
 
 // Path: tags.deleteDialog
-class TranslationsTagsDeleteDialogEn {
-	TranslationsTagsDeleteDialogEn.internal(this._root);
+class Translations$tags$deleteDialog$en {
+	Translations$tags$deleteDialog$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -672,8 +681,8 @@ class TranslationsTagsDeleteDialogEn {
 }
 
 // Path: tags.toast
-class TranslationsTagsToastEn {
-	TranslationsTagsToastEn.internal(this._root);
+class Translations$tags$toast$en {
+	Translations$tags$toast$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -687,8 +696,8 @@ class TranslationsTagsToastEn {
 }
 
 // Path: filter.queries
-class TranslationsFilterQueriesEn {
-	TranslationsFilterQueriesEn.internal(this._root);
+class Translations$filter$queries$en {
+	Translations$filter$queries$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -711,8 +720,8 @@ class TranslationsFilterQueriesEn {
 }
 
 // Path: filter.order
-class TranslationsFilterOrderEn {
-	TranslationsFilterOrderEn.internal(this._root);
+class Translations$filter$order$en {
+	Translations$filter$order$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -729,8 +738,8 @@ class TranslationsFilterOrderEn {
 }
 
 // Path: edit.tags.empty
-class TranslationsEditTagsEmptyEn {
-	TranslationsEditTagsEmptyEn.internal(this._root);
+class Translations$edit$tags$empty$en {
+	Translations$edit$tags$empty$en.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -801,6 +810,9 @@ extension on Translations {
 			'login.apiUrlHint' => 'https://your-haudoi-server.com',
 			'login.loginButton' => 'Login',
 			'login.viewOnGithub' => 'View on GitHub',
+			'login.loginProvider' => 'Login Provider',
+			'login.providerGithub' => 'GitHub',
+			'login.providerGoogle' => 'Google',
 			'login.authFailedNoToken' => 'Authentication failed: No token received',
 			'login.authFailedMessage' => ({required Object error}) => 'Authentication failed: ${error}',
 			'login.serverUnreachable' => 'Cannot reach server. Is the URL correct?',
