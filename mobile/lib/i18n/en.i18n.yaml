@@ -68,7 +68,6 @@ login:
   loginButton: Login
   viewOnGithub: "View on GitHub"
   loginProvider: "Login Provider"
-  providerGithub: "GitHub"
   providerGoogle: "Google"
   authFailedNoToken: "Authentication failed: No token received"
   authFailedMessage: "Authentication failed: $error"

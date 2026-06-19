@@ -9,7 +9,7 @@ export const SessionSchema = z.object({
   /**
    * Source of the user / IdP provider.
    */
-  source: z.enum(["github", "google"]),
+  source: z.literal("google"),
   uid: z.string(),
   accessToken: z.string(),
   /**

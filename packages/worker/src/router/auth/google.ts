@@ -67,7 +67,7 @@ export default factory
       const now = dayjs();
       const expire = now.add(7, "day");
 
-      const { session, user } = await makeSessionContent(ky, tokens, "google");
+      const { session, user } = await makeSessionContent(ky, tokens);
 
       const sessID = await setSession(c, session, expire);
       await writeUser(user);

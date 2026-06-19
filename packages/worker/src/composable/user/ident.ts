@@ -9,7 +9,7 @@ import * as z from "zod";
  * Use {@link uidToString} to convert this to string key.
  */
 export interface UserIdentifier {
-  source: "github" | "google";
+  source: "google";
   uid: string;
 }
 
@@ -27,17 +27,17 @@ export const UserIdentifierStringSchema = z
     const [source, ...uidParts] = value.split(":");
     const uid = uidParts.join(":");
 
-    if (source !== "github" && source !== "google") {
+    if (source !== "google") {
       ctx.addIssue({
         code: "custom",
-        message: "source must be 'github' or 'google'",
+        message: "source must be 'google'",
       });
 
       return z.NEVER;
     }
 
     return {
-      source: source as "github" | "google",
+      source,
       uid,
     } satisfies UserIdentifier;
   });

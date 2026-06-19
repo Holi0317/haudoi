@@ -13,7 +13,7 @@ describe("Test client", () => {
       avatarUrl: "",
       login: expect.stringMatching(/^testing-\d+$/),
       name: expect.stringMatching(/^testing user \d+$/),
-      source: "github",
+      source: "google",
       banned: false,
     });
   });

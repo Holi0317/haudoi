@@ -293,9 +293,6 @@ class Translations$login$en {
 	/// en: 'Login Provider'
 	String get loginProvider => 'Login Provider';
 
-	/// en: 'GitHub'
-	String get providerGithub => 'GitHub';
-
 	/// en: 'Google'
 	String get providerGoogle => 'Google';
 
@@ -811,7 +808,6 @@ extension on Translations {
 			'login.loginButton' => 'Login',
 			'login.viewOnGithub' => 'View on GitHub',
 			'login.loginProvider' => 'Login Provider',
-			'login.providerGithub' => 'GitHub',
 			'login.providerGoogle' => 'Google',
 			'login.authFailedNoToken' => 'Authentication failed: No token received',
 			'login.authFailedMessage' => ({required Object error}) => 'Authentication failed: ${error}',

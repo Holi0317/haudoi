@@ -20,20 +20,16 @@ final _logger = Logger('LoginPage');
 
 const _githubUrl = 'https://github.com/Holi0317/haudoi';
 
-enum _LoginProvider { github, google }
-
 class _LoginAction {
   _LoginAction(this.context, this.ref)
     : formKey = useFormBuilderKey(),
-      isLoading = useState(false),
-      selectedProvider = useState(_LoginProvider.github);
+      isLoading = useState(false);
 
   final BuildContext context;
   final WidgetRef ref;
 
   final GlobalKey<FormBuilderState> formKey;
   final ValueNotifier<bool> isLoading;
-  final ValueNotifier<_LoginProvider> selectedProvider;
 
   Future<void> submit() async {
     // Disable button if another submission is in flight
@@ -56,7 +52,7 @@ class _LoginAction {
       final apiUrl = u.replace(path: "/api").toString();
       final loginUrl = u
           .replace(
-            path: "/auth/${selectedProvider.value.name}/login",
+            path: "/auth/google/login",
             query: "redirect=haudoi:",
           )
           .toString();
@@ -64,7 +60,7 @@ class _LoginAction {
       // Validate server info on URL
       await _validateServer(apiUrl);
 
-      // Authenticate with GitHub and get authorized callback URL
+      // Authenticate with Google and get authorized callback URL
       final token = await _oauthLogin(loginUrl);
       if (token.isEmpty) {
         _showSnackBar(t.login.authFailedNoToken);
@@ -150,7 +146,6 @@ class LoginPage extends HookConsumerWidget {
     final actions = _LoginAction(context, ref);
     final formKey = actions.formKey;
     final isLoading = actions.isLoading;
-    final selectedProvider = actions.selectedProvider;
 
     final recentServers = ref.watch(recentServersProvider);
 
@@ -187,28 +182,6 @@ class LoginPage extends HookConsumerWidget {
               onPressed: openGithub,
               icon: const Icon(Icons.open_in_new),
               label: Text(t.login.viewOnGithub),
-            ),
-            const SizedBox(height: 32),
-            Text(
-              t.login.loginProvider,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<_LoginProvider>(
-              segments: [
-                ButtonSegment<_LoginProvider>(
-                  value: _LoginProvider.github,
-                  label: Text(t.login.providerGithub),
-                ),
-                ButtonSegment<_LoginProvider>(
-                  value: _LoginProvider.google,
-                  label: Text(t.login.providerGoogle),
-                ),
-              ],
-              selected: {selectedProvider.value},
-              onSelectionChanged: (Set<_LoginProvider> newSelection) {
-                selectedProvider.value = newSelection.first;
-              },
             ),
             const SizedBox(height: 32),
             Text(

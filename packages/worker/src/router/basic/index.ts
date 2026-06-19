@@ -12,7 +12,6 @@ export default factory
   .use(
     requireSession({
       action: "redirect",
-      provider: "github",
       destination: "/basic",
     }),
   )

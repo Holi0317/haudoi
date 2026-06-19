@@ -7,8 +7,6 @@ import { getUser } from "../user/getter";
 import { refreshSession } from "./cookie";
 import { getSession } from "./getter";
 
-type Provider = "github" | "google";
-
 export type RequireSessionOption =
   | {
       /**
@@ -18,11 +16,7 @@ export type RequireSessionOption =
     }
   | {
       /**
-       * Provider to redirect to on login.
-       */
-      provider: Provider;
-      /**
-       * If user is not authenticated, redirect to `destination` property
+       * If user is not authenticated, redirect to Google login.
        */
       action: "redirect";
       /**
@@ -43,9 +37,7 @@ function _requireSession(option: RequireSessionOption) {
       throw new UnauthenticatedError();
     }
 
-    return c.redirect(
-      `/auth/${option.provider}/login?redirect=${option.destination}`,
-    );
+    return c.redirect(`/auth/google/login?redirect=${option.destination}`);
   });
 }
 

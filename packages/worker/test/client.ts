@@ -41,7 +41,7 @@ export async function createTestClient() {
   const expire = dayjs().add(1, "day");
 
   await writeUser({
-    source: "github",
+    source: "google",
     uid,
     name,
     login,
@@ -51,11 +51,11 @@ export async function createTestClient() {
   const sessID = await __test__storeSession(
     env,
     {
-      source: "github",
+      source: "google",
       uid,
-      accessToken: "gho_test_token",
+      accessToken: "google_test_token",
       accessTokenExpire: expire.valueOf(),
-      refreshToken: "ghr_test_token",
+      refreshToken: "google_test_refresh_token",
     },
     expire,
   );

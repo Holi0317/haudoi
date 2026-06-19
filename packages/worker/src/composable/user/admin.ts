@@ -36,17 +36,6 @@ export async function isAdmin(c: Context<Env>) {
     return false;
   }
 
-  // GitHub login is case insensitive
-  const admins = c.env.ADMIN_GH_LOGIN.split(";")
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-
-  for (const str of admins) {
-    if (compare(str, user.login) === 0) {
-      return true;
-    }
-  }
-
   return false;
 }
 

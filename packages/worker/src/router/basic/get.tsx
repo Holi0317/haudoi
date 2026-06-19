@@ -36,7 +36,7 @@ export default factory.createHandlers(
       const errorBody = jason as unknown as { message: string };
       return c.render(
         <Layout title="Search Error">
-          <p>Authenticated via GitHub, {user.name}</p>
+          <p>Authenticated via Google, {user.name}</p>
           <div
             style={{ color: "red", padding: "10px", border: "1px solid red" }}
           >
@@ -50,7 +50,7 @@ export default factory.createHandlers(
 
     return c.render(
       <Layout title="List">
-        <p>Authenticated via GitHub, {user.name}</p>
+        <p>Authenticated via Google, {user.name}</p>
 
         {admin && (
           <div>
