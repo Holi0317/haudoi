@@ -2,7 +2,8 @@ import { DurableObject } from "cloudflare:workers";
 import dayjs from "dayjs";
 import type { Session } from "../composable/session/schema";
 import { useSessionStorage } from "../composable/session/schema";
-import { exchangeToken } from "../gh/oauth_token";
+import { exchangeToken as exchangeGhToken } from "../gh/oauth_token";
+import { exchangeToken as exchangeGoogleToken } from "../google/oauth_token";
 import { makeSessionContent } from "../composable/session/content";
 import { useBasicKy } from "../composable/http";
 import { useUserRegistry } from "../composable/user/registry";
@@ -66,15 +67,13 @@ export class TokenRefreshDO extends DurableObject<CloudflareBindings> {
     const ky = useBasicKy(this.env);
     const { write: writeUser } = useUserRegistry(this.env);
 
-    const tokens = await exchangeToken(
-      this.env,
-      ky,
-      sess.refreshToken,
-      "refresh",
-    );
+    const tokens =
+      sess.source === "google"
+        ? await exchangeGoogleToken(this.env, ky, sess.refreshToken, "refresh")
+        : await exchangeGhToken(this.env, ky, sess.refreshToken, "refresh");
 
     const expire = now.add(7, "day");
-    const newSess = await makeSessionContent(ky, tokens);
+    const newSess = await makeSessionContent(ky, tokens, sess.source);
 
     console.info(`Storing refreshed session for ${sessHash}`);
 

@@ -18,9 +18,25 @@ export async function isAdmin(c: Context<Env>) {
     return false;
   }
 
-  // GitHub login is case insensitive
+  // Case insensitive comparison
   const { compare } = new Intl.Collator(undefined, { sensitivity: "accent" });
 
+  if (user.source === "google") {
+    const adminEmails = (c.env.ADMIN_EMAIL ?? "")
+      .split(";")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    for (const email of adminEmails) {
+      if (compare(email, user.login) === 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // GitHub login is case insensitive
   const admins = c.env.ADMIN_GH_LOGIN.split(";")
     .map((s) => s.trim())
     .filter((s) => s.length > 0);

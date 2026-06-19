@@ -6,10 +6,10 @@ import {
   RedirectDestinationSchema,
   useOauthState,
 } from "../../composable/oauth_state";
-import { getAuthorizeUrl } from "../../gh/authorize";
+import { getAuthorizeUrl } from "../../google/authorize";
 import { useUserRegistry } from "../../composable/user/registry";
 import { useKy } from "../../composable/http";
-import { exchangeToken } from "../../gh/oauth_token";
+import { exchangeToken } from "../../google/oauth_token";
 import { setSession } from "../../composable/session/cookie";
 import { makeSessionContent } from "../../composable/session/content";
 
@@ -28,11 +28,10 @@ export default factory
 
       const { store } = useOauthState(c.env);
 
-      // Store redirect destination in KV and get state token
       const state = await store(redirect);
       const authUrl = getAuthorizeUrl(c, state);
 
-      console.log(`Redirecting to login ${authUrl}`);
+      console.log(`Redirecting to Google login ${authUrl}`);
 
       return c.redirect(authUrl);
     },
@@ -46,7 +45,6 @@ export default factory
       const { getAndDelete } = useOauthState(c.env);
       const { write: writeUser } = useUserRegistry(c.env);
 
-      // Retrieve redirect destination from KV using state
       const stateData = await getAndDelete(state);
       if (stateData == null) {
         return c.text("Invalid or expired state parameter", 400);
@@ -54,11 +52,22 @@ export default factory
 
       const ky = useKy(c);
 
-      const tokens = await exchangeToken(c.env, ky, code, "login");
+      const redirectUri = new URL(c.req.url);
+      redirectUri.hash = "";
+      redirectUri.search = "";
+      redirectUri.password = "";
+
+      const tokens = await exchangeToken(
+        c.env,
+        ky,
+        code,
+        "login",
+        redirectUri.toString(),
+      );
       const now = dayjs();
       const expire = now.add(7, "day");
 
-      const { session, user } = await makeSessionContent(ky, tokens, "github");
+      const { session, user } = await makeSessionContent(ky, tokens, "google");
 
       const sessID = await setSession(c, session, expire);
       await writeUser(user);

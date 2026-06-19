@@ -2,7 +2,7 @@ import * as z from "zod";
 import * as zu from "../../zod-utils";
 
 export const UserSchema = z.object({
-  source: z.literal("github"),
+  source: z.enum(["github", "google"]),
   uid: z.string(),
 
   /**

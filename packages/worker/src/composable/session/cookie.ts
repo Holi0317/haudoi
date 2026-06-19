@@ -1,7 +1,8 @@
 import type dayjs from "dayjs";
 import type { Context } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { revokeToken } from "../../gh/revoke";
+import { revokeToken as revokeGhToken } from "../../gh/revoke";
+import { revokeToken as revokeGoogleToken } from "../../google/revoke";
 import { useKy } from "../http";
 import { getRefreshStub } from "../do";
 import { COOKIE_NAME, cookieOpt } from "./constants";
@@ -74,7 +75,11 @@ export async function deleteSession(c: Context<Env>) {
 
   if (sess != null) {
     try {
-      await revokeToken(c, useKy(c), sess.accessToken);
+      if (sess.source === "google") {
+        await revokeGoogleToken(useKy(c), sess.accessToken);
+      } else {
+        await revokeGhToken(c, useKy(c), sess.accessToken);
+      }
     } catch (err) {
       console.warn("Failed to revoke token on session delete.", err);
     }
