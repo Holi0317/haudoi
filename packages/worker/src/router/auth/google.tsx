@@ -38,9 +38,52 @@ export default factory
   )
   .get(
     "/callback",
-    zv("query", z.object({ code: z.string(), state: z.string() })),
+    zv(
+      "query",
+      z.union([
+        z.object({ code: z.string(), state: z.string() }),
+        z.object({ error: z.string(), state: z.string() }),
+      ]),
+    ),
     async (c) => {
-      const { code, state } = c.req.valid("query");
+      const parsed = c.req.valid("query");
+
+      if ("error" in parsed) {
+        const { error, state } = parsed;
+        const { getAndDelete } = useOauthState(c.env);
+
+        const stateData = await getAndDelete(state);
+        const homeUrl = stateData?.redirect ?? "/";
+
+        return c.html(
+          <html lang="en">
+            <head>
+              <title>Authentication Error</title>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1"
+              />
+            </head>
+            <body
+              style={{
+                fontFamily: "system-ui, sans-serif",
+                maxWidth: "480px",
+                margin: "80px auto",
+                padding: "0 20px",
+              }}
+            >
+              <h1>Authentication Error</h1>
+              <p>
+                Google returned an error: <strong>{error}</strong>
+              </p>
+              <p>You may have denied the authorization request.</p>
+              <a href={homeUrl}>Go back to home page</a>
+            </body>
+          </html>,
+        );
+      }
+
+      const { code, state } = parsed;
 
       const { getAndDelete } = useOauthState(c.env);
       const { write: writeUser } = useUserRegistry(c.env);

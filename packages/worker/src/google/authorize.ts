@@ -17,6 +17,8 @@ export function getAuthorizeUrl(c: Context<Env>, state: string) {
     ["redirect_uri", redirectUri.toString()],
     ["response_type", "code"],
     ["scope", "openid email profile"],
+    ["access_type", "offline"],
+    ["prompt", "consent"],
     ["state", state],
   ]);
 

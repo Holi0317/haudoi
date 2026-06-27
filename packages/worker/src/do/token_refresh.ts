@@ -74,7 +74,7 @@ export class TokenRefreshDO extends DurableObject<CloudflareBindings> {
     );
 
     const expire = now.add(7, "day");
-    const newSess = await makeSessionContent(ky, tokens);
+    const newSess = await makeSessionContent(ky, tokens, sess.refreshToken);
 
     console.info(`Storing refreshed session for ${sessHash}`);
 

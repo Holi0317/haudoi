@@ -22,7 +22,7 @@ export async function isAdmin(c: Context<Env>) {
   const { compare } = new Intl.Collator(undefined, { sensitivity: "accent" });
 
   if (user.source === "google") {
-    const adminEmails = (c.env.ADMIN_EMAIL ?? "")
+    const adminEmails = (c.env.ADMIN_GOOGLE_EMAIL ?? "")
       .split(";")
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
