@@ -63,7 +63,7 @@ export async function createTestClient() {
   return createClient("http://example.com", {
     fetch: exports.default.fetch.bind(exports.default),
     headers: {
-      cookie: `__Host-${COOKIE_NAME}=${sessID}`,
+      cookie: `${COOKIE_NAME}=${sessID}`,
       accept: "application/json",
     },
   });

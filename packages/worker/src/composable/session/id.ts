@@ -1,7 +1,8 @@
 import type { Context } from "hono";
 import { toUint8Array, uint8ArrayToHex } from "uint8array-extras";
 import { getCookie } from "hono/cookie";
-import { COOKIE_NAME, cookieOpt } from "./constants";
+import { COOKIE_NAME } from "./constants";
+import { cookieOpt } from "./cookie";
 
 /**
  * Generate session ID.
@@ -32,7 +33,7 @@ export async function hashSessionID(sessID: string) {
  * Get session ID from cookie.
  */
 export function getSessID(c: Context<Env>) {
-  return getCookie(c, COOKIE_NAME, cookieOpt.prefix);
+  return getCookie(c, COOKIE_NAME, cookieOpt(c).prefix);
 }
 
 /**
