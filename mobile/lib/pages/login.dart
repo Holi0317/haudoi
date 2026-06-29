@@ -51,10 +51,7 @@ class _LoginAction {
       final u = Uri.parse(value);
       final apiUrl = u.replace(path: "/api").toString();
       final loginUrl = u
-          .replace(
-            path: "/auth/google/login",
-            query: "redirect=haudoi:",
-          )
+          .replace(path: "/auth/google/login", query: "redirect=haudoi:")
           .toString();
 
       // Validate server info on URL
