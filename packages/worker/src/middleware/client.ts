@@ -12,31 +12,30 @@ import type { APIAppType } from "../router/api";
  */
 export function clientInject(app: APIAppType) {
   return factory.createMiddleware(async (c, next) => {
-    c.set(
-      "client",
-      hc<APIAppType>("https://example.com", {
-        async fetch(
-          input: string | URL | globalThis.Request,
-          init?: RequestInit,
-        ): Promise<Response> {
-          const req = new Request(input, init);
+    const fetchStub = async (
+      input: string | URL | globalThis.Request,
+      init?: RequestInit,
+    ): Promise<Response> => {
+      const req = new Request(input, init);
 
-          // Make sure we inherit some headers from the actual request. This way we
-          // can have cookies sent to the api properly
-          const cookie = c.req.header("cookie");
-          if (cookie) {
-            req.headers.set("Cookie", cookie);
-          }
+      // Make sure we inherit some headers from the actual request. This way we
+      // can have cookies sent to the api properly
+      const cookie = c.req.header("cookie");
+      if (cookie) {
+        req.headers.set("cookie", cookie);
+      }
 
-          const ip = c.req.header("cf-connecting-ip");
-          if (ip) {
-            req.headers.set("cf-connecting-ip", ip);
-          }
+      const ip = c.req.header("cf-connecting-ip");
+      if (ip) {
+        req.headers.set("cf-connecting-ip", ip);
+      }
 
-          return app.fetch(req, c.env, c.executionCtx);
-        },
-      }),
-    );
+      return app.fetch(req, c.env, c.executionCtx);
+    };
+
+    const client = hc<APIAppType>("https://example.com", { fetch: fetchStub });
+
+    c.set("client", client);
 
     await next();
   });
