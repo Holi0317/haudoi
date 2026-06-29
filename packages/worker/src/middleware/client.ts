@@ -33,7 +33,8 @@ export function clientInject(app: APIAppType) {
       return app.fetch(req, c.env, c.executionCtx);
     };
 
-    const client = hc<APIAppType>("https://example.com", { fetch: fetchStub });
+    const url = new URL(c.req.url);
+    const client = hc<APIAppType>(url.origin, { fetch: fetchStub });
 
     c.set("client", client);
 
