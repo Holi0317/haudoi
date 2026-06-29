@@ -13,5 +13,7 @@ function wrapError(err: unknown): AppError {
 export const errorHandler: ErrorHandler = (err) => {
   const e = wrapError(err);
 
+  console.error(e);
+
   return e.getResponse();
 };
