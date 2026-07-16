@@ -1,0 +1,6 @@
+[settings]
+lockfile = true
+idiomatic_version_file_enable_tools = ["node", "pnpm"]
+
+[tools]
+flutter = "3.44.0"
