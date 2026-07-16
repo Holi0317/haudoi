@@ -39,21 +39,14 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
         query: {
           code: string;
           state: string;
-        };
-      };
-      output: undefined;
-      outputFormat: "redirect";
-      status: 302;
-    } | {
-      input: {
-        query: {
-          code: string;
+        } | {
+          error: string;
           state: string;
         };
       };
-      output: "Invalid or expired state parameter";
-      outputFormat: "text";
-      status: 400;
+      output: {};
+      outputFormat: string;
+      status: import("hono/utils/http-status").StatusCode;
     };
   };
 }, "/google">, "/auth"> | import("hono/types").MergeSchemaPath<{
@@ -755,21 +748,14 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
             query: {
               code: string;
               state: string;
-            };
-          };
-          output: undefined;
-          outputFormat: "redirect";
-          status: 302;
-        } | {
-          input: {
-            query: {
-              code: string;
+            } | {
+              error: string;
               state: string;
             };
           };
-          output: "Invalid or expired state parameter";
-          outputFormat: "text";
-          status: 400;
+          output: {};
+          outputFormat: string;
+          status: import("hono/utils/http-status").StatusCode;
         };
       }>;
     };
