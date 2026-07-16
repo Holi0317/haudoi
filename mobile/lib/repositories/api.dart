@@ -27,10 +27,13 @@ class _ApiClient {
     required this._authToken,
   }) : _client = transport;
 
+  String get _cookieName =>
+      baseUrl.startsWith('https://') ? '__Host-haudoi-auth' : 'haudoi-auth';
+
   /// HTTP headers for requests.
   late final Map<String, String> headers = Map.unmodifiable({
     if (_authToken.isNotEmpty)
-      'cookie': Cookie('__Host-haudoi-auth', _authToken).toString(),
+      'cookie': Cookie(_cookieName, _authToken).toString(),
     // FIXME: Add version
     'user-agent': 'haudoi-mobile',
   });
