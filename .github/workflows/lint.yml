@@ -104,7 +104,7 @@ jobs:
 
       - name: Get dependencies
         working-directory: mobile
-        run: dart pub get
+        run: flutter pub get
 
       - name: Run Dart analyzer
         working-directory: mobile
