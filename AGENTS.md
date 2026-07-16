@@ -4,8 +4,7 @@
 
 Monorepo with pnpm workspaces:
 
-- `packages/worker` - Cloudflare Worker backend (Hono, Durable Objects with
-  SQLite)
+- `packages/worker` - Cloudflare Worker backend (Hono, Durable Objects withSQLite)
 - `packages/dsl` - Shared DSL for schema/builder logic
 - `packages/extension` - Browser extension (Vue 3, WXT)
 - `mobile/` - Flutter app (Riverpod, Freezed, go_router)
@@ -41,13 +40,17 @@ pnpm run --filter @haudoi/extension build         # Build extension
 pnpm run --filter @haudoi/extension zip           # Build zip for submission
 ```
 
-**Mobile (run from `mobile/` directory):**
+**Mobile (run from **`mobile/`** directory):**
 
 ```bash
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs  # Regenerate freezed/json_serializable
 flutter run
 ```
+
+> If you haven't set up the mise shell hook, prefix commands with `mise exec --`
+> (e.g. `mise exec -- flutter pub get`). With the shell hook active, commands
+> run transparently with the correct tool versions.
 
 ## CI Order (lint.yml)
 
@@ -68,8 +71,7 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Entry: `packages/worker/src/index.ts`
 - Uses Durable Objects with per-user SQLite databases
 - Client SDK exported at `@haudoi/worker/client` (built to `src/client/build/`)
-- Cloudflare types generated to `worker-configuration.d.ts` - **must be
-  committed**
+- Cloudflare types generated to `worker-configuration.d.ts` - **must becommitted**
 
 **DSL:**
 
@@ -108,8 +110,7 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 
 **Dart/Flutter:**
 
-- Use Dart 3 pattern matching (`switch` expressions) over Freezed
-  `.when()`/`.map()`
+- Use Dart 3 pattern matching (`switch` expressions) over Freezed`.when()`/`.map()`
 - Riverpod `AsyncValue`: prefer `switch` over `.when()`
 - JSON: typed Freezed models with `fromJson`/`toJson`, no inline parsing
 - Generated files must be regenerated and committed after model changes
@@ -117,8 +118,7 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Keep JSON parsing at model boundary; work with typed objects elsewhere
 - i18n: hard-code strings during development; move to `.i18n.yaml` when asked
 - Translation scope: per-page or per-component (duplicates expected)
-- **Never remove comments from existing code** unless explicitly asked to
-  refactor
+- **Never remove comments from existing code** unless explicitly asked torefactor
 
 **Formatting:**
 
@@ -128,7 +128,11 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 
 ## Prerequisites
 
-- Node.js 24 (see `.node-version`)
-- pnpm 10.31.0 (packageManager field)
-- Flutter 3.41.4, Dart 3.10.0 (see `mobile/pubspec.yaml`)
+- [mise](https://mise.jdx.dev) - tool version manager for all project runtimes
+  - Run `mise install` after cloning to install Node.js, pnpm, Flutter, and Dart
+  - Use `mise exec -- <command>` to run project commands, or set up the shell hook
+    for transparent version switching (`mise activate` in your shell config, then
+    `mise trust` in the repo)
+  - Tool versions are managed in `mise.toml` — no separate `.node-version` or
+    manual Flutter/Dart installs needed
 - Cloudflare Workers environment for deployment
