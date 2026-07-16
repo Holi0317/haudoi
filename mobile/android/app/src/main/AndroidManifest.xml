@@ -13,7 +13,6 @@
       android:exported="true"
       android:hardwareAccelerated="true"
       android:launchMode="singleTask"
-      android:taskAffinity=""
       android:theme="@style/LaunchTheme"
       android:windowSoftInputMode="adjustResize">
       <!-- Specifies an Android theme to apply to this Activity as soon as
@@ -44,9 +43,12 @@
 
     <!-- Flutter flutter_web_auth_2 package setup -->
     <activity
+      android:name="com.linusu.flutter_web_auth_2.AuthenticationManagementActivity"
+      android:exported="true" />
+
+    <activity
       android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
-      android:exported="true"
-      android:taskAffinity="">
+      android:exported="true">
       <intent-filter android:label="flutter_web_auth_2">
         <action android:name="android.intent.action.VIEW" />
 

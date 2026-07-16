@@ -9,7 +9,12 @@ import tagsApp from "./tags";
 
 export default factory
   .createApp()
-  .use(requireSession({ action: "redirect", destination: "/basic" }))
+  .use(
+    requireSession({
+      action: "redirect",
+      destination: "/basic",
+    }),
+  )
   .get("/", ...get)
   .route("/insert", insertApp)
   .route("/archive", archiveApp)

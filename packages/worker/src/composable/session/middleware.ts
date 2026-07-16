@@ -16,7 +16,7 @@ export type RequireSessionOption =
     }
   | {
       /**
-       * If user is not authenticated, redirect to `destination` property
+       * If user is not authenticated, redirect to Google login.
        */
       action: "redirect";
       /**
@@ -37,7 +37,7 @@ function _requireSession(option: RequireSessionOption) {
       throw new UnauthenticatedError();
     }
 
-    return c.redirect(`/auth/github/login?redirect=${option.destination}`);
+    return c.redirect(`/auth/google/login?redirect=${option.destination}`);
   });
 }
 

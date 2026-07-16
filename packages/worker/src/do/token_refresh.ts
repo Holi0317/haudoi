@@ -2,7 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 import dayjs from "dayjs";
 import type { Session } from "../composable/session/schema";
 import { useSessionStorage } from "../composable/session/schema";
-import { exchangeToken } from "../gh/oauth_token";
+import { exchangeToken } from "../google/oauth_token";
 import { makeSessionContent } from "../composable/session/content";
 import { useBasicKy } from "../composable/http";
 import { useUserRegistry } from "../composable/user/registry";
@@ -74,7 +74,7 @@ export class TokenRefreshDO extends DurableObject<CloudflareBindings> {
     );
 
     const expire = now.add(7, "day");
-    const newSess = await makeSessionContent(ky, tokens);
+    const newSess = await makeSessionContent(ky, tokens, sess.refreshToken);
 
     console.info(`Storing refreshed session for ${sessHash}`);
 

@@ -1,12 +1,30 @@
 import type dayjs from "dayjs";
 import type { Context } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { revokeToken } from "../../gh/revoke";
+import { revokeToken } from "../../google/revoke";
 import { useKy } from "../http";
 import { getRefreshStub } from "../do";
-import { COOKIE_NAME, cookieOpt } from "./constants";
+import { COOKIE_NAME } from "./constants";
 import { genSessionID, getSessHash, hashSessionID } from "./id";
 import { type SessionInput, useSessionStorage } from "./schema";
+import type { CookieOptions } from "hono/utils/cookie";
+
+/**
+ * Create cookie options for hono
+ */
+export function cookieOpt(c: Context<Env>): CookieOptions {
+  const secure = new URL(c.req.url).protocol === "https:";
+
+  return {
+    path: "/",
+    httpOnly: true,
+    // Only enable secure and prefix=host if request is from http
+    // http request can only happen on local development. In production, cloudflare
+    // enforces https on all request.
+    secure,
+    prefix: secure ? "host" : undefined,
+  };
+}
 
 /**
  * Store session data to KV.
@@ -47,7 +65,7 @@ export async function setSession(
 ) {
   const sessID = await storeSession(c.env, content, expire);
 
-  setCookie(c, COOKIE_NAME, sessID, cookieOpt);
+  setCookie(c, COOKIE_NAME, sessID, cookieOpt(c));
 
   return sessID;
 }
@@ -61,7 +79,7 @@ export async function deleteSession(c: Context<Env>) {
   // WARNING: Do **NOT** use `getSession` here. It'll cause recursive call.
 
   // Delete cookie regardless of whether session exists
-  deleteCookie(c, COOKIE_NAME, cookieOpt);
+  deleteCookie(c, COOKIE_NAME, cookieOpt(c));
 
   const sessHash = await getSessHash(c);
   if (sessHash == null) {
@@ -74,7 +92,7 @@ export async function deleteSession(c: Context<Env>) {
 
   if (sess != null) {
     try {
-      await revokeToken(c, useKy(c), sess.accessToken);
+      await revokeToken(useKy(c), sess.accessToken);
     } catch (err) {
       console.warn("Failed to revoke token on session delete.", err);
     }

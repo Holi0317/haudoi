@@ -25,7 +25,7 @@ export default factory
     return c.render(
       <Layout title="Tags">
         <a href="/basic">Back</a>
-        <p>Authenticated via GitHub, {user.name}</p>
+        <p>Authenticated via Google, {user.name}</p>
 
         <h2>Create tag</h2>
         <form
@@ -100,7 +100,7 @@ export default factory
     return c.render(
       <Layout title={`Tag - ${tag.name}`}>
         <a href="/basic/tags">Back</a>
-        <p>Authenticated via GitHub, {user.name}</p>
+        <p>Authenticated via Google, {user.name}</p>
 
         <h2>Edit tag</h2>
         <form
@@ -189,7 +189,7 @@ export default factory
     return c.render(
       <Layout title={`Delete tag - ${tag.name}`}>
         <a href={`/basic/tags/${tag.id}`}>Back</a>
-        <p>Authenticated via GitHub, {user.name}</p>
+        <p>Authenticated via Google, {user.name}</p>
         <h2>Delete tag</h2>
         <p>
           Are you sure you want to delete "{tag.name}"? This will remove the tag

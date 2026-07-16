@@ -7,11 +7,9 @@ import { useKv } from "../kv";
  */
 export const SessionSchema = z.object({
   /**
-   * Source of the user / IdP provider. Currently this is always "github".
-   *
-   * In the future we may support other providers and use this field as discriminator.
+   * Source of the user / IdP provider.
    */
-  source: z.literal("github"),
+  source: z.literal("google"),
   uid: z.string(),
   accessToken: z.string(),
   /**

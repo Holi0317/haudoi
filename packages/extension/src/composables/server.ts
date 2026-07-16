@@ -99,7 +99,7 @@ export function useServerLogin() {
       throw new Error("Server URL is not configured");
     }
 
-    const loginUrl = client.value.auth.github.login.$url();
+    const loginUrl = client.value.auth.google.login.$url();
 
     browser.tabs.create({
       url: loginUrl.toString(),

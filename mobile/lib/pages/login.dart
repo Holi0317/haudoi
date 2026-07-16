@@ -51,13 +51,13 @@ class _LoginAction {
       final u = Uri.parse(value);
       final apiUrl = u.replace(path: "/api").toString();
       final loginUrl = u
-          .replace(path: "/auth/github/login", query: "redirect=haudoi:")
+          .replace(path: "/auth/google/login", query: "redirect=haudoi:")
           .toString();
 
       // Validate server info on URL
       await _validateServer(apiUrl);
 
-      // Authenticate with GitHub and get authorized callback URL
+      // Authenticate with Google and get authorized callback URL
       final token = await _oauthLogin(loginUrl);
       if (token.isEmpty) {
         _showSnackBar(t.login.authFailedNoToken);

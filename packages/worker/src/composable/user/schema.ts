@@ -2,7 +2,7 @@ import * as z from "zod";
 import * as zu from "../../zod-utils";
 
 export const UserSchema = z.object({
-  source: z.literal("github"),
+  source: z.literal("google"),
   uid: z.string(),
 
   /**
@@ -11,14 +11,14 @@ export const UserSchema = z.object({
   name: z.string(),
 
   /**
-   * User's login name on GitHub. aka your GitHub username.
+   * User's login name. For Google users, this is their email address.
    */
   login: z.string(),
 
   /**
    * User's avatar URL.
    *
-   * This is always non-empty because github generates a default avatar if user has not set one.
+   * This is always non-empty because Google provides a default avatar if user has not set one.
    */
   avatarUrl: z.string(),
 

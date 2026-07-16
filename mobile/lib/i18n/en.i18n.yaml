@@ -67,6 +67,8 @@ login:
   apiUrlHint: "https://your-haudoi-server.com"
   loginButton: Login
   viewOnGithub: "View on GitHub"
+  loginProvider: "Login Provider"
+  providerGoogle: "Google"
   authFailedNoToken: "Authentication failed: No token received"
   authFailedMessage: "Authentication failed: $error"
   serverUnreachable: "Cannot reach server. Is the URL correct?"

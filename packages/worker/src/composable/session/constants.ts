@@ -6,10 +6,3 @@
  * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#cookie_prefixes
  */
 export const COOKIE_NAME = "haudoi-auth";
-
-export const cookieOpt = {
-  path: "/",
-  httpOnly: true,
-  secure: true,
-  prefix: "host",
-} as const;
