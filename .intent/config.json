@@ -1,0 +1,40 @@
+{
+  "scripts": [
+    {
+      "name": "dev",
+      "command": "pnpm dev",
+      "mode": "service",
+      "category": "dev"
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "mode": "command",
+      "category": "lint"
+    },
+    {
+      "name": "fmt",
+      "command": "pnpm fmt",
+      "mode": "command",
+      "category": "format"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "mode": "command",
+      "category": "typecheck"
+    },
+    {
+      "name": "prepare",
+      "command": "pnpm prepare",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "test",
+      "command": "pnpm test",
+      "mode": "command",
+      "category": "test"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
 import { ClientRequestOptions } from "hono/client";
-
 //#region src/router/index.d.ts
 declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").BlankSchema | import("hono/types").MergeSchemaPath<{
   "/": {
