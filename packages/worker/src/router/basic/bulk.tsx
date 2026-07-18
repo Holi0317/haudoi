@@ -37,15 +37,17 @@ export default factory
         // in this typescript environment.
         // Using instanceof check as a workaround.
         file: z.instanceof(File),
+        format: z.enum(["pocket", "raindrop"]).default("pocket"),
       }),
     ),
     async (c) => {
       const client = c.get("client");
-      const { file } = c.req.valid("form");
+      const { file, format } = c.req.valid("form");
 
       const resp = await client.bulk.import.$post({
         form: {
           file,
+          format,
         },
       });
 
