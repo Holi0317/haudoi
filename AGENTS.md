@@ -4,7 +4,8 @@
 
 Monorepo with pnpm workspaces:
 
-- `packages/worker` - Cloudflare Worker backend (Hono, Durable Objects withSQLite)
+- `packages/worker` - Cloudflare Worker backend (Hono, Durable Objects
+  withSQLite)
 - `packages/dsl` - Shared DSL for schema/builder logic
 - `packages/extension` - Browser extension (Vue 3, WXT)
 - `mobile/` - Flutter app (Riverpod, Freezed, go_router)
@@ -71,7 +72,8 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Entry: `packages/worker/src/index.ts`
 - Uses Durable Objects with per-user SQLite databases
 - Client SDK exported at `@haudoi/worker/client` (built to `src/client/build/`)
-- Cloudflare types generated to `worker-configuration.d.ts` - **must becommitted**
+- Cloudflare types generated to `worker-configuration.d.ts` - **must
+  becommitted**
 
 **DSL:**
 
@@ -110,7 +112,8 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 
 **Dart/Flutter:**
 
-- Use Dart 3 pattern matching (`switch` expressions) over Freezed`.when()`/`.map()`
+- Use Dart 3 pattern matching (`switch` expressions) over
+  Freezed`.when()`/`.map()`
 - Riverpod `AsyncValue`: prefer `switch` over `.when()`
 - JSON: typed Freezed models with `fromJson`/`toJson`, no inline parsing
 - Generated files must be regenerated and committed after model changes
@@ -118,7 +121,8 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 - Keep JSON parsing at model boundary; work with typed objects elsewhere
 - i18n: hard-code strings during development; move to `.i18n.yaml` when asked
 - Translation scope: per-page or per-component (duplicates expected)
-- **Never remove comments from existing code** unless explicitly asked torefactor
+- **Never remove comments from existing code** unless explicitly asked
+  torefactor
 
 **Formatting:**
 
@@ -130,9 +134,9 @@ CI fails if `cf-typegen` or `build-client` produce uncommitted changes.
 
 - [mise](https://mise.jdx.dev) - tool version manager for all project runtimes
   - Run `mise install` after cloning to install Node.js, pnpm, Flutter, and Dart
-  - Use `mise exec -- <command>` to run project commands, or set up the shell hook
-    for transparent version switching (`mise activate` in your shell config, then
-    `mise trust` in the repo)
+  - Use `mise exec -- <command>` to run project commands, or set up the shell
+    hook for transparent version switching (`mise activate` in your shell
+    config, then `mise trust` in the repo)
   - Tool versions are managed in `mise.toml` — no separate `.node-version` or
     manual Flutter/Dart installs needed
 - Cloudflare Workers environment for deployment
