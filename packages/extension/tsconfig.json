@@ -1,7 +1,17 @@
 {
   "extends": ["../../tsconfig.json", "./.wxt/tsconfig.json"],
+  "include": [
+    // other files...
+    "./typed-router.d.ts"
+  ],
   "compilerOptions": {
     "lib": ["DOM"],
     "allowArbitraryExtensions": true
+  },
+  "vueCompilerOptions": {
+    "plugins": [
+      "vue-router/volar/sfc-route-blocks",
+      "vue-router/volar/sfc-typed-router"
+    ]
   }
 }

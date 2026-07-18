@@ -1,16 +1,11 @@
 import { createMemoryHistory, createRouter } from "vue-router";
-
-import HomeView from "./components/HomeView.vue";
-import SetupView from "./components/SetupView.vue";
-import SaveView from "./components/SaveView.vue";
-
-const routes = [
-  { path: "/", component: HomeView },
-  { path: "/save", component: SaveView },
-  { path: "/setup", component: SetupView },
-];
+import { routes, handleHotUpdate } from "vue-router/auto-routes";
 
 export const router = createRouter({
   history: createMemoryHistory(),
   routes,
 });
+
+if (import.meta.hot) {
+  handleHotUpdate(router);
+}
