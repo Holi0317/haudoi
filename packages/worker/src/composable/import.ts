@@ -1,6 +1,4 @@
 import * as z from "zod";
-import * as zu from "../zod-utils";
-import { parse } from "@std/csv";
 import { useKv } from "./kv";
 import { uidToString, type UserIdentifier } from "./user/ident";
 import type { LinkInsertItem } from "../schemas";
@@ -9,9 +7,12 @@ import { MAX_EDIT_OPS } from "../constants";
 import { genSessionID } from "./session/id";
 import dayjs from "dayjs";
 import { chunk } from "es-toolkit/array";
+import type { CsvFormatSchema } from "./import_format";
+import { CsvFormat, parseFormat } from "./import_format";
 
 const RawMetaSchema = z.object({
   uid: z.string(),
+  format: CsvFormat,
 });
 
 function useRawStore(env: CloudflareBindings) {
@@ -37,15 +38,6 @@ function usePreparedPartStore(env: CloudflareBindings) {
   return useKv(env.KV, "import:prepared", PreparedPartSchema, z.undefined());
 }
 
-// Schema for parsing CSV rows from Pocket export
-// Known columns: title, url, time_added, tags, status
-const CsvRowSchema = z.looseObject({
-  title: z.string().nullish(),
-  url: zu.httpUrl(),
-  status: z.string(),
-  time_added: z.coerce.number().pipe(zu.unixEpochSec()),
-});
-
 export function useImportStore(env: CloudflareBindings) {
   const raw = useRawStore(env);
   const part = usePartStore(env);
@@ -56,7 +48,11 @@ export function useImportStore(env: CloudflareBindings) {
    *
    * @returns ID for the raw content
    */
-  const writeRaw = async (uid: UserIdentifier, content: string) => {
+  const writeRaw = async (
+    uid: UserIdentifier,
+    content: string,
+    format: CsvFormatSchema,
+  ) => {
     const id = genSessionID();
 
     await raw.write({
@@ -65,52 +61,11 @@ export function useImportStore(env: CloudflareBindings) {
       expire: dayjs().add(1, "day"),
       metadata: {
         uid: uidToString(uid),
+        format,
       },
     });
 
     return id;
-  };
-
-  const parseFile = (body: string) => {
-    const csv = parse(body, {
-      skipFirstRow: true,
-    });
-
-    const result: Array<z.output<typeof InsertSchema>> = [];
-    const errors: string[] = [];
-    // Starts from 1 because we are skipping header row.
-    // This means the first data row is row 2 in the original file, aligning with what
-    // excel would show.
-    let i = 1;
-
-    for (const row of csv) {
-      i++;
-      const parsed = CsvRowSchema.safeParse(row);
-      if (!parsed.success) {
-        const errorMsg = `Row ${i}: ${z.prettifyError(parsed.error)}`;
-        console.warn(`Skipping invalid row in import file: ${errorMsg}`);
-        errors.push(errorMsg);
-        continue;
-      }
-
-      const { title, url, status, time_added, ...rest } = parsed.data;
-
-      const noteParts: string[] = ["[Imported]"];
-      for (const [key, value] of Object.entries(rest)) {
-        noteParts.push(`${key}: ${value}`);
-      }
-
-      result.push({
-        title: title ?? null,
-        url,
-        created_at: time_added,
-        archive: status === "archive",
-        favorite: false,
-        note: noteParts.join("\n"),
-      });
-    }
-
-    return { items: result, errors };
   };
 
   /**
@@ -119,7 +74,11 @@ export function useImportStore(env: CloudflareBindings) {
    *
    * @return object containing part IDs and parsing statistics
    */
-  const partition = async (uid: UserIdentifier, rawId: string) => {
+  const partition = async (
+    uid: UserIdentifier,
+    rawId: string,
+    format: CsvFormatSchema,
+  ) => {
     const uidStr = uidToString(uid);
 
     const body = await raw.read(rawId);
@@ -128,7 +87,7 @@ export function useImportStore(env: CloudflareBindings) {
     }
 
     // Parse file content
-    const { items, errors } = parseFile(body);
+    const { items, errors } = parseFormat(format, body);
 
     // Partition items into chunks of MAX_EDIT_OPS
     const parts: number[] = [];

@@ -13,7 +13,7 @@ import { useTag } from "./tags";
 
 export function useLink(ctx: DurableObjectState) {
   const conn = useSql(ctx);
-  const { attachTags } = useTag(ctx);
+  const { attachTags, create: createTag } = useTag(ctx);
 
   /**
    * Get link item by ID. Returns null if not found.
@@ -63,6 +63,14 @@ RETURNING id;`,
       }
 
       maxID = item.id;
+
+      for (const tagName of link.tags) {
+        const tag = createTag({ name: tagName, color: "#3b82f6", emoji: "" });
+        conn.void_(
+          sql`INSERT OR IGNORE INTO link_tag (link_id, tag_id)
+VALUES (${item.id}, ${tag.id});`,
+        );
+      }
     }
 
     // FIXME: Return per-url insert result back to client. Need some way to

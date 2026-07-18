@@ -5,10 +5,12 @@ import { useImportStore } from "../composable/import";
 import { getImportStubAdmin, getStorageStubAdmin } from "../composable/do";
 import { useBasicKy } from "../composable/http";
 import { processInsert } from "../composable/insert";
+import type { CsvFormatSchema } from "../composable/import_format";
 
 export interface ImportWorkflowParams {
   uid: UserIdentifier;
   rawId: string;
+  format: CsvFormatSchema;
 }
 
 export class ImportWorkflow extends WorkflowEntrypoint<
@@ -19,7 +21,7 @@ export class ImportWorkflow extends WorkflowEntrypoint<
     event: WorkflowEvent<ImportWorkflowParams>,
     step: WorkflowStep,
   ) {
-    const { uid, rawId } = event.payload;
+    const { uid, rawId, format } = event.payload;
     const uidStr = uidToString(uid);
 
     console.log("Starting import workflow", { uid, rawId });
@@ -29,7 +31,7 @@ export class ImportWorkflow extends WorkflowEntrypoint<
       "Partition raw import file",
       async () => {
         const { partition } = useImportStore(this.env);
-        return await partition(uid, rawId);
+        return await partition(uid, rawId, format);
       },
     );
 

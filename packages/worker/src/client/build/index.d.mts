@@ -242,6 +242,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
             archive?: boolean | undefined;
             favorite?: boolean | undefined;
             note?: string | undefined;
+            tags?: string[] | undefined;
           } | {
             op: "set_bool";
             id: number;
@@ -307,6 +308,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
       input: {
         form: {
           file: File;
+          format?: "pocket" | "raindrop" | undefined;
         };
       };
       output: {
@@ -445,6 +447,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
       input: {
         form: {
           file: File;
+          format?: "pocket" | "raindrop" | undefined;
         };
       };
       output: undefined;
@@ -454,6 +457,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
       input: {
         form: {
           file: File;
+          format?: "pocket" | "raindrop" | undefined;
         };
       };
       output: {
@@ -962,6 +966,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
               archive?: boolean | undefined;
               favorite?: boolean | undefined;
               note?: string | undefined;
+              tags?: string[] | undefined;
             } | {
               op: "set_bool";
               id: number;
@@ -1031,6 +1036,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
           input: {
             form: {
               file: File;
+              format?: "pocket" | "raindrop" | undefined;
             };
           };
           output: {
@@ -1180,6 +1186,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {
           form: {
             file: File;
+            format?: "pocket" | "raindrop" | undefined;
           };
         };
         output: undefined;
@@ -1189,6 +1196,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
         input: {
           form: {
             file: File;
+            format?: "pocket" | "raindrop" | undefined;
           };
         };
         output: {

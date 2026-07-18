@@ -4,6 +4,7 @@ import { ImportStatus } from "../../component/ImportStatus";
 import { Layout } from "../../component/layout";
 import { zv } from "../../composable/validator";
 import { factory } from "../factory";
+import { CsvFormat } from "../../composable/import_format";
 
 export default factory
   .createApp()
@@ -37,15 +38,17 @@ export default factory
         // in this typescript environment.
         // Using instanceof check as a workaround.
         file: z.instanceof(File),
+        format: CsvFormat.default("pocket"),
       }),
     ),
     async (c) => {
       const client = c.get("client");
-      const { file } = c.req.valid("form");
+      const { file, format } = c.req.valid("form");
 
       const resp = await client.bulk.import.$post({
         form: {
           file,
+          format,
         },
       });
 

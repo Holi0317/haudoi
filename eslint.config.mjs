@@ -68,7 +68,6 @@ export default defineConfig(
   {
     name: "import-x/typescript",
     plugins: {
-      // @ts-expect-error Missing types
       "import-x": importX,
     },
     settings: {

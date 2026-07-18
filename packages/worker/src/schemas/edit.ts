@@ -1,6 +1,7 @@
 import * as z from "zod";
 import * as zu from "../zod-utils";
 import { MAX_EDIT_OPS, MAX_TAG } from "../constants";
+import { TagNameSchema } from "./tags";
 
 /**
  * Schema for insert object from client.
@@ -18,6 +19,7 @@ export const InsertSchema = z.object({
   archive: z.boolean().default(false),
   favorite: z.boolean().default(false),
   note: z.string().max(4096).default(""),
+  tags: z.array(TagNameSchema).optional().default([]),
 });
 
 /**
