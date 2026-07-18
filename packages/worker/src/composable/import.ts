@@ -7,11 +7,12 @@ import { MAX_EDIT_OPS } from "../constants";
 import { genSessionID } from "./session/id";
 import dayjs from "dayjs";
 import { chunk } from "es-toolkit/array";
-import { getParser, type CsvFormat } from "./import_format";
+import type { CsvFormatSchema } from "./import_format";
+import { CsvFormat, parseFormat } from "./import_format";
 
 const RawMetaSchema = z.object({
   uid: z.string(),
-  format: z.enum(["pocket", "raindrop"]),
+  format: CsvFormat,
 });
 
 function useRawStore(env: CloudflareBindings) {
@@ -50,7 +51,7 @@ export function useImportStore(env: CloudflareBindings) {
   const writeRaw = async (
     uid: UserIdentifier,
     content: string,
-    format: CsvFormat,
+    format: CsvFormatSchema,
   ) => {
     const id = genSessionID();
 
@@ -67,11 +68,6 @@ export function useImportStore(env: CloudflareBindings) {
     return id;
   };
 
-  const parseFile = (body: string, format: CsvFormat) => {
-    const parser = getParser(format);
-    return parser(body);
-  };
-
   /**
    * Parse and partition the import file into parts.
    * Each part should contain up to 30 items, aligning with edit API limit.
@@ -81,7 +77,7 @@ export function useImportStore(env: CloudflareBindings) {
   const partition = async (
     uid: UserIdentifier,
     rawId: string,
-    format: CsvFormat,
+    format: CsvFormatSchema,
   ) => {
     const uidStr = uidToString(uid);
 
@@ -91,7 +87,7 @@ export function useImportStore(env: CloudflareBindings) {
     }
 
     // Parse file content
-    const { items, errors } = parseFile(body, format);
+    const { items, errors } = parseFormat(format, body);
 
     // Partition items into chunks of MAX_EDIT_OPS
     const parts: number[] = [];

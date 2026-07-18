@@ -1,7 +1,5 @@
 import * as z from "zod";
 import * as zu from "../../zod-utils";
-import { parse } from "@std/csv";
-import type { InsertSchema } from "../../schemas";
 import type { FormatParser } from ".";
 
 // Schema for parsing CSV rows from Pocket export
@@ -16,44 +14,21 @@ const PocketCsvRowSchema = z.looseObject({
 /**
  * Parse Pocket CSV export format
  */
-export const parsePocketCsv: FormatParser = (body) => {
-  const csv = parse(body, {
-    skipFirstRow: true,
-  });
+export const parsePocketCsv: FormatParser = (row) => {
+  const { title, url, status, time_added, ...rest } =
+    PocketCsvRowSchema.parse(row);
 
-  const result: Array<z.output<typeof InsertSchema>> = [];
-  const errors: string[] = [];
-  // Starts from 1 because we are skipping header row.
-  // This means the first data row is row 2 in the original file, aligning with what
-  // excel would show.
-  let i = 1;
-
-  for (const row of csv) {
-    i++;
-    const parsed = PocketCsvRowSchema.safeParse(row);
-    if (!parsed.success) {
-      const errorMsg = `Row ${i}: ${z.prettifyError(parsed.error)}`;
-      console.warn(`Skipping invalid row in import file: ${errorMsg}`);
-      errors.push(errorMsg);
-      continue;
-    }
-
-    const { title, url, status, time_added, ...rest } = parsed.data;
-
-    const noteParts: string[] = ["[Imported]"];
-    for (const [key, value] of Object.entries(rest)) {
-      noteParts.push(`${key}: ${value}`);
-    }
-
-    result.push({
-      title: title ?? null,
-      url,
-      created_at: time_added,
-      archive: status === "archive",
-      favorite: false,
-      note: noteParts.join("\n"),
-    });
+  const noteParts: string[] = ["[Imported]"];
+  for (const [key, value] of Object.entries(rest)) {
+    noteParts.push(`${key}: ${value}`);
   }
 
-  return { items: result, errors };
+  return {
+    title: title ?? null,
+    url,
+    created_at: time_added,
+    archive: status === "archive",
+    favorite: false,
+    note: noteParts.join("\n"),
+  };
 };

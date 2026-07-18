@@ -4,7 +4,7 @@ import { useSingleKV } from "../composable/do_kv";
 import type { ImportCompletedSchema } from "../schemas";
 import { ImportStatusSchema } from "../schemas";
 import type { UserIdentifier } from "../composable/user/ident";
-import type { CsvFormat } from "../composable/import";
+import type { CsvFormatSchema } from "../composable/import_format";
 
 function useStatus(ctx: DurableObjectState) {
   return useSingleKV(ctx, "status", ImportStatusSchema);
@@ -37,7 +37,11 @@ export class ImportDO extends DurableObject<CloudflareBindings> {
    * @returns Import status object
    * @throws Error if another import is already in progress
    */
-  public async start(uid: UserIdentifier, rawId: string, format: CsvFormat) {
+  public async start(
+    uid: UserIdentifier,
+    rawId: string,
+    format: CsvFormatSchema,
+  ) {
     const { get, put } = useStatus(this.ctx);
 
     return await this.ctx.blockConcurrencyWhile(async () => {

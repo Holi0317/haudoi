@@ -4,6 +4,7 @@ import { ImportStatus } from "../../component/ImportStatus";
 import { Layout } from "../../component/layout";
 import { zv } from "../../composable/validator";
 import { factory } from "../factory";
+import { CsvFormat } from "../../composable/import_format";
 
 export default factory
   .createApp()
@@ -37,7 +38,7 @@ export default factory
         // in this typescript environment.
         // Using instanceof check as a workaround.
         file: z.instanceof(File),
-        format: z.enum(["pocket", "raindrop"]).default("pocket"),
+        format: CsvFormat.default("pocket"),
       }),
     ),
     async (c) => {

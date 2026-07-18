@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRaindropCsv } from "./raindrop";
+import { parseFormat } from "./index";
 
 function csv(header: string, ...rows: string[]): string {
   return [header, ...rows].join("\n");
@@ -16,7 +16,7 @@ describe("parseRaindropCsv", () => {
       "2,Another One,A note here,An excerpt,https://example.com/another,Unsorted,design,2023-02-20T14:00:00.000Z,,,false",
     );
 
-    const { items, errors } = parseRaindropCsv(body);
+    const { items, errors } = parseFormat("raindrop", body);
     expect(errors).toHaveLength(0);
     expect(items).toHaveLength(2);
 
@@ -41,7 +41,7 @@ describe("parseRaindropCsv", () => {
       "4,Saved Read,My notes,,https://example.com/saved,archive,toread,2023-04-01T12:00:00.000Z,,,false",
     );
 
-    const { items, errors } = parseRaindropCsv(body);
+    const { items, errors } = parseFormat("raindrop", body);
     expect(errors).toHaveLength(0);
     expect(items).toHaveLength(2);
 
@@ -59,7 +59,7 @@ describe("parseRaindropCsv", () => {
       "6,Not Fav,,,https://example.com/nope,archive,,2023-05-02T00:00:00.000Z,,,false",
     );
 
-    const { items } = parseRaindropCsv(body);
+    const { items } = parseFormat("raindrop", body);
     expect(items[0].favorite).toBe(true);
     expect(items[1].favorite).toBe(false);
   });
@@ -70,7 +70,7 @@ describe("parseRaindropCsv", () => {
       "7,Full Entry,Detailed notes,Short excerpt,https://example.com/full,Unsorted,ai ml,2023-06-01T00:00:00.000Z,,,false",
     );
 
-    const { items } = parseRaindropCsv(body);
+    const { items } = parseFormat("raindrop", body);
     const note = items[0].note;
     expect(note).toContain("[Imported]");
     expect(note).toContain("tags: ai ml");
@@ -84,7 +84,7 @@ describe("parseRaindropCsv", () => {
       "8,Minimal,,,https://example.com/min,Unsorted,,2023-07-01T00:00:00.000Z,,,false",
     );
 
-    const { items } = parseRaindropCsv(body);
+    const { items } = parseFormat("raindrop", body);
     expect(items[0].note).toBe("[Imported]");
     expect(items[0].archive).toBe(false);
   });
@@ -95,7 +95,7 @@ describe("parseRaindropCsv", () => {
       "9,Partial,Some note,,https://example.com/partial,Unsorted,,2023-08-01T00:00:00.000Z,,,",
     );
 
-    const { items } = parseRaindropCsv(body);
+    const { items } = parseFormat("raindrop", body);
     expect(items[0].title).toBe("Partial");
     expect(items[0].note).toContain("Some note");
     expect(items[0].favorite).toBe(false);
@@ -107,7 +107,7 @@ describe("parseRaindropCsv", () => {
       "10,Dated,,,https://example.com/dated,Unsorted,,2024-01-15T10:30:00.000Z,,,false",
     );
 
-    const { items } = parseRaindropCsv(body);
+    const { items } = parseFormat("raindrop", body);
     const d = new Date(2024, 0, 15, 10, 30, 0, 0);
     expect(items[0].created_at).toBe(d.getTime());
   });

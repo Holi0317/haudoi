@@ -1,15 +1,16 @@
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import { WorkflowEntrypoint } from "cloudflare:workers";
 import { uidToString, type UserIdentifier } from "../composable/user/ident";
-import { useImportStore, type CsvFormat } from "../composable/import";
+import { useImportStore } from "../composable/import";
 import { getImportStubAdmin, getStorageStubAdmin } from "../composable/do";
 import { useBasicKy } from "../composable/http";
 import { processInsert } from "../composable/insert";
+import type { CsvFormatSchema } from "../composable/import_format";
 
 export interface ImportWorkflowParams {
   uid: UserIdentifier;
   rawId: string;
-  format: CsvFormat;
+  format: CsvFormatSchema;
 }
 
 export class ImportWorkflow extends WorkflowEntrypoint<

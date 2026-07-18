@@ -1,8 +1,6 @@
 import * as z from "zod";
 import * as zu from "../../zod-utils";
-import { parse } from "@std/csv";
 import dayjs from "dayjs";
-import type { InsertSchema } from "../../schemas";
 import type { FormatParser } from ".";
 
 // Schema for parsing CSV rows from Raindrop.io export
@@ -30,50 +28,28 @@ const RaindropCsvRowSchema = z.looseObject({
  * - folder "Unsorted" or any other -> archive: false
  * - favorite "true" -> favorite: true
  */
-export const parseRaindropCsv: FormatParser = (body) => {
-  const csv = parse(body, {
-    skipFirstRow: true,
-  });
+export const parseRaindropCsv: FormatParser = (row) => {
+  const { title, url, note, tags, created, folder, favorite } =
+    RaindropCsvRowSchema.parse(row);
 
-  const result: Array<z.output<typeof InsertSchema>> = [];
-  const errors: string[] = [];
-  let i = 1;
+  const createdDate = dayjs(created);
+  const created_at = createdDate.isValid() ? createdDate.valueOf() : undefined;
 
-  for (const row of csv) {
-    i++;
-    const parsed = RaindropCsvRowSchema.safeParse(row);
-    if (!parsed.success) {
-      const errorMsg = `Row ${i}: ${z.prettifyError(parsed.error)}`;
-      console.warn(`Skipping invalid row in import file: ${errorMsg}`);
-      errors.push(errorMsg);
-      continue;
-    }
-
-    const { title, url, note, tags, created, folder, favorite } = parsed.data;
-
-    const createdDate = dayjs(created);
-    const created_at = createdDate.isValid()
-      ? createdDate.valueOf()
-      : undefined;
-
-    const noteParts: string[] = ["[Imported]"];
-    if (tags) {
-      noteParts.push(`tags: ${tags}`);
-    }
-    if (note) {
-      noteParts.push(note);
-    }
-    const archive = folder?.toLowerCase() === "archive";
-
-    result.push({
-      title: title ?? null,
-      url,
-      created_at,
-      archive,
-      favorite: favorite === "true",
-      note: noteParts.join("\n"),
-    });
+  const noteParts: string[] = ["[Imported]"];
+  if (tags) {
+    noteParts.push(`tags: ${tags}`);
   }
+  if (note) {
+    noteParts.push(note);
+  }
+  const archive = folder?.toLowerCase() === "archive";
 
-  return { items: result, errors };
+  return {
+    title: title ?? null,
+    url,
+    created_at,
+    archive,
+    favorite: favorite === "true",
+    note: noteParts.join("\n"),
+  };
 };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parsePocketCsv } from "./pocket";
+import { parseFormat } from "./index";
 
 function csv(header: string, ...rows: string[]): string {
   return [header, ...rows].join("\n");
@@ -15,7 +15,7 @@ describe("parsePocketCsv", () => {
       "Another Post,https://example.com/post,1562678400,tech,unread",
     );
 
-    const { items, errors } = parsePocketCsv(body);
+    const { items, errors } = parseFormat("pocket", body);
     expect(errors).toHaveLength(0);
     expect(items).toHaveLength(2);
 
@@ -39,7 +39,7 @@ describe("parsePocketCsv", () => {
       "Saved Page,https://example.com/saved,1560086400,,archive",
     );
 
-    const { items, errors } = parsePocketCsv(body);
+    const { items, errors } = parseFormat("pocket", body);
     expect(errors).toHaveLength(0);
     expect(items).toHaveLength(2);
 
@@ -56,7 +56,7 @@ describe("parsePocketCsv", () => {
       "Tagged,https://example.com/tagged,1562592000,tech news,unread",
     );
 
-    const { items } = parsePocketCsv(body);
+    const { items } = parseFormat("pocket", body);
     expect(items[0].note).toContain("[Imported]");
     expect(items[0].note).toContain("tags: tech news");
   });
@@ -67,7 +67,7 @@ describe("parsePocketCsv", () => {
       "No Tags,https://example.com/notags,1562592000,,unread",
     );
 
-    const { items } = parsePocketCsv(body);
+    const { items } = parseFormat("pocket", body);
     expect(items[0].note).toContain("[Imported]");
     expect(items[0].note).toContain("tags:");
   });
