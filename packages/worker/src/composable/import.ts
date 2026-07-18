@@ -1,6 +1,4 @@
 import * as z from "zod";
-import * as zu from "../zod-utils";
-import { parse } from "@std/csv";
 import { useKv } from "./kv";
 import { uidToString, type UserIdentifier } from "./user/ident";
 import type { LinkInsertItem } from "../schemas";
@@ -9,6 +7,7 @@ import { MAX_EDIT_OPS } from "../constants";
 import { genSessionID } from "./session/id";
 import dayjs from "dayjs";
 import { chunk } from "es-toolkit/array";
+import { getParser, type CsvFormat } from "./import_format";
 
 const RawMetaSchema = z.object({
   uid: z.string(),
@@ -36,135 +35,6 @@ function usePartStore(env: CloudflareBindings) {
 
 function usePreparedPartStore(env: CloudflareBindings) {
   return useKv(env.KV, "import:prepared", PreparedPartSchema, z.undefined());
-}
-
-export type CsvFormat = "pocket" | "raindrop";
-
-// Schema for parsing CSV rows from Pocket export
-// Known columns: title, url, time_added, tags, status
-const PocketCsvRowSchema = z.looseObject({
-  title: z.string().nullish(),
-  url: zu.httpUrl(),
-  status: z.string(),
-  time_added: z.coerce.number().pipe(zu.unixEpochSec()),
-});
-
-// Schema for parsing CSV rows from Raindrop.io export
-// Known columns: id, title, note, excerpt, url, folder, tags, created, cover, highlights, favorite
-const RaindropCsvRowSchema = z.looseObject({
-  title: z.string().nullish(),
-  url: zu.httpUrl(),
-  note: z.string().nullish(),
-  excerpt: z.string().nullish(),
-  tags: z.string().nullish(),
-  created: z.string(),
-  folder: z.string().nullish(),
-  favorite: z.string().nullish(),
-});
-
-/**
- * Parse Pocket CSV export format
- */
-export function parsePocketCsv(body: string) {
-  const csv = parse(body, {
-    skipFirstRow: true,
-  });
-
-  const result: Array<z.output<typeof InsertSchema>> = [];
-  const errors: string[] = [];
-  // Starts from 1 because we are skipping header row.
-  // This means the first data row is row 2 in the original file, aligning with what
-  // excel would show.
-  let i = 1;
-
-  for (const row of csv) {
-    i++;
-    const parsed = PocketCsvRowSchema.safeParse(row);
-    if (!parsed.success) {
-      const errorMsg = `Row ${i}: ${z.prettifyError(parsed.error)}`;
-      console.warn(`Skipping invalid row in import file: ${errorMsg}`);
-      errors.push(errorMsg);
-      continue;
-    }
-
-    const { title, url, status, time_added, ...rest } = parsed.data;
-
-    const noteParts: string[] = ["[Imported]"];
-    for (const [key, value] of Object.entries(rest)) {
-      noteParts.push(`${key}: ${value}`);
-    }
-
-    result.push({
-      title: title ?? null,
-      url,
-      created_at: time_added,
-      archive: status === "archive",
-      favorite: false,
-      note: noteParts.join("\n"),
-    });
-  }
-
-  return { items: result, errors };
-}
-
-/**
- * Parse Raindrop.io CSV export format
- *
- * Columns: id, title, note, excerpt, url, folder, tags, created, cover, highlights, favorite
- * - url -> url
- * - title -> title
- * - created -> created_at (ISO 8601 string -> unix epoch ms)
- * - tags + note -> note field
- * - folder "archive" -> archive: true
- * - folder "Unsorted" or any other -> archive: false
- * - favorite "true" -> favorite: true
- */
-export function parseRaindropCsv(body: string) {
-  const csv = parse(body, {
-    skipFirstRow: true,
-  });
-
-  const result: Array<z.output<typeof InsertSchema>> = [];
-  const errors: string[] = [];
-  let i = 1;
-
-  for (const row of csv) {
-    i++;
-    const parsed = RaindropCsvRowSchema.safeParse(row);
-    if (!parsed.success) {
-      const errorMsg = `Row ${i}: ${z.prettifyError(parsed.error)}`;
-      console.warn(`Skipping invalid row in import file: ${errorMsg}`);
-      errors.push(errorMsg);
-      continue;
-    }
-
-    const { title, url, note, tags, created, folder, favorite } = parsed.data;
-
-    const createdDate = dayjs(created);
-    const created_at = createdDate.isValid()
-      ? createdDate.valueOf()
-      : undefined;
-
-    const noteParts: string[] = ["[Imported]"];
-    if (tags) {
-      noteParts.push(`tags: ${tags}`);
-    }
-    if (note) {
-      noteParts.push(note);
-    }
-    const archive = folder?.toLowerCase() === "archive";
-
-    result.push({
-      title: title ?? null,
-      url,
-      created_at,
-      archive,
-      favorite: favorite === "true",
-      note: noteParts.join("\n"),
-    });
-  }
-
-  return { items: result, errors };
 }
 
 export function useImportStore(env: CloudflareBindings) {
@@ -198,12 +68,8 @@ export function useImportStore(env: CloudflareBindings) {
   };
 
   const parseFile = (body: string, format: CsvFormat) => {
-    switch (format) {
-      case "pocket":
-        return parsePocketCsv(body);
-      case "raindrop":
-        return parseRaindropCsv(body);
-    }
+    const parser = getParser(format);
+    return parser(body);
   };
 
   /**
