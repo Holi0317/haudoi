@@ -20,12 +20,14 @@ describe("parseRaindropCsv", () => {
     expect(errors).toHaveLength(0);
     expect(items).toHaveLength(2);
 
-    expect(items[0]).toMatchObject({
+    expect(items[0]).toEqual({
       title: "My Bookmark",
       url: "https://example.com/bookmark",
       archive: false,
       favorite: false,
-      note: expect.stringContaining("dev") as string,
+      note: "[Imported]",
+      created_at: 1673778600000,
+      tags: ["dev"],
     });
 
     expect(items[1].title).toBe("Another One");
@@ -73,7 +75,6 @@ describe("parseRaindropCsv", () => {
     const { items } = parseFormat("raindrop", body);
     const note = items[0].note;
     expect(note).toContain("[Imported]");
-    expect(note).toContain("tags: ai ml");
     expect(note).toContain("Detailed notes");
     expect(note).not.toContain("Short excerpt");
   });
@@ -87,6 +88,26 @@ describe("parseRaindropCsv", () => {
     const { items } = parseFormat("raindrop", body);
     expect(items[0].note).toBe("[Imported]");
     expect(items[0].archive).toBe(false);
+  });
+
+  it("parses comma-separated tags", () => {
+    const body = csv(
+      header,
+      '11,Multi Tag,,,https://example.com/multi,Unsorted,"ai, ml",2024-02-01T00:00:00.000Z,,,false',
+    );
+
+    const { items } = parseFormat("raindrop", body);
+    expect(items[0].tags).toEqual(["ai", "ml"]);
+  });
+
+  it("handles single tag (no commas) in note", () => {
+    const body = csv(
+      header,
+      "12,Single Tag,,,https://example.com/single,Unsorted,dev,2024-03-01T00:00:00.000Z,,,false",
+    );
+
+    const { items } = parseFormat("raindrop", body);
+    expect(items[0].tags).toEqual(["dev"]);
   });
 
   it("handles missing optional fields gracefully", () => {

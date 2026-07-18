@@ -73,6 +73,48 @@ describe("checkboxBool", () => {
   });
 });
 
+describe("isoTimestampMs", () => {
+  const schema = zu.isoTimestampMs();
+
+  it("decodes valid ISO 8601 string with Z timezone to unix epoch ms", () => {
+    const result = schema.safeDecode("2026-07-13T01:01:37.578Z");
+
+    expect(result.success).toEqual(true);
+    if (result.success) {
+      expect(typeof result.data).toBe("number");
+      expect(result.data).toBeGreaterThan(1e12);
+    }
+  });
+
+  it("decodes ISO 8601 string without fractional seconds", () => {
+    const result = schema.safeDecode("2024-01-15T10:30:00.000Z");
+
+    expect(result.success).toEqual(true);
+    if (result.success) {
+      expect(result.data).toBe(new Date("2024-01-15T10:30:00.000Z").getTime());
+    }
+  });
+
+  it("encodes unix epoch ms back to ISO 8601 string", () => {
+    const ms = new Date("2026-07-13T01:01:37.578Z").getTime();
+    const result = schema.safeEncode(ms);
+
+    expect(result.success).toEqual(true);
+    if (result.success) {
+      expect(result.data).toBe("2026-07-13T01:01:37.578Z");
+    }
+  });
+
+  it("rejects non-ISO strings", () => {
+    expect(schema.safeDecode("not a date").success).toEqual(false);
+    expect(schema.safeDecode("2026-07-13").success).toEqual(false);
+  });
+
+  it("rejects epoch seconds (small numbers)", () => {
+    expect(schema.safeEncode(1700000000).success).toEqual(false);
+  });
+});
+
 describe("httpUrl", () => {
   const schema = zu.httpUrl();
 

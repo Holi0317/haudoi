@@ -129,12 +129,20 @@ RETURNING *;`,
     return conn.one(TagItemSchema, sql`SELECT * FROM tag WHERE id = ${id};`);
   };
 
+  const findByName = (name: string) => {
+    return conn.maybeOne(
+      TagItemSchema,
+      sql`SELECT * FROM tag WHERE lower(name) = lower(${name});`,
+    );
+  };
+
   const deleteTag = (id: number) => {
     conn.void_(sql`DELETE FROM tag WHERE id = ${id};`);
   };
 
   return {
     attachTags,
+    findByName,
     list,
     create,
     update,

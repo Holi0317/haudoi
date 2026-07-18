@@ -1,6 +1,5 @@
 import * as z from "zod";
 import * as zu from "../../zod-utils";
-import dayjs from "dayjs";
 import type { FormatParser } from ".";
 
 // Schema for parsing CSV rows from Raindrop.io export
@@ -11,7 +10,7 @@ const RaindropCsvRowSchema = z.looseObject({
   note: z.string().nullish(),
   excerpt: z.string().nullish(),
   tags: z.string().nullish(),
-  created: z.string(),
+  created: zu.isoTimestampMs().optional(),
   folder: z.string().nullish(),
   favorite: z.string().nullish(),
 });
@@ -29,16 +28,13 @@ const RaindropCsvRowSchema = z.looseObject({
  * - favorite "true" -> favorite: true
  */
 export const parseRaindropCsv: FormatParser = (row) => {
-  const { title, url, note, tags, created, folder, favorite } =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { title, url, note, tags, created, folder, favorite, ...rest } =
     RaindropCsvRowSchema.parse(row);
 
-  const createdDate = dayjs(created);
-  const created_at = createdDate.isValid() ? createdDate.valueOf() : undefined;
+  const parsedTags = (tags ?? "").split(", ").filter(Boolean);
 
   const noteParts: string[] = ["[Imported]"];
-  if (tags) {
-    noteParts.push(`tags: ${tags}`);
-  }
   if (note) {
     noteParts.push(note);
   }
@@ -47,9 +43,10 @@ export const parseRaindropCsv: FormatParser = (row) => {
   return {
     title: title ?? null,
     url,
-    created_at,
+    created_at: created,
     archive,
     favorite: favorite === "true",
     note: noteParts.join("\n"),
+    tags: parsedTags,
   };
 };

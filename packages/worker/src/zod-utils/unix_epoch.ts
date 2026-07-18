@@ -29,3 +29,23 @@ export const unixEpochSec = () =>
         "Timestamp looks large. Did you pass in epoch in milliseconds instead of seconds?",
     })
     .transform((sec) => sec * 1000);
+
+/**
+ * ISO 8601 timestamp string with Z timezone, transformed to unix epoch in milliseconds.
+ *
+ * Uses zod v4 codec for bidirectional transformation:
+ * - Input (decode): ISO 8601 string like "2026-07-13T01:01:37.578Z"
+ * - Output (encode): Unix epoch in milliseconds
+ */
+export const isoTimestampMs = () =>
+  z.codec(
+    z.iso.datetime(),
+    z.number().int().positive().gt(1e12, {
+      error:
+        "Timestamp looks small. Did you pass in epoch in seconds instead of milliseconds?",
+    }),
+    {
+      decode: (isoString) => new Date(isoString).getTime(),
+      encode: (ms) => new Date(ms).toISOString(),
+    },
+  );

@@ -9,16 +9,19 @@ const PocketCsvRowSchema = z.looseObject({
   url: zu.httpUrl(),
   status: z.string(),
   time_added: z.coerce.number().pipe(zu.unixEpochSec()),
+  tags: z.string().nullish(),
 });
 
 /**
  * Parse Pocket CSV export format
  */
 export const parsePocketCsv: FormatParser = (row) => {
-  const { title, url, status, time_added, ...rest } =
+  const { title, url, status, time_added, tags, ...rest } =
     PocketCsvRowSchema.parse(row);
 
-  const noteParts: string[] = ["[Imported]"];
+  const parsedTags = (tags ?? "").split("|").filter(Boolean);
+
+  const noteParts = ["[Imported]"];
   for (const [key, value] of Object.entries(rest)) {
     noteParts.push(`${key}: ${value}`);
   }
@@ -30,5 +33,6 @@ export const parsePocketCsv: FormatParser = (row) => {
     archive: status === "archive",
     favorite: false,
     note: noteParts.join("\n"),
+    tags: parsedTags,
   };
 };

@@ -50,15 +50,15 @@ describe("parsePocketCsv", () => {
     expect(items[1].title).toBe("Saved Page");
   });
 
-  it("includes tags in note", () => {
+  it("parse tags properly", () => {
     const body = csv(
       header,
       "Tagged,https://example.com/tagged,1562592000,tech news,unread",
     );
 
     const { items } = parseFormat("pocket", body);
-    expect(items[0].note).toContain("[Imported]");
-    expect(items[0].note).toContain("tags: tech news");
+    expect(items[0].note).toEqual("[Imported]");
+    expect(items[0].tags).toEqual(["tech news"]);
   });
 
   it("handles empty tags", () => {
@@ -68,7 +68,28 @@ describe("parsePocketCsv", () => {
     );
 
     const { items } = parseFormat("pocket", body);
-    expect(items[0].note).toContain("[Imported]");
-    expect(items[0].note).toContain("tags:");
+    expect(items[0].note).toEqual("[Imported]");
+  });
+
+  it("parses pipe-separated tags", () => {
+    const body = csv(
+      header,
+      "Tagged,https://example.com/tagged,1562592000,http|story|web,unread",
+    );
+
+    const { items } = parseFormat("pocket", body);
+    expect(items[0].note).toEqual("[Imported]");
+    expect(items[0].tags).toEqual(["http", "story", "web"]);
+  });
+
+  it("handles single tag (no pipes)", () => {
+    const body = csv(
+      header,
+      "Single,https://example.com/single,1562592000,news,unread",
+    );
+
+    const { items } = parseFormat("pocket", body);
+    expect(items[0].note).toEqual("[Imported]");
+    expect(items[0].tags).toEqual(["news"]);
   });
 });
