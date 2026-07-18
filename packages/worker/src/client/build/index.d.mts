@@ -242,6 +242,7 @@ declare const app: import("hono/hono-base").HonoBase<Env, import("hono/types").B
             archive?: boolean | undefined;
             favorite?: boolean | undefined;
             note?: string | undefined;
+            tags?: string[] | undefined;
           } | {
             op: "set_bool";
             id: number;
@@ -965,6 +966,7 @@ declare function createClient<Prefix extends string = string>(baseUrl: Prefix, o
               archive?: boolean | undefined;
               favorite?: boolean | undefined;
               note?: string | undefined;
+              tags?: string[] | undefined;
             } | {
               op: "set_bool";
               id: number;
