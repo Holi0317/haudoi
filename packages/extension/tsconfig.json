@@ -1,6 +1,7 @@
 {
   "extends": ["../../tsconfig.json", "./.wxt/tsconfig.json"],
   "compilerOptions": {
-    "lib": ["DOM"]
+    "lib": ["DOM"],
+    "allowArbitraryExtensions": true
   }
 }

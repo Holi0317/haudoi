@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useConfigMutation, useConfigQuery } from "./queries/config";
 import { createClient } from "@haudoi/worker/client";
 import { useRouter } from "vue-router";
-import { browser } from "#imports";
+import { browser } from "wxt/browser";
 
 export function useServerSetup() {
   const config = useConfigMutation();

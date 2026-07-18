@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { browser } from "#imports";
+import { browser } from "wxt/browser";
 
 const keys = {
   root: () => [{ scope: "currentTab" }] as const,
