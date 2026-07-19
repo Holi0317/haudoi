@@ -16,7 +16,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@haudoi/worker": "link:../worker",
+    "@haudoi/worker": "workspace:",
     "@iconify-json/material-symbols": "^1.2.85",
     "@nuxt/ui": "^4.10.0",
     "@tailwindcss/vite": "^4.3.3",

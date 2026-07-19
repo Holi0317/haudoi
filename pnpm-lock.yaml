@@ -79,7 +79,7 @@ importers:
   packages/extension:
     dependencies:
       '@haudoi/worker':
-        specifier: link:../worker
+        specifier: 'workspace:'
         version: link:../worker
       '@iconify-json/material-symbols':
         specifier: ^1.2.85
