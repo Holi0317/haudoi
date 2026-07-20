@@ -91,8 +91,8 @@ importers:
         specifier: ^1.32.0
         version: 1.32.0(vue@3.5.34(typescript@6.0.3))
       '@tanstack/vue-query':
-        specifier: ^5.100.14
-        version: 5.100.14(vue@3.5.34(typescript@6.0.3))
+        specifier: ^5.101.2
+        version: 5.101.2(vue@3.5.34(typescript@6.0.3))
       primeicons:
         specifier: ^7.0.0
         version: 7.0.0
@@ -1476,8 +1476,8 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==, tarball: https://registry.npmjs.org/@tanstack/pacer-lite/-/pacer-lite-0.1.1.tgz}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.100.14':
-    resolution: {integrity: sha512-5X41dGpxgeaHISCRW2oYwcSycZeULZzAunaudXT9ov1KOTj9xwt0CH6hbwqP1/z74ZWF7rYFnDpyYH07XFcZew==, tarball: https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.100.14.tgz}
+  '@tanstack/query-core@5.101.2':
+    resolution: {integrity: sha512-hH5MLoJhF7KaIGd7q3xTXGXvslI+GYlM1Z/35aSHHWaCJWB7XvTSHYuV3eM7tw+aE0mT/xMro4M4Q9rCGHT0lw==, tarball: https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.101.2.tgz}
 
   '@tanstack/store@0.9.3':
     resolution: {integrity: sha512-8reSzl/qGWGGVKhBoxXPMWzATSbZLZFWhwBAFO9NAyp0TxzfBP0mIrGb8CP8KrQTmvzXlR/vFPPUrHTLBGyFyw==, tarball: https://registry.npmjs.org/@tanstack/store/-/store-0.9.3.tgz}
@@ -1487,8 +1487,8 @@ packages:
     peerDependencies:
       vue: ^3.4.0
 
-  '@tanstack/vue-query@5.100.14':
-    resolution: {integrity: sha512-gNKay40Z29mvnjJtq2emzbZhGd2HRZQTOJuJZxAWpUKnmjOf79BndNnF1Aowm0Nt4WQtXYjFCGNZkBzSEJ+JEg==, tarball: https://registry.npmjs.org/@tanstack/vue-query/-/vue-query-5.100.14.tgz}
+  '@tanstack/vue-query@5.101.2':
+    resolution: {integrity: sha512-nFXKNK4dI/PnKNejyIkQmmobBsJWWXTPcpjPvkgFLkpFPz9DcmqIiKIAF2Pa7MZCipH62/+bt2sxEIA0wNEeOg==, tarball: https://registry.npmjs.org/@tanstack/vue-query/-/vue-query-5.101.2.tgz}
     peerDependencies:
       '@vue/composition-api': ^1.1.2
       vue: ^2.6.0 || ^3.3.0
@@ -5116,7 +5116,7 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/query-core@5.100.14': {}
+  '@tanstack/query-core@5.101.2': {}
 
   '@tanstack/store@0.9.3': {}
 
@@ -5128,10 +5128,10 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
 
-  '@tanstack/vue-query@5.100.14(vue@3.5.34(typescript@6.0.3))':
+  '@tanstack/vue-query@5.101.2(vue@3.5.34(typescript@6.0.3))':
     dependencies:
       '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/query-core': 5.100.14
+      '@tanstack/query-core': 5.101.2
       '@vue/devtools-api': 6.6.4
       vue: 3.5.34(typescript@6.0.3)
       vue-demi: 0.14.10(vue@3.5.34(typescript@6.0.3))
