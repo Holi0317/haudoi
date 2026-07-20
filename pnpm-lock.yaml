@@ -135,7 +135,7 @@ importers:
         version: link:../dsl
       '@hono/zod-validator':
         specifier: ^0.9.0
-        version: 0.9.0(hono@4.12.30)(zod@4.4.3)
+        version: 0.9.0(hono@4.12.31)(zod@4.4.3)
       '@std/csv':
         specifier: jsr:^1.0.6
         version: '@jsr/std__csv@1.0.6'
@@ -152,8 +152,8 @@ importers:
         specifier: ^1.49.0
         version: 1.49.0
       hono:
-        specifier: ^4.12.30
-        version: 4.12.30
+        specifier: ^4.12.31
+        version: 4.12.31
       ky:
         specifier: ^2.0.2
         version: 2.0.2
@@ -2704,8 +2704,8 @@ packages:
   headers-polyfill@5.0.1:
     resolution: {integrity: sha512-1TJ6Fih/b8h5TIcv+1+Hw0PDQWJTKDKzFZzcKOiW1wJza3XoAQlkCuXLbymPYB8+ZQyw8mHvdw560e8zVFIWyA==, tarball: https://registry.npmjs.org/headers-polyfill/-/headers-polyfill-5.0.1.tgz}
 
-  hono@4.12.30:
-    resolution: {integrity: sha512-emn+JoJjrN9YTpRDS5it/UI2SO9BAE37T6I3d963RxcZ81G9A4pr2SZTEiiaiKbzx+NKRg5BZ89fCL7gCJCUog==, tarball: https://registry.npmjs.org/hono/-/hono-4.12.30.tgz}
+  hono@4.12.31:
+    resolution: {integrity: sha512-zJIHFrl6bq3RDd2YusFNCDlM8qUprxKswyi/OPzPyzKDdyBXDqWx8bZlZ7R+saTdSTatUmb3O7K4SspGPaEOQg==, tarball: https://registry.npmjs.org/hono/-/hono-4.12.31.tgz}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -4556,9 +4556,9 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@hono/zod-validator@0.9.0(hono@4.12.30)(zod@4.4.3)':
+  '@hono/zod-validator@0.9.0(hono@4.12.31)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.30
+      hono: 4.12.31
       zod: 4.4.3
 
   '@humanfs/core@0.19.2':
@@ -6304,7 +6304,7 @@ snapshots:
       '@types/set-cookie-parser': 2.4.10
       set-cookie-parser: 3.1.2
 
-  hono@4.12.30: {}
+  hono@4.12.31: {}
 
   hookable@5.5.3: {}
 
