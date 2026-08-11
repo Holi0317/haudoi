@@ -132,7 +132,7 @@ importers:
         version: link:../dsl
       '@hono/zod-validator':
         specifier: ^0.9.0
-        version: 0.9.0(hono@4.12.30)(zod@4.4.3)
+        version: 0.9.0(hono@4.13.1)(zod@4.4.3)
       '@std/csv':
         specifier: jsr:^1.0.6
         version: '@jsr/std__csv@1.0.6'
@@ -149,8 +149,8 @@ importers:
         specifier: ^1.49.0
         version: 1.49.0
       hono:
-        specifier: ^4.12.30
-        version: 4.12.30
+        specifier: ^4.13.1
+        version: 4.13.1
       ky:
         specifier: ^2.0.2
         version: 2.0.2
@@ -3235,8 +3235,8 @@ packages:
   hey-listen@1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==, tarball: https://registry.npmjs.org/hey-listen/-/hey-listen-1.0.8.tgz}
 
-  hono@4.12.30:
-    resolution: {integrity: sha512-emn+JoJjrN9YTpRDS5it/UI2SO9BAE37T6I3d963RxcZ81G9A4pr2SZTEiiaiKbzx+NKRg5BZ89fCL7gCJCUog==, tarball: https://registry.npmjs.org/hono/-/hono-4.12.30.tgz}
+  hono@4.13.1:
+    resolution: {integrity: sha512-kdJoFVv2xmayw6cY09H7AbMJMt8Jn5jdlEdXsP7AGBdF2DIptVlKlOLKXP41yPip4/a3yQPv9gVcJYI8YY04dw==, tarball: https://registry.npmjs.org/hono/-/hono-4.13.1.tgz}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -5555,9 +5555,9 @@ snapshots:
 
   '@fregante/relaxed-json@2.0.0': {}
 
-  '@hono/zod-validator@0.9.0(hono@4.12.30)(zod@4.4.3)':
+  '@hono/zod-validator@0.9.0(hono@4.13.1)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.30
+      hono: 4.13.1
       zod: 4.4.3
 
   '@humanfs/core@0.19.2':
@@ -8062,7 +8062,7 @@ snapshots:
 
   hey-listen@1.0.8: {}
 
-  hono@4.12.30: {}
+  hono@4.13.1: {}
 
   hookable@5.5.3: {}
 
