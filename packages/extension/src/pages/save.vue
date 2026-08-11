@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import DeleteLinkButton from "./DeleteLinkButton.vue";
-import SettingCog from "./SettingCog.vue";
+import DeleteLinkButton from "../components/DeleteLinkButton.vue";
+import SettingCog from "../components/SettingCog.vue";
 import { useCurrentTab } from "@/composables/queries/tab";
 import { useSaveMutation } from "@/composables/queries/server";
 
