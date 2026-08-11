@@ -141,4 +141,12 @@ export default defineConfig(
       ],
     },
   },
+
+  {
+    name: "Vue router pages",
+    files: ["**/pages/**/*.vue"],
+    rules: {
+      "vue/multi-word-component-names": "off",
+    },
+  },
 );

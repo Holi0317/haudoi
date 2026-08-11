@@ -1,13 +1,20 @@
-import ui from "@nuxt/ui/vite";
 import { defineConfig } from "wxt";
+import VueRouter from "vue-router/vite";
+import vue from "@vitejs/plugin-vue";
+import ui from "@nuxt/ui/vite";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  modules: ["@wxt-dev/module-vue"],
   srcDir: "src",
   imports: false,
   vite: () => ({
     plugins: [
+      VueRouter(),
+      vue({
+        features: {
+          optionsAPI: false,
+        },
+      }),
       ui({
         autoImport: false,
         components: false,
