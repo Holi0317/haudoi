@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from "primevue/button";
+import UButton from "@nuxt/ui/components/Button.vue";
 import { useDeleteMutation } from "@/composables/queries/server";
 
 const props = defineProps<{
@@ -15,31 +15,36 @@ const click = () => {
 
 <template>
   <template v-if="mutation.isError.value">
-    <Button
+    <UButton
       label="Delete link"
-      icon="pi pi-exclamation-circle"
-      severity="warn"
+      icon="i-material-symbols:error"
+      color="warning"
       :disabled="true"
     />
 
     <p>Error deleting link. {{ mutation.failureReason.value }}</p>
 
-    <Button label="Retry" icon="pi pi-refresh" severity="info" @click="click" />
+    <UButton
+      label="Retry"
+      icon="i-material-symbols:refresh"
+      color="info"
+      @click="click"
+    />
   </template>
 
-  <Button
+  <UButton
     v-else-if="mutation.isSuccess.value"
     label="Link deleted"
-    icon="pi pi-check"
-    severity="success"
+    icon="i-material-symbols:check"
+    color="success"
     :disabled="true"
   />
 
-  <Button
+  <UButton
     v-else
     label="Delete link"
-    icon="pi pi-trash"
-    severity="danger"
+    icon="i-material-symbols:delete"
+    color="error"
     :loading="mutation.isPending.value"
     @click="click"
   />

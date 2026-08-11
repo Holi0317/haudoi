@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import Button from "primevue/button";
+import UButton from "@nuxt/ui/components/Button.vue";
 </script>
 
 <template>
   <div class="flex justify-end">
-    <Button
-      as="RouterLink"
+    <UButton
       to="/setup"
-      icon="pi pi-cog"
-      variant="text"
-      severity="secondary"
+      icon="i-material-symbols:settings"
+      variant="ghost"
+      color="neutral"
       aria-label="Settings"
     >
-    </Button>
+    </UButton>
   </div>
 </template>

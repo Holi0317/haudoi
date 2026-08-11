@@ -1,7 +1,6 @@
 import { createApp } from "vue";
 import { VueQueryPlugin } from "@tanstack/vue-query";
-import PrimeVue from "primevue/config";
-import Aura from "@primeuix/themes/aura";
+import ui from "@nuxt/ui/vue-plugin";
 import App from "../../components/App.vue";
 import { router } from "../../router";
 import "./style.css";
@@ -9,11 +8,7 @@ import "./style.css";
 const app = createApp(App);
 
 app.use(VueQueryPlugin);
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-  },
-});
+app.use(ui);
 app.use(router);
 
 app.mount("#app");

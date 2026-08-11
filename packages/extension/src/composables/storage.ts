@@ -1,4 +1,4 @@
-import { browser } from "#imports";
+import { browser } from "wxt/browser";
 
 export function useExtLocalStorage<T>(key: string, defaultValue: () => T) {
   const get = async () => {

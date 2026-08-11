@@ -1,3 +1,4 @@
+import { cors } from "hono/cors";
 import { factory } from "./factory";
 import { bodyLimit } from "hono/body-limit";
 import { clientInject } from "../middleware/client";
@@ -13,6 +14,13 @@ import { MAX_BODY_SIZE } from "../constants";
 
 const app = factory
   .createApp()
+  // Required for extension to work
+  .use(
+    cors({
+      origin: (origin) => origin,
+      credentials: true,
+    }),
+  )
   .use(clientInject(apiRouter))
   .use(renderer())
   .use(blockRequestLoop())

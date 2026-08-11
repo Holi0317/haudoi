@@ -17,14 +17,12 @@
   },
   "dependencies": {
     "@haudoi/worker": "link:../worker",
-    "@primeuix/themes": "^2.0.3",
+    "@iconify-json/material-symbols": "^1.2.85",
+    "@nuxt/ui": "^4.10.0",
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/vue-form": "^1.32.0",
     "@tanstack/vue-query": "^5.100.14",
-    "primeicons": "^7.0.0",
-    "primevue": "^4.5.5",
     "tailwindcss": "^4.3.0",
-    "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7"
   },
