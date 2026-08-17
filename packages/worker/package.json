@@ -26,7 +26,7 @@
     "@std/html": "jsr:^1.0.7",
     "@truto/sqlite-builder": "^1.0.4",
     "dayjs": "^1.11.21",
-    "es-toolkit": "^1.49.0",
+    "es-toolkit": "^1.50.0",
     "hono": "^4.12.30",
     "ky": "^2.0.2",
     "p-limit": "^7.3.0",
