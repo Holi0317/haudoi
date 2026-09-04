@@ -2,84 +2,67 @@
 import UInput from "@nuxt/ui/components/Input.vue";
 import UButton from "@nuxt/ui/components/Button.vue";
 import UAlert from "@nuxt/ui/components/Alert.vue";
-import { useForm } from "@tanstack/vue-form";
-import { computed, reactive } from "vue";
+import UForm from "@nuxt/ui/components/Form.vue";
+import UFormField from "@nuxt/ui/components/FormField.vue";
+import * as z from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
+import { reactive, watch } from "vue";
 import { useServerSetup } from "@/composables/server";
 import { useConfigQuery } from "@/composables/queries/config";
 
 const config = useConfigQuery();
 const setup = useServerSetup();
 
-const url = computed(() => config.data.value?.serverUrl ?? "");
-
-const defaultValues = reactive({
-  url,
+const schema = z.object({
+  url: z.url("Invalid URL. Please enter a valid http(s) URL."),
 });
 
-const form = useForm({
-  defaultValues,
-  async onSubmit({ value }) {
-    setup.mutate(value.url);
+type Schema = z.output<typeof schema>;
+
+const state = reactive<Partial<Schema>>({
+  url: undefined,
+});
+
+// Pre-fill URL from config when it loads
+watch(
+  () => config.data.value?.serverUrl,
+  (serverUrl) => {
+    if (serverUrl) {
+      state.url = serverUrl;
+    }
   },
-});
+  { immediate: true },
+);
 
-const validUrl = (url: string) => {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
-};
+function onSubmit(event: FormSubmitEvent<Schema>) {
+  setup.mutate(event.data.url);
+}
 </script>
 
 <template>
   <p v-if="config.isLoading.value">Loading..</p>
 
-  <form
+  <UForm
     v-else
+    :schema="schema"
+    :state="state"
     class="flex justify-center flex-col gap-4"
-    @submit.prevent.stop="form.handleSubmit"
+    :disabled="setup.isPending.value"
+    @submit="onSubmit"
   >
-    <form.Field
-      name="url"
-      :validators="{
-        onBlur: ({ value }) =>
-          validUrl(value)
-            ? null
-            : 'Invalid URL. Please enter a valid http(s) URL.',
-      }"
-    >
-      <template #default="{ field }">
-        <div class="flex flex-col gap-2">
-          <label for="url">Server URL</label>
-          <UInput
-            id="url"
-            :value="field.state.value"
-            :name="field.name"
-            type="url"
-            placeholder="https://your-server.worker.dev"
-            :disabled="setup.isPending.value"
-            @blur="field.handleBlur"
-            @input="
-              (e: Event) =>
-                field.handleChange((e.target as HTMLInputElement).value)
-            "
-          />
-          <UAlert
-            color="neutral"
-            variant="soft"
-            description="Enter your haudoi server url. You can find that in server frontpage."
-          />
+    <UFormField label="Server URL" name="url">
+      <UInput
+        v-model="state.url"
+        type="url"
+        placeholder="https://your-server.worker.dev"
+      />
+    </UFormField>
 
-          <UAlert
-            v-if="!field.state.meta.isValid"
-            color="error"
-            :description="field.state.meta.errors.join(', ')"
-          />
-        </div>
-      </template>
-    </form.Field>
+    <UAlert
+      color="neutral"
+      variant="soft"
+      description="Enter your haudoi server url. You can find that in server frontpage."
+    />
 
     <UButton
       label="Connect"
@@ -101,5 +84,5 @@ const validUrl = (url: string) => {
       icon="i-material-symbols:cancel"
       :description="setup.error.value.message"
     />
-  </form>
+  </UForm>
 </template>
