@@ -21,17 +21,17 @@
   },
   "dependencies": {
     "@haudoi/dsl": "workspace:*",
-    "@hono/zod-validator": "^0.9.0",
+    "@hono/zod-validator": "^0.9.1",
     "@std/csv": "jsr:^1.0.6",
     "@std/html": "jsr:^1.0.7",
     "@truto/sqlite-builder": "^1.0.4",
     "dayjs": "^1.11.21",
     "es-toolkit": "^1.49.0",
-    "hono": "^4.12.30",
+    "hono": "^4.13.5",
     "ky": "^2.0.2",
     "p-limit": "^7.3.0",
     "uint8array-extras": "^1.5.0",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.18.6",
